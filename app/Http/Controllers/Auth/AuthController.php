@@ -65,4 +65,43 @@ class AuthController extends Controller {
 			'password' => bcrypt($data['password']),
 		]);
 	}
+
+	/**
+	 * Get the failed login response instance.
+	 *
+	 * @param \Illuminate\Http\Request  $response
+	 * @return \Illuminate\Http\Response
+	 */
+	protected function sendFailedLoginResponse(Request $request) {
+		return redirect()->back()
+			->withInput($request->only($this->loginUsername()))
+			->withErrors([
+				$this->loginUsername() => $this->getFailedLoginMessage(),
+			]);
+	}
+
+	/**
+	 * Get the failed login message.
+	 *
+	 * @return string
+	 */
+	protected function getFailedLoginMessage() {
+		return Lang::has('auth.failed')
+		? Lang::get('auth.failed')
+		: 'These credentials do not match our records.';
+	}
+
+	/**
+	 * Get the needed authorization credentials from the request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return array
+	 */
+	protected function getCredentials(Request $request) {
+		return [
+			'xh' => $request->get($this->loginUsername()),
+			'mm' => $request->get('password'),
+		];
+	}
+
 }
