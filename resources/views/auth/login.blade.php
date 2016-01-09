@@ -23,10 +23,10 @@
     </head>
 
     <body>
-    	<div class="container">
+    	<main class="container">
 			<div class="row">
 			    <div class="col-sm-4 col-sm-offset-4">
-			        <div class="login-panel panel panel-default">
+			        <div class="panel panel-default">
 			            <div class="panel-heading">
 			                <h3 class="panel-title">学生登录</h3>
 			            </div>
@@ -63,7 +63,7 @@
 			    <!-- /.col-sm-4 -->
 			</div>
 			<!-- /.row -->
-		</div>
+		</main>
 		<!-- /.container -->
 
         <!-- Load JS here for greater good -->
