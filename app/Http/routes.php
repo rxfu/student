@@ -27,10 +27,7 @@ Route::get('/', function () {
  */
 
 Route::group(['middleware' => ['web']], function () {
-	Route::get('home', ['as' => 'home', 'uses' => 'HomeController@getDashboard']);
+	Route::auth();
 
-	Route::controllers([
-		'auth'     => 'Auth\AuthController',
-		'password' => 'Auth\PasswordController',
-	]);
+	Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 });
