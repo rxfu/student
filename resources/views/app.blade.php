@@ -29,12 +29,16 @@
 
     <body>
         <div id="wrapper">
+
+            <!-- Browser alert -->
             <div id="browserAlert" class="alert alert-danger">
                <a href="#" class="close" data-dismiss="alert" aria-lable="关闭">
                   <span aria-hidden="true">&times;</span>
                </a>
                <strong>注意！</strong> 你现在使用的是<strong>360浏览器</strong>，将不能正确提交成绩，请更换其他浏览器以便正确提交成绩！
             </div>
+            <!-- /#browserAlert -->
+
             <!-- 页面头部Logo -->
             <header role="banner"></header>
 
@@ -73,9 +77,10 @@
 
             <!-- 页脚版权信息 -->
             <footer class="footer" role="contentinfo">
-                © <?php print(date('Y') == '2014') ? '2014' : '2014 - ' . date('Y')?> <a href="http://www.dean.gxnu.edu.cn">广西师范大学教务处</a>.版权所有.
+                © {{ (date('Y') == '2014') ? '2014' : '2014 - ' . date('Y') }} <a href="http://www.dean.gxnu.edu.cn">广西师范大学教务处</a>.版权所有.
             </footer>
         </div>
+        <!-- /#wrapper -->
 
         <!-- Load JS here for greater good -->
         <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
