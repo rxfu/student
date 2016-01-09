@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="用于广西师范大学教务管理，学生选课，录入成绩">
-        <meta name="keywords" content="广西师范大学,教务处,学生选课,教师管理,成绩管理">
+        <meta name="description" content="用于广西师范大学学生信息管理，学生选课，查询成绩">
+        <meta name="keywords" content="广西师范大学,教务处,学生选课,成绩查询">
         <meta name="author" content="Fu Rongxin,符荣鑫">
         <title>广西师范大学教务管理系统</title>
         <!--link rel="shortcut icon" href="favicon.ico"-->
-        <?php echo css('css/bootstrap.min.css') ?>
-        <?php echo css('css/formValidation.min.css') ?>
-        <?php echo css('css/bootstrap-select.css') ?>
-        <?php echo css('css/bootstrap-theme.css') ?>
-        <?php echo css('font-awesome/css/font-awesome.min.css') ?>
-        <?php echo css('css/plugins/dataTables/dataTables.bootstrap.css') ?>
-        <?php echo css('css/sb-admin-2.css') ?>
-        <?php echo css('css/timeline.css') ?>
-        <?php echo css('css/style.css') ?>
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/formValidation.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/dataTables.bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/sb-admin-2.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/timeline.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
         <!--[if lt IE 9]>
-            <?php echo js('js/html5shiv.js') ?>
-            <?php echo js('js/respond.min.js') ?>
+            <script src="{{ asset('js/html5shiv.js') }}"></script>
+            <script src="{{ asset('js/respond.min.js') }}"></script>
         <![endif]-->
     </head>
 
@@ -77,24 +78,23 @@
         </div>
 
         <!-- Load JS here for greater good -->
-        <?php echo js('js/jquery-1.11.0.min.js') ?>
-        <?php echo js('js/jquery-ui-1.10.4.custom.min.js') ?>
-        <?php echo js('js/bootstrap.min.js') ?>
-        <?php echo js('js/formValidation.min.js') ?>
-        <?php echo js('js/framework/bootstrap.min.js') ?>
-        <?php echo js('js/language/zh_CN.js') ?>
-        <?php echo js('js/bootstrap-paginator.js') ?>
-        <?php echo js('js/bootstrap-select.js') ?>
-        <?php echo js('js/bootstrap-switch.js') ?>
-        <?php echo js('js/bootstrap-typeahead.js') ?>
-        <?php echo js('js/jquery.placeholder.js') ?>
-        <?php echo js('js/jquery.stacktable.js') ?>
-        <?php echo js('js/jquery.chained.min.js') ?>
-        <?php echo js('js/plugins/metisMenu/jquery.metisMenu.js') ?>
-        <?php echo js('js/plugins/dataTables/jquery.dataTables.min.js') ?>
-        <?php echo js('js/plugins/dataTables/dataTables.bootstrap.js') ?>
-        <?php echo js('js/sb-admin-2.js') ?>
-        <?php echo js('js/jquery.ua.js') ?>
-        <?php echo js('js/main.js') ?>
+        <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui-1.10.4.custom.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/formValidation.min.js') }}"></script>
+        <script src="{{ asset('js/language/zh_CN.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-paginator.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-switch.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-typeahead.js') }}"></script>
+        <script src="{{ asset('js/jquery.placeholder.js') }}"></script>
+        <script src="{{ asset('js/jquery.stacktable.js') }}"></script>
+        <script src="{{ asset('js/jquery.chained.min.js') }}"></script>
+        <script src="{{ asset('js/metisMenu.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap.js') }}"></script>
+        <script src="{{ asset('js/sb-admin-2.js') }}"></script>
+        <script src="{{ asset('js/jquery.ua.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>
