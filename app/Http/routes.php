@@ -29,5 +29,11 @@ Route::get('/', function () {
 Route::group(['middleware' => ['web']], function () {
 	Route::auth();
 
-	Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+	Route::group(['middleware' => ['auth']], function () {
+		Route::resources([
+			'home' => 'HOmeController',
+		]);
+
+		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+	});
 });
