@@ -13,7 +13,7 @@ class HomeController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		$messages = Message::all();
+		$messages = Message::where('id', '=', 'xt_web')->get();
 
 		return view('home.index', ['title' => '综合管理系统', 'messages' => $messages]);
 	}
