@@ -74,7 +74,7 @@
 				                <!-- /.row -->
 				                @endif
 
-				                <form id="loginForm" name="loginForm" action="{{ url('auth/login') }}" role="form" method="POST" class="form-horizontal">
+				                <form id="loginForm" name="loginForm" action="{{ url('login') }}" role="form" method="POST" class="form-horizontal">
 				                	{!! csrf_field() !!}
 				                    <fieldset>
 				                        <div class="form-group">

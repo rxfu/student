@@ -77,7 +77,7 @@ return [
 
 		'users' => [
 			'driver' => 'dean',
-			'model'  => App\User::class,
+			'model'  => App\Models\User::class,
 		],
 	],
 

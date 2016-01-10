@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Request;
 use Validator;
 
 class AuthController extends Controller {
@@ -78,17 +79,6 @@ class AuthController extends Controller {
 			->withErrors([
 				$this->loginUsername() => $this->getFailedLoginMessage(),
 			]);
-	}
-
-	/**
-	 * Get the failed login message.
-	 *
-	 * @return string
-	 */
-	protected function getFailedLoginMessage() {
-		return Lang::has('auth.failed')
-		? Lang::get('auth.failed')
-		: 'These credentials do not match our records.';
 	}
 
 	/**
