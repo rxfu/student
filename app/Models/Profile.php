@@ -17,4 +17,8 @@ class Profile extends Model {
 	public function college() {
 		return $this->belongsTo('App\Models\Department', 'xy', 'dw');
 	}
+
+	public function major() {
+		return $this->belongsTo('App\Models\Major', 'zy', 'zy');
+	}
 }
