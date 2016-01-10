@@ -34,12 +34,12 @@
             <!-- /.header -->
 
             <!-- Browser alert -->
-            <div id="browserAlert" class="alert alert-danger">
+            <section id="browserAlert" class="alert alert-danger">
                <a href="#" class="close" data-dismiss="alert" aria-lable="关闭">
                   <span aria-hidden="true">&times;</span>
                </a>
                <strong>注意！</strong> 你现在使用的是<strong>360浏览器</strong>，将不能正确提交成绩，请更换其他浏览器以便正确提交成绩！
-            </div>
+            </section>
             <!-- /#browserAlert -->
 
             <!-- Navigation -->
@@ -284,6 +284,7 @@
             <!-- Page wrapper -->
             <main id="page-wrapper">
                 @if (session('status'))
+                <!-- Status -->
                 <section class="row">
                     <div class="col-sm-12">
                         <div class="alert alert-success alert-dismissable">
@@ -297,6 +298,7 @@
                 @endif
 
                 @if ($errors->any())
+                <!-- Errors -->
                 <section class="row">
                     <div class="col-sm-12">
                         <div class="alert alert-danger alert-dismissable">

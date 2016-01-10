@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 
 class Authenticate {
+
 	/**
 	 * Handle an incoming request.
 	 *
@@ -19,7 +20,7 @@ class Authenticate {
 			if ($request->ajax()) {
 				return response('Unauthorized.', 401);
 			} else {
-				return redirect()->guest('auth/login');
+				return redirect()->guest('login');
 			}
 		}
 
