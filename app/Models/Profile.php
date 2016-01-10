@@ -13,4 +13,8 @@ class Profile extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	public function college() {
+		return $this->belongsTo('App\Models\Department', 'xy', 'dw');
+	}
 }
