@@ -31,7 +31,8 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::group(['middleware' => ['auth']], function () {
 		Route::resources([
-			'home' => 'HomeController',
+			'home'    => 'HomeController',
+			'profile' => 'ProfileController',
 		]);
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
