@@ -58,4 +58,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\School', 'xsh', 'dm');
 	}
 
+	public function approach() {
+		return $this->belongsTo('App\Models\Approach', 'bxxs', 'dm');
+	}
+
 }
