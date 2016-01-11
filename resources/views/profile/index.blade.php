@@ -43,7 +43,7 @@
                         </tr>
                         <tr>
                             <th class="active">性别</th>
-                            <td>{{ $profile->xb }}</td>
+                            <td>{{ $profile->gender->mc }}</td>
                             <th class="active">出生日期</th>
                             <td>{{ $profile->csny }}</td>
                             <th class="active">证件类型</th>

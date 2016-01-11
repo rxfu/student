@@ -21,4 +21,8 @@ class Profile extends Model {
 	public function major() {
 		return $this->belongsTo('App\Models\Major', 'zy', 'zy');
 	}
+
+	public function gender() {
+		return $this->belongsTo('App\Models\Gender', 'xbdm', 'dm');
+	}
 }
