@@ -137,7 +137,7 @@
                             <th class="active">入学日期</th>
                             <td>{{ $profile->rxrq }}</td>
                             <th class="active">入学方式</th>
-                            <td colspan="3">{{ $profile->rxfs }}</td>
+                            <td colspan="3">{{ $profile->entrance->mc }}</td>
                         </tr>
                         <tr>
                             <th class="active">考生号</th>

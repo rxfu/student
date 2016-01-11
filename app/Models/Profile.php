@@ -82,4 +82,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Rsfield', 'zylb', 'dm');
 	}
 
+	public function entrance() {
+		return $this->belongsTo('App\Models\Entrance', 'rxfs', 'dm');
+	}
+
 }
