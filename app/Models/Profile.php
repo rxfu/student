@@ -22,6 +22,14 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Major', 'zy', 'zy');
 	}
 
+	public function secondary() {
+		return $this->belongsTo('App\Models\Major', 'zy2', 'zy');
+	}
+
+	public function minor() {
+		return $this->belongsTo('App\Models\Major', 'fxzy', 'zy');
+	}
+
 	public function gender() {
 		return $this->belongsTo('App\Models\Gender', 'xbdm', 'dm');
 	}

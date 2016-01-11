@@ -77,9 +77,9 @@
                             <th class="active">专业方向</th>
                             <td>{{ $profile->zyfs }}</td>
                             <th class="active">第二专业</th>
-                            <td>{{ $profile->zy2 }}</td>
+                            <td>{{ count($profile->secondary) ? $profile->secondary->mc : '' }}</td>
                             <th class="active">辅修专业</th>
-                            <td>{{ $profile->fxzy }}</td>
+                            <td>{{ count($profile->minor) ? $profile->minor->mc : '' }}</td>
                         </tr>
                     </table>
                 </div>

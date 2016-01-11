@@ -17,4 +17,12 @@ class Major extends Model {
 	public function profiles() {
 		return $this->hasMany('App\Models\Profile', 'zy', 'zy');
 	}
+
+	public function secondary_profiles() {
+		return $this->hasMany('App\Models\Profile', 'zy2', 'zy');
+	}
+
+	public function minor_profiles() {
+		return $this->hasMany('App\Models\Profile', 'fxzy', 'zy');
+	}
 }
