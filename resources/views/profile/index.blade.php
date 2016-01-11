@@ -53,7 +53,7 @@
                         </tr>
                         <tr>
                             <th class="active">国籍</th>
-                            <td>{{ $profile->gj }}</td>
+                            <td>{{ $profile->country->mc }}</td>
                             <th class="active">民族</th>
                             <td>{{ $profile->mz }}</td>
                             <th class="active">籍贯</th>

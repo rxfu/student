@@ -29,4 +29,8 @@ class Profile extends Model {
 	public function idtype() {
 		return $this->belongsTo('App\Models\Idtype', 'zjlx', 'dm');
 	}
+
+	public function country() {
+		return $this->belongsTo('App\Models\Country', 'gj', 'dm');
+	}
 }
