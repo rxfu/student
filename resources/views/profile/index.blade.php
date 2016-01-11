@@ -63,7 +63,7 @@
                         </tr>
                         <tr>
                             <th class="active">生源地</th>
-                            <td>{{ $profile->syd }}</td>
+                            <td>{{ $profile->province->mc }}</td>
                             <th class="active">出生地</th>
                             <td>{{ $profile->csd }}</td>
                             <th class="active">学院</th>

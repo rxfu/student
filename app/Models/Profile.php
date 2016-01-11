@@ -41,4 +41,9 @@ class Profile extends Model {
 	public function party() {
 		return $this->belongsTo('App\Models\Party', 'zzmm', 'dm');
 	}
+
+	public function province() {
+		return $this->belongsTo('App\Models\Province', 'syszd', 'dm');
+	}
+
 }
