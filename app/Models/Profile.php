@@ -78,4 +78,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Status', 'xjzt', 'dm');
 	}
 
+	public function rsfield() {
+		return $this->belongsTo('App\Models\Rsfield', 'zylb', 'dm');
+	}
+
 }
