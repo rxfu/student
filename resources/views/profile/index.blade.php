@@ -67,13 +67,13 @@
                             <th class="active">出生地</th>
                             <td>{{ $profile->csd }}</td>
                             <th class="active">学院</th>
-                            <td>{{ $profile->xy }}</td>
+                            <td>{{ $profile->college->mc }}</td>
                             <th class="active">系所</th>
-                            <td>{{ $profile->xs }}</td>
+                            <td>{{ count($profile->school) ? $profile->school->mc : '' }}</td>
                         </tr>
                         <tr>
                             <th class="active">专业</th>
-                            <td>{{ $profile->zy }}</td>
+                            <td>{{ $profile->major->mc }}</td>
                             <th class="active">专业方向</th>
                             <td>{{ $profile->zyfs }}</td>
                             <th class="active">第二专业</th>

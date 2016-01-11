@@ -46,4 +46,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Province', 'syszd', 'dm');
 	}
 
+	public function school() {
+		return $this->belongsTo('App\Models\School', 'xsh', 'dm');
+	}
+
 }
