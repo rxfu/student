@@ -62,4 +62,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Approach', 'bxxs', 'dm');
 	}
 
+	public function sctype() {
+		return $this->belongsTo('App\Models\Sctype', 'bxlx', 'dm');
+	}
+
 }

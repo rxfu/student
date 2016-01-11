@@ -107,7 +107,7 @@
                             <th class="active">办学形式</th>
                             <td>{{ $profile->approach->mc }}</td>
                             <th class="active">办学类型</th>
-                            <td>{{ $profile->bxlx }}</td>
+                            <td>{{ $profile->sctype->mc }}</td>
                             <th class="active">学习形式</th>
                             <td>{{ $profile->xxxs }}</td>
                         </tr>
