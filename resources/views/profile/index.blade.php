@@ -55,7 +55,7 @@
                             <th class="active">国籍</th>
                             <td>{{ $profile->country->mc }}</td>
                             <th class="active">民族</th>
-                            <td>{{ $profile->mz }}</td>
+                            <td>{{ $profile->nation->mc }}</td>
                             <th class="active">籍贯</th>
                             <td>{{ $profile->jg }}</td>
                             <th class="active">政治面貌</th>
