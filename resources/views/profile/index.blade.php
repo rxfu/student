@@ -59,7 +59,7 @@
                             <th class="active">籍贯</th>
                             <td>{{ $profile->jg }}</td>
                             <th class="active">政治面貌</th>
-                            <td>{{ $profile->zzmm }}</td>
+                            <td>{{ $profile->party->mc }}</td>
                         </tr>
                         <tr>
                             <th class="active">生源地</th>

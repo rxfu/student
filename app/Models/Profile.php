@@ -37,4 +37,8 @@ class Profile extends Model {
 	public function nation() {
 		return $this->belongsTo('App\Models\Nation', 'mzdm', 'dm');
 	}
+
+	public function party() {
+		return $this->belongsTo('App\Models\Party', 'zzmm', 'dm');
+	}
 }
