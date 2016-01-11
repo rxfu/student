@@ -66,4 +66,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Sctype', 'bxlx', 'dm');
 	}
 
+	public function scform() {
+		return $this->belongsTo('App\Models\Scform', 'xxxs', 'dm');
+	}
+
 }

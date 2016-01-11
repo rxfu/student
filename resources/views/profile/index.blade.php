@@ -109,7 +109,7 @@
                             <th class="active">办学类型</th>
                             <td>{{ $profile->sctype->mc }}</td>
                             <th class="active">学习形式</th>
-                            <td>{{ $profile->xxxs }}</td>
+                            <td>{{ $profile->scform->mc }}</td>
                         </tr>
                         <tr>
                             <th class="active">招生季节</th>
