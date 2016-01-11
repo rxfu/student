@@ -241,7 +241,7 @@
                                 <a href="#"><i class="fa fa-gear fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">个人资料</a>
+                                        <a href="{{ url('profile') }}">个人资料</a>
                                     </li>
                                     <li>
                                         <a href="#">选课日志</a>

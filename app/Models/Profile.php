@@ -25,4 +25,8 @@ class Profile extends Model {
 	public function gender() {
 		return $this->belongsTo('App\Models\Gender', 'xbdm', 'dm');
 	}
+
+	public function idtype() {
+		return $this->belongsTo('App\Models\Idtype', 'zjlx', 'dm');
+	}
 }

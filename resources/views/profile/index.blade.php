@@ -47,7 +47,7 @@
                             <th class="active">出生日期</th>
                             <td>{{ $profile->csny }}</td>
                             <th class="active">证件类型</th>
-                            <td>{{ $profile->zjlx }}</td>
+                            <td>{{ $profile->idtype->mc }}</td>
                             <th class="active">证件号码</th>
                             <td>{{ $profile->sfzh }}</td>
                         </tr>
