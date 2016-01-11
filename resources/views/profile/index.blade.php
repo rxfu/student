@@ -129,7 +129,7 @@
                         </tr>
                         <tr>
                             <th class="active">学籍状态</th>
-                            <td>{{ $profile->xjzt }}</td>
+                            <td>{{ $profile->status->mc }}</td>
                             <th class="active">专业类别</th>
                             <td colspan="3">{{ $profile->zylb }}</td>
                         </tr>

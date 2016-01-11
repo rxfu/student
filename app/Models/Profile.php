@@ -74,4 +74,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Season', 'zsjj', 'dm');
 	}
 
+	public function status() {
+		return $this->belongsTo('App\Models\Status', 'xjzt', 'dm');
+	}
+
 }
