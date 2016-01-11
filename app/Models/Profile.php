@@ -70,4 +70,8 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Scform', 'xxxs', 'dm');
 	}
 
+	public function season() {
+		return $this->belongsTo('App\Models\Season', 'zsjj', 'dm');
+	}
+
 }

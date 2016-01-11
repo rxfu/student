@@ -113,7 +113,7 @@
                         </tr>
                         <tr>
                             <th class="active">招生季节</th>
-                            <td>{{ $profile->zsjj }}</td>
+                            <td>{{ $profile->season->mc }}</td>
                             <th class="active">加入日期</th>
                             <td>{{ $profile->jrrq }}</td>
                             <th class="active">师范类代码</th>
