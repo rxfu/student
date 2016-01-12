@@ -104,4 +104,15 @@ class User extends Authenticatable {
 			parent::setAttribute($key, $value);
 		}
 	}
+
+	/**
+	 * 学生日志
+	 * @author FuRongxin
+	 * @date    2016-01-12
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function logs() {
+		return $this->hasMany('App\Models\Slog', 'xh', 'xh');
+	}
 }
