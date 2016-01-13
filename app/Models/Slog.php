@@ -15,8 +15,6 @@ class Slog extends Model {
 
 	protected $table = 'xk_log';
 
-	public $incrementing = false;
-
 	public $timestamps = false;
 
 	/**
