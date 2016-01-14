@@ -6,7 +6,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <form id="passwordForm" name="passwordForm" action="{{ url('password/change') }}" role="form" method="post" class="form-horizontal">
-                	{!! crsf_field() !!}
+                    {!! method_field('put') !!}
+                	{!! csrf_field() !!}
                     <fieldset>
                         <div class="form-group">
                             <label for="old_password" class="col-md-3 control-label">旧密码</label>
@@ -18,12 +19,14 @@
                             <label for="password" class="col-md-3 control-label">新密码</label>
                             <div class="col-md-9">
                                 <input type="password" name="password" id="password" placeholder="新密码" class="form-control" required>
+                                <p class="help-block">请输入至少6个字符</p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="password_confirmation" class="col-md-3 control-label">确认密码</label>
                             <div class="col-md-9">
-                                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="确认密码" class="form-control" required>
+                                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="确认密码" class="form-control" required>
+                                <p class="help-block">与新密码一致</p>
                             </div>
                         </div>
                         <div class="form-group">

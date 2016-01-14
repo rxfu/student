@@ -25,7 +25,7 @@ class ProfileController extends Controller {
 	public function index() {
 		$profile = Profile::find(Auth::user()->xh);
 
-		return view('profile.index', ['title' => '个人资料', 'profile' => $profile]);
+		return view('profile.index')->withTitle('个人资料')->withProfile($profile);
 	}
 
 }

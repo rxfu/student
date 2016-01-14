@@ -24,6 +24,6 @@ class HomeController extends Controller {
 	public function index() {
 		$broadcasts = Broadcast::where('id', '=', 'xt_web')->get();
 
-		return view('home.index', ['title' => '综合管理系统', 'broadcasts' => $broadcasts]);
+		return view('home.index')->withTitle('综合管理系统')->withBroadcasts($broadcasts);
 	}
 }

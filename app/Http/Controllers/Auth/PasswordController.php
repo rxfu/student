@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,7 @@ class PasswordController extends Controller {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->middleware('guest');
+		$this->middleware('guest', ['except' => ['showChangeForm', 'change']]);
 	}
 
 	/**
@@ -38,7 +39,7 @@ class PasswordController extends Controller {
 	 * @return  \Illuminate\Http\Response 修改密码表单
 	 */
 	public function showChangeForm() {
-		return view('auth.change', ['title' => '修改密码']);
+		return view('auth.change')->withTitle('修改密码');
 	}
 
 	/**
@@ -51,13 +52,12 @@ class PasswordController extends Controller {
 	 */
 	public function change(Request $request) {
 		$this->validate($request, [
-			'token'                 => 'required',
 			'old_password'          => 'required',
 			'password'              => 'required|min:6|confirmed',
 			'password_confirmation' => 'required|min:6',
 		]);
 
-		list($old, $password, $confirm) = $request->only('old_password', 'password', 'password_confirmation');
+		list($old, $password, $confirm) = array_values($request->only('old_password', 'password', 'password_confirmation'));
 
 		$user = Auth::user();
 		if (Auth::attempt(['xh' => $user->xh, 'mm' => $old])) {
@@ -65,10 +65,10 @@ class PasswordController extends Controller {
 				$user->mm = $password;
 				$user->save();
 
-				return redirect('auth.change')->with('status', '修改密码成功');
+				return redirect('password/change')->withStatus('修改密码成功');
 			}
 		}
-
+		dd(['xh' => $user->xh, 'mm' => $old]);
 		return redirect()->back()
 			->withInput($request->only('old_password'))
 			->withErrors(['old_password' => '修改密码失败']);
