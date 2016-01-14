@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,5 +28,18 @@ class Slog extends Model {
 	 */
 	public function user() {
 		return $this->belongsTo('App\Models\User', 'xh', 'xh');
+	}
+
+	/**
+	 * Save the model to the database.
+	 *
+	 * @param  array  $options
+	 * @return bool
+	 */
+	public function save(array $options = []) {
+		$this->xh   = Auth::user()->xh;
+		$this->czsj = Carbon::now();
+
+		return parent::save($options);
 	}
 }
