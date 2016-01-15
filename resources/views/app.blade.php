@@ -247,7 +247,7 @@
                                         <a href="{{ url('log') }}">选课日志</a>
                                     </li>
                                     <li>
-                                        <a href="#">系统消息</a>
+                                        <a href="{{ url('message') }}">系统消息</a>
                                     </li>
                                     <li>
                                         <a href="{{ url('password/change') }}">修改密码</a>

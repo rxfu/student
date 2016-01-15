@@ -115,4 +115,15 @@ class User extends Authenticatable {
 	public function logs() {
 		return $this->hasMany('App\Models\Slog', 'xh', 'xh');
 	}
+
+	/**
+	 * 学生短消息
+	 * @author FuRongxin
+	 * @date    2016-01-15
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function messages() {
+		return $this->hasMany('App\Models\Message', 'xh', 'xh');
+	}
 }
