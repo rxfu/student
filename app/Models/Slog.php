@@ -61,7 +61,7 @@ class Slog extends Model {
 	 * @return bool
 	 */
 	public function save(array $options = []) {
-		$this->xh   = Auth::check() ? Auth::user()->xh : $this->xh;
+		$this->xh   = Auth::user()->xh;
 		$this->czsj = Carbon::now();
 		$this->bz   = isset($this->bz) ? $this->bz : '';
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\PasswordChange;
 use App\Http\Controllers\Controller;
 use Auth;
+use Event;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 
@@ -65,10 +67,12 @@ class PasswordController extends Controller {
 				$user->mm = $password;
 				$user->save();
 
+				Event::fire(new PasswordChange());
+
 				return redirect('password/change')->withStatus('修改密码成功');
 			}
 		}
-		dd(['xh' => $user->xh, 'mm' => $old]);
+
 		return redirect()->back()
 			->withInput($request->only('old_password'))
 			->withErrors(['old_password' => '修改密码失败']);
