@@ -30,10 +30,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::auth();
 
 	Route::group(['middleware' => ['auth']], function () {
-		Route::resources([
-			'home'    => 'HomeController',
-			'profile' => 'ProfileController',
-		]);
+		Route::resource('home', 'HomeController', ['only' => ['index']]);
+		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 		Route::get('password/change', 'Auth\PasswordController@showChangeForm');
