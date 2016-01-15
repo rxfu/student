@@ -22,7 +22,7 @@ class HomeController extends Controller {
 	 * @return  \Illuminate\Http\Response 系统消息列表
 	 */
 	public function index() {
-		$broadcasts = Broadcast::where('id', '=', 'xt_web')->get();
+		$broadcasts = Broadcast::whereId('xt_web')->get();
 
 		return view('home.index')->withTitle('综合管理系统')->withBroadcasts($broadcasts);
 	}

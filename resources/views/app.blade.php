@@ -244,7 +244,7 @@
                                         <a href="{{ url('profile') }}">个人资料</a>
                                     </li>
                                     <li>
-                                        <a href="#">选课日志</a>
+                                        <a href="{{ url('log') }}">选课日志</a>
                                     </li>
                                     <li>
                                         <a href="#">系统消息</a>
