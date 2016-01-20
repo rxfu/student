@@ -56,11 +56,11 @@
                 <!-- /.navbar-header -->
 
                 <ul class="nav navbar-top-links navbar-right">
-                    <li>欢迎{{ $profile->college->mc . $profile->nj }}级{{ $profile->major->mc }}专业{{ $profile->xm }}同学使用选课系统！</li>
+                    <li>欢迎{{ Auth::user()->profile->college->mc . Auth::user()->profile->nj }}级{{ Auth::user()->profile->major->mc }}专业{{ Auth::user()->profile->xm }}同学使用选课系统！</li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-user fa-fw"></i>
-                            <span>{{ $profile->xm }}</span>
+                            <span>{{ Auth::user()->profile->xm }}</span>
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">

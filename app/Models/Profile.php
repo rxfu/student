@@ -22,6 +22,17 @@ class Profile extends Model {
 	public $timestamps = false;
 
 	/**
+	 * 学号
+	 * @author FuRongxin
+	 * @date    2016-01-20
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function user() {
+		return $this->belongsTo('App\Models\User', 'xh', 'xh');
+	}
+
+	/**
 	 * 学院
 	 * @author FuRongxin
 	 * @date    2016-01-12

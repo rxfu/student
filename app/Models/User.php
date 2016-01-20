@@ -106,6 +106,17 @@ class User extends Authenticatable {
 	}
 
 	/**
+	 * 学生资料
+	 * @author FuRongxin
+	 * @date    2016-01-20
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function profile() {
+		return $this->hasOne('App\Models\Profile', 'xh', 'xh');
+	}
+
+	/**
 	 * 学生日志
 	 * @author FuRongxin
 	 * @date    2016-01-12
