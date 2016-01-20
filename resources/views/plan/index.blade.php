@@ -28,22 +28,22 @@
                         </thead>
                         <tbody>
                             @foreach ($plans as $plan)
-                                <tr>
-                                    <th class="active">{{ $plan->pt }}</th>
-                                    <th class="active">{{ $plan->xz }}</th>
-                                    <td>{{ $plan->kch }}</td>
-                                    <td>{{ $plan->kcmc }}</td>
-                                    <td>{{ $plan->kcywmc }}</td>
-                                    <td>{{ $plan->zxf }}</td>
-                                    <td>{{ $plan->llxf }}</td>
-                                    <td>{{ $plan->syxf }}</td>
-                                    <td>{{ $plan->zxs }}</td>
-                                    <td>{{ $plan->llxs }}</td>
-                                    <td>{{ $plan->syxs }}</td>
-                                    <td>{{ $plan->kxq }}</td>
-                                    <td>{{ $plan->kh }}</td>
-                                    <td>{{ $plan->kkxy }}</td>
-                                </tr>
+                            <tr>
+                                <th class="active">{{ $plan->platform->mc }}</th>
+                                <th class="active">{{ $plan->property->mc }}</th>
+                                <td>{{ $plan->kch }}</td>
+                                <td>{{ $plan->course->kcmc }}</td>
+                                <td>{{ $plan->course->kcywmc }}</td>
+                                <td>{{ $plan->zxf }}</td>
+                                <td>{{ $plan->llxf }}</td>
+                                <td>{{ $plan->syxf }}</td>
+                                <td>{{ $plan->llxs + $plan->syxs }}</td>
+                                <td>{{ $plan->llxs }}</td>
+                                <td>{{ $plan->syxs }}</td>
+                                <td>{{ $plan->kxq }}</td>
+                                <td>{{ $plan->mode->mc }}</td>
+                                <td>{{ $plan->college->mc }}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

@@ -26,6 +26,7 @@ class PlanController extends Controller {
 		$plans = Plan::whereNj(Auth::user()->profile->nj)
 			->whereZy(Auth::user()->profile->zy)
 			->whereZsjj(Auth::user()->profile->zsjj)
+			->orderBy('kch', 'asc')
 			->get();
 
 		return view('plan.index')->withTitle('教学计划')->withPlans($plans);
