@@ -85,7 +85,7 @@
                                 <a href="#"><i class="fa fa-graduation-cap fa-fw"></i> 教学计划<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">课程信息</a>
+                                        <a href="{{ url('course') }}">课程信息</a>
                                     </li>
                                     <li>
                                         <a href="{{ url('plan') }}">教学计划</a>

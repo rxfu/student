@@ -35,6 +35,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::resource('log', 'LogController', ['only' => ['index']]);
 		Route::resource('message', 'MessageController', ['only' => ['index']]);
 		Route::resource('plan', 'PlanController', ['only' => ['index']]);
+		Route::resource('course', 'CourseController', ['only' => ['index']]);
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 		Route::get('password/change', 'Auth\PasswordController@showChangeForm');
