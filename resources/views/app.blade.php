@@ -88,7 +88,7 @@
                                         <a href="#">课程信息</a>
                                     </li>
                                     <li>
-                                        <a href="#">教学计划</a>
+                                        <a href="{{ url('plan') }}">教学计划</a>
                                     </li>
                                     <li>
                                         <a href="#>">毕业要求</a>
