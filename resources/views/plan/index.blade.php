@@ -2,9 +2,9 @@
 
 @section('content')
 <section class="row">
-    <div class="col-lg-12">
+    <div class="col-sm-12">
         <div class="panel panel-default">
-            <div class="panel-heading"><?php echo $session['college'] ?><?php echo $session['grade'] ?>级<?php echo $session['speciality'] ?>专业课程设置计划总表</div>
+            <div class="panel-heading">{{ Auth::user()->profile->college->mc . Auth::user()->profile->nj }}级{{ Auth::user()->profile->major->mc }}专业课程设置计划总表</div>
             <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover data-table">
@@ -27,24 +27,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($plans as $plan): ?>
+                            @foreach ($plans as $plan)
                                 <tr>
-                                    <th class="active"><?php echo $plan['pt'] ?></th>
-                                    <th class="active"><?php echo $plan['xz'] ?></th>
-                                    <td><?php echo $plan['kch'] ?></td>
-                                    <td><?php echo $plan['kcmc'] ?></td>
-                                    <td><?php echo $plan['kcywmc'] ?></td>
-                                    <td><?php echo $plan['zxf'] ?></td>
-                                    <td><?php echo $plan['llxf'] ?></td>
-                                    <td><?php echo $plan['syxf'] ?></td>
-                                    <td><?php echo $plan['zxs'] ?></td>
-                                    <td><?php echo $plan['llxs'] ?></td>
-                                    <td><?php echo $plan['syxs'] ?></td>
-                                    <td><?php echo $plan['kxq'] ?></td>
-                                    <td><?php echo $plan['kh'] ?></td>
-                                    <td><?php echo $plan['kkxy'] ?></td>
+                                    <th class="active">{{ $plan->pt }}</th>
+                                    <th class="active">{{ $plan->xz }}</th>
+                                    <td>{{ $plan->kch }}</td>
+                                    <td>{{ $plan->kcmc }}</td>
+                                    <td>{{ $plan->kcywmc }}</td>
+                                    <td>{{ $plan->zxf }}</td>
+                                    <td>{{ $plan->llxf }}</td>
+                                    <td>{{ $plan->syxf }}</td>
+                                    <td>{{ $plan->zxs }}</td>
+                                    <td>{{ $plan->llxs }}</td>
+                                    <td>{{ $plan->syxs }}</td>
+                                    <td>{{ $plan->kxq }}</td>
+                                    <td>{{ $plan->kh }}</td>
+                                    <td>{{ $plan->kkxy }}</td>
                                 </tr>
-                            <?php endforeach?>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
