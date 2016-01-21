@@ -31,4 +31,15 @@ class Platform extends Model {
 	public function plans() {
 		return $this->hasMany('App\Models\Plan', 'pt', 'dm');
 	}
+
+	/**
+	 * 毕业要求
+	 * @author FuRongxin
+	 * @date    2016-01-21
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function requirements() {
+		return $this->hasMany('App\Models\Requirement', 'pt', 'dm');
+	}
 }
