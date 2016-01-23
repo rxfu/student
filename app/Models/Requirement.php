@@ -43,4 +43,20 @@ class Requirement extends Model {
 		return $this->belongsTo('App\Models\Property', 'xz', 'dm');
 	}
 
+	/**
+	 * 扩展查询，用于获取毕业要求学分
+	 * @author FuRongxin
+	 * @date    2016-01-23
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeCredits($query, $user) {
+		return $query->whereNj($user->profile->nj)
+			->whereZy($user->profile->zy)
+			->whereZsjj($user->profile->zsjj)
+			->whereByfa($user->profile->byfa);
+	}
+
 }
