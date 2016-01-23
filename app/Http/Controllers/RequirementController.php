@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Requirement;
+use App\Models\Score;
 use App\Models\Selcourse;
 use Auth;
 
@@ -41,7 +42,7 @@ class RequirementController extends Controller {
 		}
 
 		// 获取已修读学分
-		$credits = Score::studiesCredits(Auth::user())->get();
+		$credits = Score::studiedCredits(Auth::user())->get();
 		$studied = array_fill_keys($types, 0);
 		foreach ($credits as $credit) {
 			$studied[$credit->pt . $credit->xz] = $credit->xf;

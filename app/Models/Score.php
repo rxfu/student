@@ -32,6 +32,7 @@ class Score extends Model {
 	 */
 	public function scopeStudiedCredits($query, $user) {
 		return $query->whereXh($user->xh)
+			->groupBy('pt', 'kcxz')
 			->selectRaw('pt, kcxz AS xz, SUM(xf) AS xf');
 	}
 }

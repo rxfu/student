@@ -44,3 +44,6 @@ article {
 .voffset-top {
 	margin-top: 10px;
 }
+.table tbody > tr > th, .table tbody > tr > td {
+	vertical-align: middle;
+}
