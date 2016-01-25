@@ -6,8 +6,8 @@ return [
 	 * 数据状态代码
 	 */
 	'status' => [
-		'enable'  => '1',
-		'disable' => '0',
+		'enable'  => true,
+		'disable' => false,
 	],
 
 	/**

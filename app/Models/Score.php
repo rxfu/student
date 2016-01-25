@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @author FuRongxin
  * @date 2016-01-23
- * @version 2.00
+ * @version 2.0
  */
 class Score extends Model {
 
@@ -20,6 +20,72 @@ class Score extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	/**
+	 * 学期
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function term() {
+		return $this->belongsTo('App\Models\Term', 'xq', 'dm');
+	}
+
+	/**
+	 * 课程
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function course() {
+		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
+	}
+
+	/**
+	 * 课程平台
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function platform() {
+		return $this->belongsTo('App\Models\Platform', 'pt', 'dm');
+	}
+
+	/**
+	 * 课程性质
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function property() {
+		return $this->belongsTo('App\Models\Property', 'kcxz', 'dm');
+	}
+
+	/**
+	 * 考核方式
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function mode() {
+		return $this->belongsTo('App\Models\Mode', 'kh', 'dm');
+	}
+
+	/**
+	 * 考试状态
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function exstatus() {
+		return $this->belongsTo('App\Models\Exstatus', 'kszt', 'dm');
+	}
 
 	/**
 	 * 扩展查询，用于获取已修读学分

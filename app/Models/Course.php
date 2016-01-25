@@ -21,6 +21,10 @@ class Course extends Model {
 
 	public $timestamps = false;
 
+	protected $casts = [
+		'zt' => 'boolean',
+	];
+
 	/**
 	 * 教学计划
 	 * @author FuRongxin
