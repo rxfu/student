@@ -27,8 +27,8 @@
                                 <td>{{ $score->nd }}</td>
                                 <td>{{ $score->xq }}</td>
                                 <td>{{ $score->kcxh }}</td>
-                                <td>{{ $score->kcmc }}</td>
-                                <td>{{ $score->kcywmc }}</td>
+                                <td>{{ $score->task->course->kcmc }}</td>
+                                <td>{{ $score->task->course->kcywmc }}</td>
                                 <td>{{ $score->pt }}</td>
                                 <td>{{ $score->xz }}</td>
                                 <td>{{ $score->zpcj }}</td>

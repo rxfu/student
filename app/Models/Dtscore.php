@@ -29,6 +29,8 @@ class Dtscore extends Model {
 	 * @return  object 所属对象
 	 */
 	public function task() {
-		return $this->belongsTo('App\Models\Task', 'kcxh', 'kcxh');
+		return $this->belongsTo('App\Models\Task', 'kcxh', 'kcxh')
+			->whereNd($this->nd)
+			->whereXq($this->xq);
 	}
 }

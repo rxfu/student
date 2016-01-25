@@ -41,7 +41,8 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function show($kch) {
-		$scores = Dtscore::whereXh(Auth::user()->xh)
+		$scores = Dtscore::with('task')
+			->whereXh(Auth::user()->xh)
 			->whereKch($kch)
 			->whereTjzt(config('constatns.score.dconfirmed'))
 			->get();

@@ -31,4 +31,15 @@ class Task extends Model {
 	public function dtscores() {
 		return $this->hasMany('App\Models\Dtscore', 'kcxh', 'kcxh');
 	}
+
+	/**
+	 * 课程
+	 * @author FuRongxin
+	 * @date    2016-01-25
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function course() {
+		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
+	}
 }
