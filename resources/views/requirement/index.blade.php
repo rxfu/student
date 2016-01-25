@@ -112,10 +112,10 @@
                         </tr>
                         <tr>
                             <th colspan="3" class="active text-center">总学分</th>
-                            <td colspan="2" class="warning text-center">{{ $graduation['TB'] + $graduation['KB'] + $graduation['JB'] + $graduation['SB'] + $graduation['ZB'] + $graduation['TW'] + $graduation['TI'] + $graduation['TY'] + $graduation['TQ'] + $graduation['KX'] + $graduation['JX'] + $graduation['ZX'] }}</td>
-                            <td colspan="2" class="success text-center">{{ $studied['TB'] + $studied['KB'] + $studied['JB'] + $studied['SB'] + $studied['ZB'] + $studied['TW'] + $studied['TI'] + $studied['TY'] + $studied['TQ'] + $studied['KX'] + $studied['JX'] + $studied['ZX'] }}</td>
-                            <td colspan="2" class="info text-center">{{ $selected['TB'] + $selected['KB'] + $selected['JB'] + $selected['SB'] + $selected['ZB'] + $selected['TW'] + $selected['TI'] + $selected['TY'] + $selected['TQ'] + $selected['KX'] + $selected['JX'] + $selected['ZX'] }}</td>
-                            <td colspan="2" class="danger text-center">{{ ($graduation['TB'] + $graduation['KB'] + $graduation['JB'] + $graduation['SB'] + $graduation['ZB'] + $graduation['TW'] + $graduation['TI'] + $graduation['TY'] + $graduation['TQ'] + $graduation['KX'] + $graduation['JX'] + $graduation['ZX']) - ($studied['TB'] + $studied['KB'] + $studied['JB'] + $studied['SB'] + $studied['ZB'] + $studied['TW'] + $studied['TI'] + $studied['TY'] + $studied['TQ'] + $studied['KX'] + $studied['JX'] + $studied['ZX']) - ($selected['TB'] + $selected['KB'] + $selected['JB'] + $selected['SB'] + $selected['ZB'] + $selected['TW'] + $selected['TI'] + $selected['TY'] + $selected['TQ'] + $selected['KX'] + $selected['JX'] + $selected['ZX']) }}</td>
+                            <td colspan="2" class="warning text-center">{{ array_sum($graduation) }}</td>
+                            <td colspan="2" class="success text-center">{{ array_sum($studied) }}</td>
+                            <td colspan="2" class="info text-center">{{ array_sum($selected) }}</td>
+                            <td colspan="2" class="danger text-center">{{ array_sum($graduation) - array_sum($studied) - array_sum($selected) }}</td>
                         </tr>
                     </table>
                 </div>
