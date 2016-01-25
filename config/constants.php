@@ -24,4 +24,14 @@ return [
 		'apply'  => '选课申请',
 		'revoke' => '撤销申请',
 	],
+
+	/**
+	 * 成绩提交状态代码
+	 */
+	'score'  => [
+		'uncommitted' => '0', // 未提交
+		'committed'   => '1', // 教师已提交
+		'confirmed'   => '2', // 学院已提交
+		'dconfirmed'  => '3', // 教务处已确认
+	],
 ];
