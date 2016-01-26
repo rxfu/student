@@ -1,6 +1,8 @@
 @extends('app')
 
 @section('content')
+@foreach ($ratios as $key => $values)
+<?php $scores = array_pull($values, $key . '.score');?>
 <section class="row">
     <div class="col-sm-12">
         <div class="panel panel-default">
@@ -16,6 +18,9 @@
                                 <th class="active">课程英文名称</th>
                                 <th class="active">课程平台</th>
                                 <th class="active">课程性质</th>
+                                @foreach ($values as $ratio => $name)
+                                	<th class="active">{[ $name }}</th>
+                                @endforeach
                                 <th class="active">总评成绩</th>
                                 <th class="active">考核方式</th>
                                 <th class="active">考试状态</th>
@@ -31,6 +36,9 @@
                                 <td>{{ $score->task->course->kcywmc }}</td>
                                 <td>{{ $score->platform->mc }}</td>
                                 <td>{{ $score->property->mc }}</td>
+                                @foreach ($values as $ratio=>$name)
+                                	<td>{{ $score->{'cj' . $ratio} }}</td>
+                                @endforeach
                                 <td>{{ $score->zpcj }}</td>
                                 <td>{{ $score->mode->mc }}</td>
                                 <td>{{ $score->exstatus->mc }}</td>
@@ -43,4 +51,5 @@
         </div>
     </div>
 </section>
+@endforeach
 @stop

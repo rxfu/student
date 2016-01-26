@@ -46,6 +46,17 @@ class ScoreController extends Controller {
 			->orderBy('xq', 'desc')
 			->get();
 
-		return view('score.show')->withTitle('详细成绩单')->withScores($scores);
+		$ratios = [];
+		foreach ($scores as $score) {
+			if (!array_key_exists($score->task->cjfs, $ratios)) {
+				foreach ($score->task->ratios as $ratio) {
+					$ratios[$ratio->fs][$ratio->id] = $ratios['idm'];
+				}
+			}
+			$ratios[$score->task->cjfs]['score'][] = $score;
+		}
+
+		return view('score.show')->withTitle('详细成绩单')
+			->withRatios($ratios);
 	}
 }

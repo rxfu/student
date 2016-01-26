@@ -42,4 +42,15 @@ class Task extends Model {
 	public function course() {
 		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
 	}
+
+	/**
+	 * 成绩比例
+	 * @author FuRongxin
+	 * @date    2016-01-26
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function ratios() {
+		return $this->belongsToMany('App\Models\Ratio', 'pk_jxrw', 'cjfs', 'fs');
+	}
 }
