@@ -88,6 +88,17 @@ class Score extends Model {
 	}
 
 	/**
+	 * 教学任务书
+	 * @author FuRongxin
+	 * @date    2016-01-26
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function task() {
+		return $this->belongsTo('App\Models\Exstatus', 'kch', 'kch');
+	}
+
+	/**
 	 * 扩展查询，用于获取已修读学分
 	 * @author FuRongxin
 	 * @date    2016-01-23

@@ -25,15 +25,15 @@
                             @foreach ($scores as $score)
                             <tr>
                                 <td>{{ $score->nd }}</td>
-                                <td>{{ $score->xq }}</td>
+                                <td>{{ $score->term->mc }}</td>
                                 <td>{{ $score->kcxh }}</td>
                                 <td>{{ $score->task->course->kcmc }}</td>
                                 <td>{{ $score->task->course->kcywmc }}</td>
-                                <td>{{ $score->pt }}</td>
-                                <td>{{ $score->xz }}</td>
+                                <td>{{ $score->platform->mc }}</td>
+                                <td>{{ $score->property->mc }}</td>
                                 <td>{{ $score->zpcj }}</td>
-                                <td>{{ $score->kh }}</td>
-                                <td>{{ $score->kszt }}</td>
+                                <td>{{ $score->mode->mc }}</td>
+                                <td>{{ $score->exstatus->mc }}</td>
                             </tr>
                             @endforeach
                         </tbody>
