@@ -48,33 +48,7 @@ class ScoreController extends Controller {
 			->orderBy('xq', 'desc')
 			->get();
 
-		$ratios = [];
-		foreach ($scores as $score) {
-			if (count($score->task)) {
-				if (!array_key_exists($score->task->cjfs, $ratios)) {
-					$items = Ratio::whereFs($score->task->cjfs)->get();
-					foreach ($items as $ratio) {
-						$ratios[$ratio->fs][] = [
-							'id'    => $ratio->id,
-							'name'  => $ratio->idm,
-							'value' => $ratio->bl,
-						];
-					}
-				}
-				$ratios[$score->task->cjfs]['score'][] = $score;
-			} else {
-				$ratios['00'] = [
-					'1' => '成绩1',
-					'2' => '成绩2',
-					'3' => '成绩3',
-					'4' => '成绩4',
-					'5' => '成绩5',
-					'6' => '成绩6',
-				];
-				$ratios['00']['score'][] = $score;
-			}
-		}
-		ksort($ratios);
+		$ratios = $this->scoreToRatio($scores);
 
 		return view('score.show')->withTitle(Course::find($kch)->kcmc . '课程详细成绩单')->withRatios($ratios);
 	}
@@ -93,6 +67,20 @@ class ScoreController extends Controller {
 			->orderBy('xq', 'desc')
 			->get();
 
+		$ratios = $this->scoreToRatio($scores);
+
+		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
+	}
+
+	/**
+	 * 将成绩转换成按成绩比例方式排列
+	 * @author FuRongxin
+	 * @date    2016-01-27
+	 * @version 2.0
+	 * @param   array $scores 学生成绩
+	 * @return  array 按成绩比例方式排列的成绩
+	 */
+	private function scoreToRatio($scores) {
 		$ratios = [];
 		foreach ($scores as $score) {
 			if (count($score->task)) {
@@ -109,18 +97,18 @@ class ScoreController extends Controller {
 				$ratios[$score->task->cjfs]['score'][] = $score;
 			} else {
 				$ratios['00'] = [
-					'1' => '成绩1',
-					'2' => '成绩2',
-					'3' => '成绩3',
-					'4' => '成绩4',
-					'5' => '成绩5',
-					'6' => '成绩6',
+					['id' => '1', 'name' => '成绩1'],
+					['id' => '2', 'name' => '成绩2'],
+					['id' => '3', 'name' => '成绩3'],
+					['id' => '4', 'name' => '成绩4'],
+					['id' => '5', 'name' => '成绩5'],
+					['id' => '6', 'name' => '成绩6'],
 				];
 				$ratios['00']['score'][] = $score;
 			}
 		}
 		ksort($ratios);
 
-		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
+		return $ratios;
 	}
 }
