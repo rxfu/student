@@ -12,7 +12,7 @@
         		@if ('00' === $key)
         			未知
         		@else
-        			{{ implode(':', array_pluck($values, 'name')) }}={{ implode(':', array_pluck($values, 'value')) }}
+        			{{ implode(':', array_pluck($values, 'name')) }}={{ implode(':', array_map(function($n) { return $n / 10; }, array_pluck($values, 'value'))) }}
         		@endif
         		</div>
         	</div>
