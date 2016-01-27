@@ -50,14 +50,31 @@ class ScoreController extends Controller {
 
 		$ratios = [];
 		foreach ($scores as $score) {
-			if (!array_key_exists($score->task->cjfs, $ratios)) {
-				$items = Ratio::whereFs($score->task->cjfs)->get();
-				foreach ($items as $ratio) {
-					$ratios[$ratio->fs][$ratio->id] = $ratio->idm;
+			if (count($score->task)) {
+				if (!array_key_exists($score->task->cjfs, $ratios)) {
+					$items = Ratio::whereFs($score->task->cjfs)->get();
+					foreach ($items as $ratio) {
+						$ratios[$ratio->fs][] = [
+							'id'    => $ratio->id,
+							'name'  => $ratio->idm,
+							'value' => $ratio->bl,
+						];
+					}
 				}
+				$ratios[$score->task->cjfs]['score'][] = $score;
+			} else {
+				$ratios['00'] = [
+					'1' => '成绩1',
+					'2' => '成绩2',
+					'3' => '成绩3',
+					'4' => '成绩4',
+					'5' => '成绩5',
+					'6' => '成绩6',
+				];
+				$ratios['00']['score'][] = $score;
 			}
-			$ratios[$score->task->cjfs]['score'][] = $score;
 		}
+		ksort($ratios);
 
 		return view('score.show')->withTitle(Course::find($kch)->kcmc . '课程详细成绩单')->withRatios($ratios);
 	}
@@ -70,7 +87,7 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function unconfirmed() {
-		$scores = Dtscore::whereXh(Auth::user())
+		$scores = Dtscore::whereXh(Auth::user()->xh)
 			->where('tjzt', '<', config('constants.score.dconfirmed'))
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
@@ -78,14 +95,31 @@ class ScoreController extends Controller {
 
 		$ratios = [];
 		foreach ($scores as $score) {
-			if (!array_key_exists($score->task->cjfs, $ratios)) {
-				$items = Ratio::whereFs($score->task->cjfs)->get();
-				foreach ($items as $ratio) {
-					$ratios[$ratio->fs][$ratio->id] = $ratio->idm;
+			if (count($score->task)) {
+				if (!array_key_exists($score->task->cjfs, $ratios)) {
+					$items = Ratio::whereFs($score->task->cjfs)->get();
+					foreach ($items as $ratio) {
+						$ratios[$ratio->fs][] = [
+							'id'    => $ratio->id,
+							'name'  => $ratio->idm,
+							'value' => $ratio->bl,
+						];
+					}
 				}
+				$ratios[$score->task->cjfs]['score'][] = $score;
+			} else {
+				$ratios['00'] = [
+					'1' => '成绩1',
+					'2' => '成绩2',
+					'3' => '成绩3',
+					'4' => '成绩4',
+					'5' => '成绩5',
+					'6' => '成绩6',
+				];
+				$ratios['00']['score'][] = $score;
 			}
-			$ratios[$score->task->cjfs]['score'][] = $score;
 		}
+		ksort($ratios);
 
 		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
 	}

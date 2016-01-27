@@ -6,6 +6,16 @@
 <section class="row">
     <div class="col-sm-12">
         <div class="panel panel-default">
+        	<div class="panel-heading">
+        		<div class="panel-title">
+        		成绩比例：
+        		@if ('00' === $key)
+        			未知
+        		@else
+        			{{ implode(':', array_pluck($values, 'name')) }}={{ implode(':', array_pluck($values, 'value')) }}
+        		@endif
+        		</div>
+        	</div>
             <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover">
@@ -17,7 +27,7 @@
                                 <th class="active">课程名称</th>
                                 <th class="active">课程平台</th>
                                 <th class="active">课程性质</th>
-                                @foreach (array_values($values) as $name)
+                                @foreach (array_pluck($values, 'name') as $name)
                                 	<th class="active">{{ $name }}</th>
                                 @endforeach
                                 <th class="active">总评成绩</th>
@@ -31,11 +41,11 @@
                                 <td>{{ $score->nd }}</td>
                                 <td>{{ $score->term->mc }}</td>
                                 <td>{{ $score->kcxh }}</td>
-                                <td>{{ $score->task->course->kcmc }}</td>
+                                <td>{{ count($score->task) ? $score->task->course->kcmc : '' }}</td>
                                 <td>{{ $score->platform->mc }}</td>
                                 <td>{{ $score->property->mc }}</td>
-                                @foreach (array_keys($values) as $ratio)
-                                	<td{{ $score->{'cj' . $ratio} > config('constants.score.passline') ? '' : ' class="danger"' }}>{{ $score->{'cj' . $ratio} }}</td>
+                                @foreach (array_pluck($values, 'id') as $id)
+                                	<td{{ $score->{'cj' . $id} > config('constants.score.passline') ? '' : ' class="danger"' }}>{{ $score->{'cj' . $id} }}</td>
                                 @endforeach
                                 <td{{ $score->zpcj > config('constants.score.passline') ? '' : ' class="danger"' }}>{{ $score->zpcj }}</td>
                                 <td>{{ $score->mode->mc }}</td>
