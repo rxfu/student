@@ -37,6 +37,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::resource('plan', 'PlanController', ['only' => ['index']]);
 		Route::resource('requirement', 'RequirementController', ['only' => ['index']]);
 		Route::resource('course', 'CourseController', ['only' => ['index']]);
+		Route::get('score/unconfirmed', 'ScoreController@unconfirmed');
 		Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);

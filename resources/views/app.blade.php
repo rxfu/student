@@ -163,7 +163,7 @@
                                 <a href="#"><i class="fa fa-tasks fa-fw"></i> 成绩管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">待确认成绩单</a>
+                                        <a href="{{ url('score/unconfirmed') }}">待确认成绩单</a>
                                     </li>
                                     <li>
                                         <a href="{{ url('score') }}">综合成绩单</a>
