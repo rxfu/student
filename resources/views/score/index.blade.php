@@ -13,7 +13,6 @@
                                 <th class="active">学期</th>
                                 <th class="active">课程代码</th>
                                 <th class="active">课程名称</th>
-                                <th class="active">课程英文名称</th>
                                 <th class="active">成绩</th>
                                 <th class="active">学分</th>
                                 <th class="active">绩点</th>
@@ -30,8 +29,7 @@
                                 <td>{{ $score->term->mc }}</td>
                                 <td><a href="{{ url('score', $score->kch) }}">{{ $score->kch }}</a></td>
                                 <td>{{ $score->course->kcmc }}</td>
-                                <td>{{ $score->course->kcywmc }}</td>
-                                <td>{{ $score->cj }}</td>
+                                <td{{ $score->cj > config('constants.score.passline') ? '' : ' class="danger"' }}>{{ $score->cj }}</td>
                                 <td>{{ $score->xf }}</td>
                                 <td>{{ $score->jd }}</td>
                                 <td>{{ $score->platform->mc }}</td>

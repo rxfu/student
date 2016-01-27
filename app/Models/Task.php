@@ -50,7 +50,7 @@ class Task extends Model {
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
-	public function ratios() {
-		return $this->belongsToMany('App\Models\Ratio', 'pk_jxrw', 'cjfs', 'fs');
+	public function ratio() {
+		return $this->belongsTo('App\Models\Ratio', 'cjfs', 'fs');
 	}
 }

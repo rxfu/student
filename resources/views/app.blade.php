@@ -322,7 +322,7 @@
 
             <!-- Copyright -->
             <footer class="footer" role="contentinfo">
-                &copy; {{ (date('Y') == '2014') ? '2014' : '2014 - ' . date('Y') }} <a href="http://www.dean.gxnu.edu.cn">广西师范大学教务处</a>.版权所有.
+                &copy; 2014{{ (date('Y') == '2014') ? '' : ' - ' . date('Y') }} <a href="http://www.dean.gxnu.edu.cn">广西师范大学教务处</a>.版权所有.
             </footer>
             <!-- /.footer -->
         </div>

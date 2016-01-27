@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dtscore;
+use App\Models\Ratio;
 use App\Models\Score;
 use Auth;
 
@@ -49,8 +50,9 @@ class ScoreController extends Controller {
 		$ratios = [];
 		foreach ($scores as $score) {
 			if (!array_key_exists($score->task->cjfs, $ratios)) {
-				foreach ($score->task->ratios as $ratio) {
-					$ratios[$ratio->fs][$ratio->id] = $ratios['idm'];
+				$items = Ratio::whereFs($score->task->cjfs)->get();
+				foreach ($items as $ratio) {
+					$ratios[$ratio->fs][$ratio->id] = $ratio->idm;
 				}
 			}
 			$ratios[$score->task->cjfs]['score'][] = $score;
