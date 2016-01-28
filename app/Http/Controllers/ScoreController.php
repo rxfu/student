@@ -30,6 +30,7 @@ class ScoreController extends Controller {
 		$scores = Score::whereXh(Auth::user()->xh)
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
+			->orderBy('kch', 'asc')
 			->get();
 
 		return view('score.index')->withTitle('综合成绩单')->withScores($scores);
@@ -90,6 +91,17 @@ class ScoreController extends Controller {
 		$ratios = $this->arrangeScores($scores);
 
 		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
+	}
+
+	/**
+	 * 显示并处理学生国家考试成绩单
+	 * @author FuRongxin
+	 * @date    2016-01-28
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 学生成绩单
+	 */
+	public function exam() {
+		return view('score.exam')->withTitle('国家考试成绩单')->withScores($scores);
 	}
 
 	/**
