@@ -2,30 +2,29 @@
 
 namespace App\Models;
 
-use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 学生过程成绩
+ * 补考成绩
  *
- * @author FuRongxin
- * @date 2016-01-25
+ * @author RuRongxin
+ * @date 2016-01-28
  * @version 2.0
  */
-class Dtscore extends Model {
+class Muscore extends Model {
 
-	protected $table = 'cj_lscj';
+	protected $table = 'cj_bkcj';
 
 	protected $primaryKey = 'xh';
 
-	public $incrementing = false;
+	public $incremeting = false;
 
 	public $timestamps = false;
 
 	/**
 	 * 学期
 	 * @author FuRongxin
-	 * @date    2016-01-26
+	 * @date    2016-01-28
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
@@ -36,7 +35,7 @@ class Dtscore extends Model {
 	/**
 	 * 课程平台
 	 * @author FuRongxin
-	 * @date    2016-01-26
+	 * @date    2016-01-28
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
@@ -47,7 +46,7 @@ class Dtscore extends Model {
 	/**
 	 * 课程性质
 	 * @author FuRongxin
-	 * @date    2016-01-26
+	 * @date    2016-01-28
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
@@ -58,7 +57,7 @@ class Dtscore extends Model {
 	/**
 	 * 考核方式
 	 * @author FuRongxin
-	 * @date    2016-01-26
+	 * @date    2016-01-28
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
@@ -69,7 +68,7 @@ class Dtscore extends Model {
 	/**
 	 * 考试状态
 	 * @author FuRongxin
-	 * @date    2016-01-26
+	 * @date    2016-01-28
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
@@ -91,7 +90,7 @@ class Dtscore extends Model {
 	}
 
 	/**
-	 * 扩展查询，用于获取学生综合成绩对应的过程成绩
+	 * 扩展查询，用于获取学生综合成绩对应的补考成绩
 	 * @author FuRongxin
 	 * @date    2016-01-26
 	 * @version 2.0
@@ -100,7 +99,7 @@ class Dtscore extends Model {
 	 * @param   string $kch 8位课程号
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeDetailScore($query, $user, $kch) {
+	public function scopeMakeupScore($query, $user, $kch) {
 		$lstKcxh = Task::whereKch($kch)
 			->distinct('kcxh')
 			->lists('kcxh');

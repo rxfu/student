@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Dtscore;
+use App\Models\Muscore;
 use App\Models\Ratio;
 use App\Models\Score;
 use Auth;
@@ -43,11 +44,20 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function show($kch) {
+
+		// 过程成绩
 		$scores = Dtscore::detailScore(Auth::user(), $kch)
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
 			->get();
 
+		// 补考成绩
+		$makeupScores = Muscore::makeupScore(Auth::user(), $kch)
+			->orderBy('nd', 'desc')
+			->orderBy('xq', 'desc')
+			->get();
+
+		$scores = $scores->merge($makeupScores);
 		$ratios = $this->arrangeScores($scores);
 
 		return view('score.show')->withTitle(Course::find($kch)->kcmc . '课程详细成绩单')->withRatios($ratios);
@@ -61,12 +71,22 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function unconfirmed() {
+
+		// 显示提交状态小于3的成绩
 		$scores = Dtscore::whereXh(Auth::user()->xh)
 			->where('tjzt', '<', config('constants.score.dconfirmed'))
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
 			->get();
 
+		// 显示提交状态小于3的补考成绩
+		$makeupScores = Muscore::whereXh(Auth::user()->xh)
+			->where('tjzt', '<', config('constants.score.dconfirmed'))
+			->orderBy('nd', 'desc')
+			->orderBy('xq', 'desc')
+			->get();
+
+		$scores = $scores->merge($makeupScores);
 		$ratios = $this->arrangeScores($scores);
 
 		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
