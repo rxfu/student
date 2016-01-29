@@ -22,6 +22,17 @@ class Task extends Model {
 	public $timestamps = false;
 
 	/**
+	 * 学生综合成绩
+	 * @author FuRongxin
+	 * @date    2016-01-29
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function scores() {
+		return $this->hasMany('App\Models\Score', 'kch', 'kch');
+	}
+
+	/**
 	 * 学生过程成绩
 	 * @author FuRongxin
 	 * @date    2016-01-25
@@ -30,6 +41,17 @@ class Task extends Model {
 	 */
 	public function dtscores() {
 		return $this->hasMany('App\Models\Dtscore', 'kcxh', 'kcxh');
+	}
+
+	/**
+	 * 学生补考成绩
+	 * @author FuRongxin
+	 * @date    2016-01-29
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function muscores() {
+		return $this->hasMany('App\Models\Muscore', 'kcxh', 'kcxh');
 	}
 
 	/**
