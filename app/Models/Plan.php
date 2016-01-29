@@ -75,4 +75,17 @@ class Plan extends Model {
 	public function mode() {
 		return $this->belongsTo('App\Models\Mode', 'kh', 'dm');
 	}
+
+	/**
+	 * 专业课程信息
+	 * @author FuRongxin
+	 * @date    2016-01-29
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function mjcourses() {
+		return $this->hasMany('App\Models\Mjcourse', 'zy', 'zy')
+			->whereNj($this->nj)
+			->whereZsjj($this->zsjj);
+	}
 }

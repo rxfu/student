@@ -12,7 +12,7 @@ use App\Models\Score;
 use Auth;
 
 /**
- * 学生成绩单
+ * 显示并处理学生成绩单
  *
  * @author FuRongxin
  * @date 2016-01-25
@@ -21,7 +21,7 @@ use Auth;
 class ScoreController extends Controller {
 
 	/**
-	 * 显示并处理学生综合成绩单
+	 * 显示学生综合成绩单
 	 * @author FuRongxin
 	 * @date    2016-01-25
 	 * @version 2.0
@@ -38,7 +38,7 @@ class ScoreController extends Controller {
 	}
 
 	/**
-	 * 显示并处理学生详细成绩单
+	 * 显示学生详细成绩单
 	 * @author FuRongxin
 	 * @date    2016-01-25
 	 * @version 2.0
@@ -66,7 +66,7 @@ class ScoreController extends Controller {
 	}
 
 	/**
-	 * 显示并处理学生待确认成绩单
+	 * 显示学生待确认成绩单
 	 * @author FuRongxin
 	 * @date    2016-01-27
 	 * @version 2.0
@@ -95,7 +95,7 @@ class ScoreController extends Controller {
 	}
 
 	/**
-	 * 显示并处理学生国家考试成绩单
+	 * 显示学生国家考试成绩单
 	 * @author FuRongxin
 	 * @date    2016-01-28
 	 * @version 2.0

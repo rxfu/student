@@ -94,6 +94,9 @@
                                         <a href="{{ url('requirement') }}">毕业要求</a>
                                     </li>
                                     <li>
+                                        <a href="{{ url('course/major') }}">本学期专业课程表</a>
+                                    </li>
+                                    <li>
                                         <a href="#">选课情况表</a>
                                     </li>
                                 </ul>
@@ -152,9 +155,6 @@
                                     </li>
                                     <li>
                                         <a href="#">已选课程列表</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">本学期专业课程表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
