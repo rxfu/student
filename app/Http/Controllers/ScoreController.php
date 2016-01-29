@@ -48,18 +48,18 @@ class ScoreController extends Controller {
 	public function show($kch) {
 
 		// 过程成绩
-		$scores = Dtscore::detailScore(Auth::user(), $kch)
-			->orderBy('nd', 'desc')
-			->orderBy('xq', 'desc')
-			->get();
+		$detail = Dtscore::detailScore(Auth::user(), $kch)
+			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
 
 		// 补考成绩
-		$makeupScores = Muscore::makeupScore(Auth::user(), $kch)
+		$makeup = Muscore::makeupScore(Auth::user(), $kch)
+			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
+
+		$scores = $detail->union($makeup)
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
 			->get();
 
-		$scores = $scores->merge($makeupScores);
 		$ratios = $this->arrangeScores($scores);
 
 		return view('score.show')->withTitle(Course::find($kch)->kcmc . '课程详细成绩单')->withRatios($ratios);
@@ -75,20 +75,20 @@ class ScoreController extends Controller {
 	public function unconfirmed() {
 
 		// 显示提交状态小于3的成绩
-		$scores = Dtscore::whereXh(Auth::user()->xh)
+		$detail = Dtscore::whereXh(Auth::user()->xh)
 			->where('tjzt', '<', config('constants.score.dconfirmed'))
-			->orderBy('nd', 'desc')
-			->orderBy('xq', 'desc')
-			->get();
+			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
 
 		// 显示提交状态小于3的补考成绩
-		$makeupScores = Muscore::whereXh(Auth::user()->xh)
+		$makeup = Muscore::whereXh(Auth::user()->xh)
 			->where('tjzt', '<', config('constants.score.dconfirmed'))
+			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
+
+		$scores = $detail->union($makeup)
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
 			->get();
 
-		$scores = $scores->merge($makeupScores);
 		$ratios = $this->arrangeScores($scores);
 
 		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
