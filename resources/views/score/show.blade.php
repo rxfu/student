@@ -56,9 +56,9 @@
                                         <td>{{ $score->platform->mc }}</td>
                                         <td>{{ $score->property->mc }}</td>
                                         @foreach (array_pluck($values, 'id') as $id)
-                                        	<td{!! $score->{'cj' . $id} >= config('constants.score.passline') ? '' : ' class="danger"' !!}>{{ $score->{'cj' . $id} }}</td>
+                                        	<td{!! $score->{'cj' . $id} < config('constants.score.passline') ? ' class="danger"' : '' !!}>{{ $score->{'cj' . $id} }}</td>
                                         @endforeach
-                                        <td{!! $score->zpcj >= config('constants.score.passline') ? '' : ' class="danger"' !!}>{{ $score->zpcj }}</td>
+                                        <td{!! $score->zpcj < config('constants.score.passline') ? ' class="danger"' : '' !!}>{{ $score->zpcj }}</td>
                                         <td>{{ $score->mode->mc }}</td>
                                         <td>{{ $score->exstatus->mc }}</td>
                                     </tr>

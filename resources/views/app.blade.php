@@ -169,7 +169,7 @@
                                         <a href="{{ url('score') }}">综合成绩单</a>
                                     </li>
                                     <li>
-                                        <a href="#">国家考试成绩单</a>
+                                        <a href="{{ url('score/exam') }}">国家考试成绩单</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->

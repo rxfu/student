@@ -29,6 +29,6 @@ class Exscore extends Model {
 	 * @return  object 所属对象
 	 */
 	public function type() {
-		return $this->belongsTo('App\Models\Extype', 'kslx', 'c_kslx');
+		return $this->belongsTo('App\Models\Extype', 'c_kslx', 'kslx');
 	}
 }

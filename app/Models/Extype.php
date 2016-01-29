@@ -29,6 +29,6 @@ class Extype extends Model {
 	 * @return  object  所属对象
 	 */
 	public function scores() {
-		return $this->hasMany('App\Models\Exscore', 'kslx', 'c_kslx');
+		return $this->hasMany('App\Models\Exscore', 'c_kslx', 'kslx');
 	}
 }

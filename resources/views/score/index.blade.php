@@ -40,7 +40,7 @@
                                         <td>{{ $score->term->mc }}</td>
                                         <td><a href="{{ url('score', $score->kch) }}">{{ $score->kch }}</a></td>
                                         <td>{{ $score->course->kcmc }}</td>
-                                        <td{!! $score->cj >= config('constants.score.passline') ? '' : ' class="danger"' !!}>{{ $score->cj }}</td>
+                                        <td{!! $score->cj < config('constants.score.passline') ? ' class="danger"' : '' !!}>{{ $score->cj }}</td>
                                         <td>{{ $score->xf }}</td>
                                         <td>{{ $score->jd }}</td>
                                         <td>{{ $score->platform->mc }}</td>

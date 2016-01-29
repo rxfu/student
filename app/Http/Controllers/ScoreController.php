@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Dtscore;
+use App\Models\Exscore;
 use App\Models\Muscore;
 use App\Models\Ratio;
 use App\Models\Score;
@@ -101,6 +102,11 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function exam() {
+		$scores = Exscore::whereC_xh(Auth::user()->xh)
+			->orderBy('c_kssj', 'desc')
+			->orderBy('c_kslx', 'asc')
+			->get();
+
 		return view('score.exam')->withTitle('国家考试成绩单')->withScores($scores);
 	}
 
