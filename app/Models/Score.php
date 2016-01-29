@@ -95,7 +95,7 @@ class Score extends Model {
 	 * @return  object 所属对象
 	 */
 	public function task() {
-		return $this->belongsTo('App\Models\Exstatus', 'kch', 'kch');
+		return $this->belongsTo('App\Models\Task', 'kch', 'kch');
 	}
 
 	/**
