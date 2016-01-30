@@ -10,6 +10,23 @@ if ($.ua.is360se || $.ua.is360ee) {
 	$('#browserAlert').slideToggle('slow');
 }
 $(document).ready(function() {
+	/** New student */
+	$('#course-table').dataTable({
+		'pagingType': 'full_numbers',
+		'paging': false,
+		'ordering': false,
+		'language': {
+			'url': '/plugins/dataTables/i18n/zh_cn.lang'
+		},
+		'serverSide': true,
+		'processing': true,
+		'scrollY': 200,
+		'scroller': {
+			'loadingIndicator': true
+		},
+		'ajax': 'course'
+	});
+	/** End New student */
 	$('#loading').hide();
 	$('article').show();
 
