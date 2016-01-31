@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table id='courses-table' class="table table-bordered table-striped table-hover">
+                    <table id='courses-table' class="table table-bordered table-striped table-hover nowrap">
                         <thead>
                             <tr>
                                 <th class="active">课程代码</th>
@@ -49,6 +49,7 @@ $(function() {
         deferRender: true,
         dom: 'frti',
         scrollCollapse: true,
+        scrollY: 400,
         scroller: {
             loadingIndicator: true,
             trace: true,

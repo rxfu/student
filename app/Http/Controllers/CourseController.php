@@ -48,8 +48,7 @@ class CourseController extends Controller {
 
 	public function listing() {
 		$courses = Course::whereZt(config('constants.status.enable'))
-			->orderBy('kch', 'asc')
-			->get();
+			->orderBy('kch', 'asc');
 
 		return Datatables::of($courses)->make(true);
 	}
