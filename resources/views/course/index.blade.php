@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover data-table">
+                    <table id='course-table' class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">课程代码</th>
@@ -18,19 +18,6 @@
                                 <th class="active">使用教材</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($courses as $course)
-                            <tr>
-                                <td>{{ $course->kch }}</td>
-                                <td>{{ $course->kcmc }}</td>
-                                <td>{{ $course->kcywmc }}</td>
-                                <td>{{ $course->xf }}</td>
-                                <td>{{ $course->xs }}</td>
-                                <td>{{ $course->kcjj }}</td>
-                                <td>{{ $course->jc }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </div>
             </div>

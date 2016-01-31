@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Mjcourse;
 use App\Models\Setting;
 use Auth;
+use Illuminate\Http\Request;
 
 /**
  * 显示并处理课程信息
@@ -25,11 +26,7 @@ class CourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 课程信息列表
 	 */
 	public function index() {
-		$courses = Course::whereZt(config('constants.status.enable'))
-			->orderBy('kch', 'asc')
-			->get();
-
-		return view('course.index')->withTitle('课程基本信息')->withCourses($courses);
+		return view('course.index')->withTitle('课程基本信息');
 	}
 
 	/**
@@ -47,5 +44,15 @@ class CourseController extends Controller {
 			->get();
 
 		return view('course.major')->withTitle('本学期专业课程表')->withCourses($courses);
+	}
+
+	public function listing(Request $request) {
+		$courses = Course::whereZt(config('constants.status.enable'))
+			->orderBy('kch', 'asc')
+			->get();
+
+		if (request()->ajax()) {
+			return reponse()->json($courses->toArray());
+		}
 	}
 }

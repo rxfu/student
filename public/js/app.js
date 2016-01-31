@@ -16,7 +16,7 @@ $(document).ready(function() {
 		'paging': false,
 		'ordering': false,
 		'language': {
-			'url': '/plugins/dataTables/i18n/zh_cn.lang'
+			'url': './js/plugins/dataTables/i18n/zh_cn.lang'
 		},
 		'serverSide': true,
 		'processing': true,
@@ -24,7 +24,7 @@ $(document).ready(function() {
 		'scroller': {
 			'loadingIndicator': true
 		},
-		'ajax': 'course'
+		'ajax': 'course/listing'
 	});
 	/** End New student */
 	$('#loading').hide();
