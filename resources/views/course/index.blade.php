@@ -46,9 +46,12 @@ $(function() {
             { data: 'kcjj', name: 'kcjj' },
             { data: 'jc', name: 'jc' },
         ],
-        scrollY: 200,
+        deferRender: true,
+        dom: 'frti',
+        scrollCollapse: true,
         scroller: {
-            loadingIndicator: true
+            loadingIndicator: true,
+            trace: true,
         }
     });
 });
