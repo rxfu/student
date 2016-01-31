@@ -30,6 +30,7 @@
 <script>
 $(function() {
     $('#courses-table').DataTable({
+        ordering: false,
         processing: true,
         serverSide: true,
         language: {
@@ -42,9 +43,13 @@ $(function() {
             { data: 'kcywmc', name: 'kcywmc' },
             { data: 'xf', name: 'xf' },
             { data: 'xs', name: 'xs' },
-            { data: 'jj', name: 'jj' },
+            { data: 'kcjj', name: 'kcjj' },
             { data: 'jc', name: 'jc' },
-        ]
+        ],
+        scrollY: 200,
+        scroller: {
+            loadingIndicator: true
+        }
     });
 });
 </script>
