@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table id='course-table' class="table table-bordered table-striped table-hover">
+                    <table id='courses-table' class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">课程代码</th>
@@ -25,3 +25,27 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+$(function() {
+    $('#courses-table').DataTable({
+        processing: true,
+        serverSide: true,
+        language: {
+            url: './js/plugins/dataTables/i18n/zh_cn.lang'
+        },
+        ajax: '{!! url('course/listing') !!}',
+        columns: [
+            { data: 'kch', name: 'kch' },
+            { data: 'kcmc', name: 'kcmc' },
+            { data: 'kcywmc', name: 'kcywmc' },
+            { data: 'xf', name: 'xf' },
+            { data: 'xs', name: 'xs' },
+            { data: 'jj', name: 'jj' },
+            { data: 'jc', name: 'jc' },
+        ]
+    });
+});
+</script>
+@endpush

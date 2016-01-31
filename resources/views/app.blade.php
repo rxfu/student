@@ -349,5 +349,6 @@
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
         <script src="{{ asset('js/jquery.ua.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
+        @stack('scripts')
     </body>
 </html>

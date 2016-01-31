@@ -7,7 +7,7 @@ use App\Models\Course;
 use App\Models\Mjcourse;
 use App\Models\Setting;
 use Auth;
-use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 /**
  * 显示并处理课程信息
@@ -46,13 +46,11 @@ class CourseController extends Controller {
 		return view('course.major')->withTitle('本学期专业课程表')->withCourses($courses);
 	}
 
-	public function listing(Request $request) {
+	public function listing() {
 		$courses = Course::whereZt(config('constants.status.enable'))
 			->orderBy('kch', 'asc')
 			->get();
 
-		if (request()->ajax()) {
-			return reponse()->json($courses->toArray());
-		}
+		return Datatables::of($courses)->make(true);
 	}
 }

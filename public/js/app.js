@@ -11,7 +11,7 @@ if ($.ua.is360se || $.ua.is360ee) {
 }
 $(document).ready(function() {
 	/** New student */
-	$('#course-table').dataTable({
+	/*$('#course-table').dataTable({
 		'pagingType': 'full_numbers',
 		'paging': false,
 		'ordering': false,
@@ -25,7 +25,7 @@ $(document).ready(function() {
 			'loadingIndicator': true
 		},
 		'ajax': 'course/listing'
-	});
+	});*/
 	/** End New student */
 	$('#loading').hide();
 	$('article').show();
