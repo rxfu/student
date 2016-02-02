@@ -35,12 +35,12 @@
             <!-- /.header -->
 
             <!-- Browser alert -->
-            <section id="browserAlert" class="alert alert-danger">
+            <!--section id="browserAlert" class="alert alert-danger">
                <a href="#" class="close" data-dismiss="alert" aria-lable="关闭">
                   <span aria-hidden="true">&times;</span>
                </a>
                <strong>注意！</strong> 你现在使用的是<strong>360浏览器</strong>，将不能正确提交成绩，请更换其他浏览器以便正确提交成绩！
-            </section>
+            </section-->
             <!-- /#browserAlert -->
 
             <!-- Navigation -->
@@ -310,10 +310,10 @@
                     <!-- /.col-sm-12 -->
 
                     <!-- Loading -->
-                    <section id="loading">
+                    <!--section id="loading">
                         <img src="{{ asset('images/loading.gif') }}" alt="加载中">
                         <p>加载中……请稍后</p>
-                    </section>
+                    </section-->
 
                     @yield('content')
                 </article>
@@ -348,7 +348,6 @@
         <script src="{{ asset('js/plugins/dataTables/dataTables.scroller.min.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
         <script src="{{ asset('js/jquery.ua.js') }}"></script>
-        <script src="{{ asset('js/app.js') }}"></script>
         @stack('scripts')
     </body>
 </html>

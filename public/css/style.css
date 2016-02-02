@@ -30,9 +30,6 @@ body {
 #loading {
 	text-align: center;
 }
-article {
-	display: none;
-}
 .accordion-toggle:after {
 	font-family: 'FontAwesome';
 	content: "\f078";
