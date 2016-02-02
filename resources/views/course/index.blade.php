@@ -14,10 +14,19 @@
                                 <th class="active">英文名称</th>
                                 <th class="active">学分</th>
                                 <th class="active">学时</th>
-                                <th class="active">课程简介</th>
                                 <th class="active">使用教材</th>
                             </tr>
                         </thead>
+                        <tfoot>
+                            <tr>
+                                <th>课程代码</th>
+                                <th>课程名称</th>
+                                <th>英文名称</th>
+                                <th>学分</th>
+                                <th>学时</th>
+                                <th>使用教材</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -29,8 +38,7 @@
 @push('scripts')
 <script>
 $(function() {
-    $('#courses-table').DataTable({
-        ordering: false,
+    $('#courses-table').dataTable({
         processing: true,
         serverSide: true,
         language: {
@@ -43,17 +51,9 @@ $(function() {
             { data: 'kcywmc', name: 'kcywmc' },
             { data: 'xf', name: 'xf' },
             { data: 'xs', name: 'xs' },
-            { data: 'kcjj', name: 'kcjj' },
             { data: 'jc', name: 'jc' },
         ],
-        deferRender: true,
-        dom: 'frtiS',
-        scrollCollapse: true,
-        scrollY: 400,
-        scroller: {
-            loadingIndicator: true,
-            trace: true,
-        }
+        deferRender: true
     });
 });
 </script>
