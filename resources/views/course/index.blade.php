@@ -47,7 +47,7 @@ $(function() {
             { data: 'jc', name: 'jc' },
         ],
         deferRender: true,
-        dom: 'frti',
+        dom: 'frtiS',
         scrollCollapse: true,
         scrollY: 400,
         scroller: {
