@@ -345,7 +345,7 @@
         <script src="{{ asset('js/metisMenu.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap.min.js') }}"></script>
-        <script src="{{ asset('js/plugins/dataTables/dataTables.scroller.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/dataTables.scroller.min.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
         <script src="{{ asset('js/jquery.ua.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
