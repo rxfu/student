@@ -41,7 +41,25 @@ class PlanController extends Controller {
 			->orderBy('kch', 'asc');
 
 		return Datatables::of($plans)
-			->editColumn('zxs', '{{ $llxs + $syxs }}')
+			->addColumn('kcmc', function ($plan) {
+				return $plan->course->kcmc;
+			})
+			->addColumn('kcywmc', function ($plan) {
+				return $plan->course->kcywmc;
+			})
+			->addColumn('zxs', '{{ $llxs + $syxs }}')
+			->editColumn('pt', function ($plan) {
+				return $plan->platform->mc;
+			})
+			->editColumn('xz', function ($plan) {
+				return $plan->property->mc;
+			})
+			->editColumn('kh', function ($plan) {
+				return $plan->mode->mc;
+			})
+			->editColumn('kkxy', function ($plan) {
+				return $plan->college->mc;
+			})
 			->make(true);
 	}
 }
