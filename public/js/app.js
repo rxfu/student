@@ -16,10 +16,6 @@ $.extend(true, $.fn.dataTable.defaults, {
 		return $(location).attr('protocol') + '//' + $(location).attr('host') + '/' + webroot + '/';
 	};
 })(jQuery);
-$('#browserAlert').hide();
-if ($.ua.is360se || $.ua.is360ee) {
-	$('#browserAlert').slideToggle('slow');
-}
 $(document).ready(function() {
 	/** New student */
 	/*$('#course-table').dataTable({

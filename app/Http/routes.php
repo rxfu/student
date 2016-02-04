@@ -34,6 +34,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 		Route::resource('log', 'LogController', ['only' => ['index']]);
 		Route::resource('message', 'MessageController', ['only' => ['index']]);
+		Route::get('plan/listing', 'PlanController@listing');
 		Route::resource('plan', 'PlanController', ['only' => ['index']]);
 		Route::resource('requirement', 'RequirementController', ['only' => ['index']]);
 		Route::get('course/major', 'CourseController@major');
