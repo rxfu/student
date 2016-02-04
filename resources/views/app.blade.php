@@ -329,7 +329,7 @@
         <!-- /#wrapper -->
 
         <!-- Load JS here for greater good -->
-        <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-1.12.0.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui-1.10.4.custom.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/formValidation.min.js') }}"></script>
@@ -345,7 +345,6 @@
         <script src="{{ asset('js/plugins/dataTables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
-        <script src="{{ asset('js/jquery.ua.js') }}"></script>
         @stack('scripts')
     </body>
 </html>

@@ -40,6 +40,7 @@
 $(function() {
     $('#courses-table').dataTable({
         pagingType: 'full_numbers',
+        ordering: false,
         processing: true,
         serverSide: true,
         language: {
