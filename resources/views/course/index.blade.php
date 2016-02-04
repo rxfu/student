@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table id='courses-table' class="table table-bordered table-striped table-hover nowrap">
+                    <table id='courses-table' class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">课程代码</th>
@@ -39,8 +39,8 @@
 <script>
 $(function() {
     $('#courses-table').dataTable({
-        ajax: '{!! url('course/listing') !!}',
-        columns: [
+        'ajax': '{!! url('course/listing') !!}',
+        'columns': [
             { data: 'kch', name: 'kch' },
             { data: 'kcmc', name: 'kcmc' },
             { data: 'kcywmc', name: 'kcywmc' },

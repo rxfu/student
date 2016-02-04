@@ -56,8 +56,9 @@
 <script>
 $(function() {
     $('#plans-table').dataTable({
-        ajax: '{!! url('plan/listing') !!}',
-        columns: [
+        'searching': false,
+        'ajax': '{!! url('plan/listing') !!}',
+        'columns': [
             { data: 'pt', name: 'pt'},
             { data: 'xz', name: 'xz'},
             { data: 'kch', name: 'kch'},
