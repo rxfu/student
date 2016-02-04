@@ -46,9 +46,17 @@ class CourseController extends Controller {
 		return view('course.major')->withTitle('本学期专业课程表')->withCourses($courses);
 	}
 
+	/**
+	 * 列出课程信息
+	 * @author FuRongxin
+	 * @date    2016-02-04
+	 * @version 2.0
+	 * @return  JSON 课程信息列表
+	 */
 	public function listing() {
 		$courses = Course::whereZt(config('constants.status.enable'))
-			->orderBy('kch', 'asc');
+			->orderBy('kch', 'asc')
+			->select('kch', 'kcmc', 'kcywmc', 'xf', 'xs', 'jc');
 
 		return Datatables::of($courses)->make(true);
 	}

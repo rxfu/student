@@ -1,3 +1,14 @@
+$.extend(true, $.fn.dataTable.defaults, {
+	'pagingType': 'full_numbers',
+	'ordering': false,
+	'processing': true,
+	'serverSide': true,
+	'language': {
+		'url': './js/plugins/dataTables/i18n/zh_cn.lang'
+	},
+	'deferRender': true
+});
+
 (function($) {
 	$.fn.getBaseUrl = function() {
 		var pathname = $(location).attr('pathname').substring(1);

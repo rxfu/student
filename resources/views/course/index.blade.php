@@ -39,13 +39,6 @@
 <script>
 $(function() {
     $('#courses-table').dataTable({
-        pagingType: 'full_numbers',
-        ordering: false,
-        processing: true,
-        serverSide: true,
-        language: {
-            url: './js/plugins/dataTables/i18n/zh_cn.lang'
-        },
         ajax: '{!! url('course/listing') !!}',
         columns: [
             { data: 'kch', name: 'kch' },
@@ -54,8 +47,7 @@ $(function() {
             { data: 'xf', name: 'xf' },
             { data: 'xs', name: 'xs' },
             { data: 'jc', name: 'jc' },
-        ],
-        deferRender: true
+        ]
     });
 });
 </script>
