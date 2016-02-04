@@ -39,6 +39,7 @@
 <script>
 $(function() {
     $('#courses-table').dataTable({
+        pagingType: 'full_numbers',
         processing: true,
         serverSide: true,
         language: {
