@@ -16,8 +16,10 @@ class FreshController extends Controller {
 
 	/**
 	 * 显示新生信息填报表
-	 *
-	 * @param  string  $xh
+	 * @author FuRongxin
+	 * @date    2016-02-06
+	 * @version 2.0
+	 * @param  string  $xh 12位学号
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($xh) {
@@ -31,9 +33,11 @@ class FreshController extends Controller {
 
 	/**
 	 * 更新新生籍贯、家长姓名、家庭地址、联系电话等信息
-	 *
+	 * @author FuRongxin
+	 * @date    2016-02-06
+	 * @version 2.0
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  string  $xh
+	 * @param  string  $xh 12位学号
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $xh) {
