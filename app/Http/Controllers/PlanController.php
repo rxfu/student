@@ -35,7 +35,22 @@ class PlanController extends Controller {
 	 * @return  JSON 教学计划列表
 	 */
 	public function listing() {
-		$plans = Plan::whereNj(Auth::user()->profile->nj)
+		$plans = Plan::with(['platform' => function ($query) {
+			$query->select('mc');
+		}])
+			->with(['property' => function ($query) {
+				$query->select('mc');
+			}])
+			->with(['course' => function ($query) {
+				$query->select('kcmc', 'kcywmc');
+			}])
+			->with(['mode' => function ($query) {
+				$query->select('mc');
+			}])
+			->with(['college' => function ($query) {
+				$query->select('mc');
+			}])
+			->whereNj(Auth::user()->profile->nj)
 			->whereZy(Auth::user()->profile->zy)
 			->whereZsjj(Auth::user()->profile->zsjj)
 			->orderBy('kch', 'asc');
