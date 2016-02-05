@@ -22,15 +22,6 @@
     </head>
 
     <body>
-        <!-- Browser alert -->
-        <section id="browserAlert" class="alert alert-danger">
-           <a href="#" class="close" data-dismiss="alert" aria-lable="关闭">
-              <span aria-hidden="true">&times;</span>
-           </a>
-           <strong>注意！</strong> 你现在使用的是<strong>360浏览器</strong>，将不能正确提交成绩，请更换其他浏览器以便正确提交成绩！
-        </section>
-        <!-- /#browserAlert -->
-
         <div id="wrapper">
 	    	<main class="container">
 				<div class="row">
@@ -110,12 +101,11 @@
 		<!-- /#wrapper -->
 
         <!-- Load JS here for greater good -->
-        <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-1.12.0.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui-1.10.4.custom.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/language/zh_CN.js') }}"></script>
         <script src="{{ asset('js/jquery.placeholder.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
-        <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

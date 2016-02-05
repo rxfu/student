@@ -15,16 +15,14 @@
                                 <th class="active">状态</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        	@foreach ($messages as $message)
+                        <tfoot>
                             <tr>
-                                <td>{{ $message['xxfsz'] }}</td>
-                                <td>{{ $message['xxnr'] }}</td>
-                                <td>{{ $message['fssj'] }}</td>
-                                <td>{{ $message['ydbz'] }}</td>
+                                <th>发送者</th>
+                                <th>内容</th>
+                                <th>发送时间</th>
+                                <th>状态</th>
                             </tr>
-                        	@endforeach
-                        </tbody>
+                        </tfoot>
                     </table>
                 </div>
             </div>
