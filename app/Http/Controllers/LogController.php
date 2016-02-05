@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Slog;
 use Auth;
+use Yajra\Datatables\Datatables;
 
 /**
  * 显示并处理学生选课日志
@@ -23,10 +24,24 @@ class LogController extends Controller {
 	 * @return  \Illuminate\Http\Response 选课日志列表
 	 */
 	public function index() {
-		$logs = Slog::whereXh(Auth::user()->xh)
-			->orderBy('czsj', 'desc')
-			->get();
+		return view('log.index')->withTitle('选课日志');
+	}
 
-		return view('log.index')->withTitle('选课日志')->withLogs($logs);
+	/**
+	 * 列出选课日志
+	 * @author FuRongxin
+	 * @date    2016-02-06
+	 * @version 2.0
+	 * @return  JSON 选课日志
+	 */
+	public function listing() {
+		$logs = Slog::whereXh(Auth::user()->xh)
+			->orderBy('czsj', 'desc');
+
+		return Datatables::of($logs)
+			->editColumn('czlx', function ($log) {
+				return config('constants.log.' . $log->czlx);
+			})
+			->make(true);
 	}
 }

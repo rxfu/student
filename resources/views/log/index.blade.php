@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover data-table">
+                    <table id="logs-table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">操作时间</th>
@@ -16,17 +16,15 @@
                                 <th class="active">备注</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        	@foreach ($logs as $log)
-                        	<tr>
-                                <td>{{ $log['czsj'] }}</td>
-                                <td>{{ $log['ip'] }}</td>
-                                <td>{{ $log['kcxh'] }}</td>
-                                <td>{{ Config::get('constants.log.' . $log['czlx']) }}</td>
-                                <td>{{ $log['bz'] }}</td>
+                        <tfoot>
+                            <tr>
+                                <th>操作时间</th>
+                                <th>IP地址</th>
+                                <th>课程序号</th>
+                                <th>操作类型</th>
+                                <th>备注</th>
                             </tr>
-                        	@endforeach
-                        </tbody>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -34,3 +32,20 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+$(function() {
+    $('#logs-table').dataTable({
+        'ajax': '{!! url('log/listing') !!}',
+        'columns': [
+            { data: 'czsj', name: 'czsj'}
+            { data: 'ip', name: 'ip'}
+            { data: 'kcxh', name: 'kcxh'}
+            { data: 'czlx', name: 'czlx'}
+            { data: 'bz', name: 'bz'}
+        ]
+    });
+});
+</script>
+@endpush

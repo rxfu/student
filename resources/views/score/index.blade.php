@@ -49,8 +49,9 @@
 <script>
 $(function() {
     $('#scores-table').dataTable({
-        ajax: '{!! url('score/listing') !!}',
-        columns: [
+        'searching': false,
+        'ajax': '{!! url('score/listing') !!}',
+        'columns': [
             { data: 'nd', name: 'nd'},
             { data: 'term.mc', name: 'xq'},
             { data: 'kch', name: 'kch'},
