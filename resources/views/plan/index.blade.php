@@ -59,11 +59,11 @@ $(function() {
         'searching': false,
         'ajax': '{!! url('plan/listing') !!}',
         'columns': [
-            { data: 'pt', name: 'pt'},
-            { data: 'xz', name: 'xz'},
+            { data: 'platform.mc', name: 'pt'},
+            { data: 'property.mc', name: 'xz'},
             { data: 'kch', name: 'kch'},
-            { data: 'kcmc', name: 'kcmc'},
-            { data: 'kcywmc', name: 'kcywmc'},
+            { data: 'course.kcmc', name: 'kcmc'},
+            { data: 'course.kcywmc', name: 'kcywmc'},
             { data: 'zxf', name: 'zxf'},
             { data: 'llxf', name: 'llxf'},
             { data: 'syxf', name: 'syxf'},
@@ -71,8 +71,8 @@ $(function() {
             { data: 'llxs', name: 'llxs'},
             { data: 'syxs', name: 'syxs'},
             { data: 'kxq', name: 'kxq'},
-            { data: 'kh', name: 'kh'},
-            { data: 'kkxy', name: 'kkxy'}
+            { data: 'mode.mc', name: 'kh'},
+            { data: 'college.mc', name: 'kkxy'}
         ]
     });
 })
