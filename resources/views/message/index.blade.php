@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover data-table">
+                    <table id="messages-table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">发送者</th>
@@ -32,3 +32,19 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+$(function() {
+    $('#messages-table').dataTable({
+        'ajax': '{!! url('message/listing') !!}',
+        'columns': [
+            { data: 'xxfsz', name: 'xxfsz' },
+            { data: 'xxnr', name: 'xxnr' },
+            { data: 'fssj', name: 'fssj' },
+            { data: 'ydbz', name: 'ydbz' }
+        ]
+    });
+});
+</script>
+@endpush

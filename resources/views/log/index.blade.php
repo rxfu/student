@@ -39,11 +39,11 @@ $(function() {
     $('#logs-table').dataTable({
         'ajax': '{!! url('log/listing') !!}',
         'columns': [
-            { data: 'czsj', name: 'czsj'}
-            { data: 'ip', name: 'ip'}
-            { data: 'kcxh', name: 'kcxh'}
-            { data: 'czlx', name: 'czlx'}
-            { data: 'bz', name: 'bz'}
+            { data: 'czsj', name: 'czsj' },
+            { data: 'ip', name: 'ip' },
+            { data: 'kcxh', name: 'kcxh'},
+            { data: 'czlx', name: 'czlx' },
+            { data: 'bz', name: 'bz' }
         ]
     });
 });
