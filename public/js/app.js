@@ -1,5 +1,9 @@
 $.extend(true, $.fn.dataTable.defaults, {
 	'pagingType': 'full_numbers',
+	'lengthMenu': [
+		[10, 25, 50, -1],
+		[10, 25, 50, '全部']
+	],
 	'ordering': false,
 	'processing': true,
 	'serverSide': true,

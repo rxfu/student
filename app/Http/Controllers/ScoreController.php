@@ -10,6 +10,7 @@ use App\Models\Muscore;
 use App\Models\Ratio;
 use App\Models\Score;
 use Auth;
+use Yajra\Datatables\Datatables;
 
 /**
  * 显示并处理学生成绩单
@@ -28,13 +29,48 @@ class ScoreController extends Controller {
 	 * @return  \Illuminate\Http\Response 学生成绩单
 	 */
 	public function index() {
-		$scores = Score::whereXh(Auth::user()->xh)
+		return view('score.index')->withTitle('综合成绩单');
+	}
+
+	/**
+	 * 列出学生综合成绩单
+	 * @author FuRongxin
+	 * @date    2016-02-05
+	 * @version 2.0
+	 * @return  JSON 学生成绩单
+	 */
+	public function listing() {
+		$scores = Score::with(['term' => function ($query) {
+			$query->select('dm', 'mc');
+		}])
+			->with(['platform' => function ($query) {
+				$query->select('dm', 'mc');
+			}])
+			->with(['property' => function ($query) {
+				$query->select('dm', 'mc');
+			}])
+			->with(['mode' => function ($query) {
+				$query->select('dm', 'mc');
+			}])
+			->with(['exstatus' => function ($query) {
+				$query->select('dm', 'mc');
+			}])
+			->with(['course' => function ($query) {
+				$query->select('kch', 'kcmc');
+			}])
+			->whereXh(Auth::user()->xh)
 			->orderBy('nd', 'desc')
 			->orderBy('xq', 'desc')
-			->orderBy('kch', 'asc')
-			->get();
+			->orderBy('kch', 'asc');
 
-		return view('score.index')->withTitle('综合成绩单')->withScores($scores);
+		return Datatables::of($scores)
+			->editColumn('kcmc', function ($score) {
+				return '<a href="' . url('score', $score->kch) . '">' . $score->course->kcmc . '</a>';
+			})
+			->setRowClass(function ($score) {
+				return $score->cj < config('constants.score.passline') ? 'danger' : '';
+			})
+			->make(true);
 	}
 
 	/**

@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('course/major', 'CourseController@major');
 		Route::get('course/listing', 'CourseController@listing');
 		Route::resource('course', 'CourseController', ['only' => ['index']]);
+		Route::get('score/listing', 'ScoreController@listing');
 		Route::get('score/unconfirmed', 'ScoreController@unconfirmed');
 		Route::get('score/exam', 'ScoreController@exam');
 		Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
