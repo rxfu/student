@@ -20,4 +20,16 @@ class Fresh extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	/**
+	 * 可被批量赋值的属性
+	 * @var array
+	 */
+	protected $fillable = ['jg', 'jzxm', 'jtdz', 'hcdz'];
+
+	/**
+	 * 不可被批量赋值的属性
+	 * @var array
+	 */
+	protected $guarded = ['xh'];
 }

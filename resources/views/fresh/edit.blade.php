@@ -13,27 +13,27 @@
                 	{!! csrf_field() !!}
                     <fieldset>
                         <div class="form-group">
-                            <label for="hometown" class="col-sm-3 control-label">籍贯</label>
+                            <label for="jg" class="col-sm-3 control-label">籍贯</label>
                             <div class="col-sm-9">
-                                <input type="text" name="hometown" id="hometown" placeholder="籍贯" class="form-control"{{ empty($profile->jg) ? '' : ' value="' . $profile->jg . '"' }} autofocus required>
+                                <input type="text" name="jg" id="jg" placeholder="籍贯" class="form-control"{{ empty($profile->jg) ? '' : ' value="' . $profile->jg . '"' }} autofocus required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="parent" class="col-sm-3 control-label">家长姓名</label>
+                            <label for="jzxm" class="col-sm-3 control-label">家长姓名</label>
                             <div class="col-sm-9">
-                                <input type="text" name="parent" id="parent" placeholder="家长姓名" class="form-control"{{ isset($profile->jzxm) ? '' : ' value="' . $profile->jzxm . '"' }} required>
+                                <input type="text" name="jzxm" id="jzxm" placeholder="家长姓名" class="form-control"{{ isset($profile->jzxm) ? '' : ' value="' . $profile->jzxm . '"' }} required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-sm-3 control-label">家庭地址（20字以内）</label>
+                            <label for="jtdz" class="col-sm-3 control-label">家庭地址（20字以内）</label>
                             <div class="col-sm-9">
-                                <input type="text" name="address" id="address" placeholder="家庭地址" class="form-control"{{ isset($profile->jtdz) ? '' : ' value="' . $info['jtdz'] . '"' }} required>
+                                <input type="text" name="jtdz" id="jtdz" placeholder="家庭地址" class="form-control"{{ isset($profile->jtdz) ? '' : ' value="' . $info['jtdz'] . '"' }} required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="train" class="col-sm-3 control-label">火车到站</label>
+                            <label for="hcdz" class="col-sm-3 control-label">火车到站</label>
                             <div class="col-sm-9">
-                                <input type="text" name="train" id="train" placeholder="火车到站" class="form-control"{{ isset($profile->hcdz) ? '' : ' value="' . $profile->hcdz . '"' }} required>
+                                <input type="text" name="hcdz" id="hcdz" placeholder="火车到站" class="form-control"{{ isset($profile->hcdz) ? '' : ' value="' . $profile->hcdz . '"' }} required>
                             </div>
                         </div>
                         <div class="form-group">

@@ -41,7 +41,26 @@ class FreshController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $xh) {
-		//
+		if ($request->isMethod('put')) {
+			if (Auth::user()->xh === $xh) {
+				$this->validate($request, [
+					'jg'   => 'required',
+					'jzxm' => 'required',
+					'jtdz' => 'required',
+					'hcdz' => 'required',
+				]);
+
+				$user = Fresh::find($xh);
+				$user->fill($request->all());
+				if ($user->save()) {
+					return redirect()->route('fresh.edit', [$user])->withStatus('更新成功');
+				} else {
+					return back()->withErrors()->withInput();
+				}
+			}
+		}
+
+		abort(404);
 	}
 
 }
