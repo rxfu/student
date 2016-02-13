@@ -35,6 +35,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::resource('fresh', 'FreshController', ['only' => ['edit', 'update']]);
 
 		Route::get('profile/upfile', 'ProfileController@showUpfileForm');
+		Route::post('profile/upload', 'ProfileController@upload');
 		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 
 		Route::get('log/listing', 'LogController@listing');

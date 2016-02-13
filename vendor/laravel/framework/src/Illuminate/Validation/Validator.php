@@ -272,10 +272,12 @@ class Validator implements ValidatorContract
      */
     public function each($attribute, $rules)
     {
-        $data = Arr::dot($this->data);
+        $data = Arr::dot($this->initializeAttributeOnData($attribute));
+
+        $pattern = str_replace('\*', '[0-9*]+', preg_quote($attribute));
 
         foreach ($data as $key => $value) {
-            if (Str::startsWith($key, $attribute) || Str::is($attribute, $key)) {
+            if (Str::startsWith($key, $attribute) || (bool) preg_match('/^'.$pattern.'\z/', $key)) {
                 foreach ((array) $rules as $ruleKey => $ruleValue) {
                     if (! is_string($ruleKey) || Str::endsWith($key, $ruleKey)) {
                         $this->mergeRules($key, $ruleValue);
@@ -283,6 +285,23 @@ class Validator implements ValidatorContract
                 }
             }
         }
+    }
+
+    /**
+     * Gather a copy of the data filled with any missing attributes.
+     *
+     * @param  string  $attribute
+     * @return array
+     */
+    protected function initializeAttributeOnData($attribute)
+    {
+        if (! str_contains($attribute, '*') || ends_with($attribute, '*')) {
+            return $this->data;
+        }
+
+        $data = $this->data;
+
+        return data_fill($data, $attribute, null);
     }
 
     /**
@@ -316,6 +335,10 @@ class Validator implements ValidatorContract
         foreach ($this->rules as $attribute => $rules) {
             foreach ($rules as $rule) {
                 $this->validate($attribute, $rule);
+
+                if ($this->shouldStopValidating($attribute)) {
+                    break;
+                }
             }
         }
 
@@ -524,6 +547,33 @@ class Validator implements ValidatorContract
     protected function validateSometimes()
     {
         return true;
+    }
+
+    /**
+     * "Break" on first validation fail.
+     *
+     * Always returns true, just lets us put "bail" in rules.
+     *
+     * @return bool
+     */
+    protected function validateBail()
+    {
+        return true;
+    }
+
+    /**
+     * Stop on error if "bail" rule is assigned and attribute has a message.
+     *
+     * @param  string  $attribute
+     * @return bool
+     */
+    protected function shouldStopValidating($attribute)
+    {
+        if (! $this->hasRule($attribute, ['Bail'])) {
+            return false;
+        }
+
+        return $this->messages->has($attribute);
     }
 
     /**
@@ -884,6 +934,10 @@ class Validator implements ValidatorContract
      */
     protected function validateJson($attribute, $value)
     {
+        if (! is_scalar($value) && ! method_exists($value, '__toString')) {
+            return false;
+        }
+
         json_decode($value);
 
         return json_last_error() === JSON_ERROR_NONE;
@@ -1081,9 +1135,7 @@ class Validator implements ValidatorContract
         // data store like Redis, etc. We will use it to determine uniqueness.
         $verifier = $this->getPresenceVerifier();
 
-        if (! is_null($connection)) {
-            $verifier->setConnection($connection);
-        }
+        $verifier->setConnection($connection);
 
         $extra = $this->getUniqueExtra($parameters);
 
@@ -1171,9 +1223,7 @@ class Validator implements ValidatorContract
     {
         $verifier = $this->getPresenceVerifier();
 
-        if (! is_null($connection)) {
-            $verifier->setConnection($connection);
-        }
+        $verifier->setConnection($connection);
 
         $extra = $this->getExtraExistConditions($parameters);
 
@@ -2724,6 +2774,7 @@ class Validator implements ValidatorContract
      * @param  array  $parameters
      * @param  string  $rule
      * @return void
+     *
      * @throws \InvalidArgumentException
      */
     protected function requireParameterCount($count, $parameters, $rule)

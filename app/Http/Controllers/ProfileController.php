@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Auth;
+use Illuminate\Http\Request;
+use Storage;
 
 /**
  * 显示并处理个人资料
@@ -49,18 +51,20 @@ class ProfileController extends Controller {
 	 */
 	public function upload(Request $request) {
 		if ($request->hasFile('file')) {
-			$this->validate($request->only('file'), [
-				'image' => 'required',
+			$this->validate($request, [
+				'file' => 'required|image',
 			]);
 
 			if ($request->file('file')->isValid()) {
 				$file      = $request->file('file');
 				$extension = $file->getClientOriginalExtension();
-				Storage::put(Auth::user()->profile->xfzh . '.' . $extension, file_get_contents($request->file('file')->getRealPath()));
+				Storage::put(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . $extension, file_get_contents($request->file('file')->getRealPath()));
 
-				return redirect('upfile')->withStatus('上传照片成功');
+				return redirect('profile/upfile')->withStatus('上传照片成功');
 			}
 		}
+
+		abort(404, '没有文件');
 	}
 
 }

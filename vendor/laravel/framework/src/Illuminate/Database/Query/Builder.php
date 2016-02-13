@@ -258,6 +258,8 @@ class Builder
      * @param  \Closure|\Illuminate\Database\Query\Builder|string $query
      * @param  string  $as
      * @return \Illuminate\Database\Query\Builder|static
+     *
+     * @throws \InvalidArgumentException
      */
     public function selectSub($query, $as)
     {
@@ -450,11 +452,7 @@ class Builder
         // and can add them each as a where clause. We will maintain the boolean we
         // received when the method was called and pass it into the nested where.
         if (is_array($column)) {
-            return $this->whereNested(function ($query) use ($column) {
-                foreach ($column as $key => $value) {
-                    $query->where($key, '=', $value);
-                }
-            }, $boolean);
+            return $this->addArrayOfWheres($column, $boolean);
         }
 
         // Here we will make some assumptions about the operator. If only 2 values are
@@ -506,6 +504,26 @@ class Builder
         }
 
         return $this;
+    }
+
+    /**
+     * Add an array of where clauses to the query.
+     *
+     * @param  array  $column
+     * @param  string  $boolean
+     * @return $this
+     */
+    protected function addArrayOfWheres($column, $boolean)
+    {
+        return $this->whereNested(function ($query) use ($column) {
+            foreach ($column as $key => $value) {
+                if (is_numeric($key) && is_array($value)) {
+                    call_user_func_array([$query, 'where'], $value);
+                } else {
+                    $query->where($key, '=', $value);
+                }
+            }
+        }, $boolean);
     }
 
     /**
@@ -708,8 +726,6 @@ class Builder
      */
     public function whereExists(Closure $callback, $boolean = 'and', $not = false)
     {
-        $type = $not ? 'NotExists' : 'Exists';
-
         $query = $this->newQuery();
 
         // Similar to the sub-select clause, we will create a new query instance so
@@ -717,11 +733,7 @@ class Builder
         // compile the whole thing in the grammar and insert it into the SQL.
         call_user_func($callback, $query);
 
-        $this->wheres[] = compact('type', 'operator', 'query', 'boolean');
-
-        $this->addBinding($query->getBindings(), 'where');
-
-        return $this;
+        return $this->addWhereExistsQuery($query, $boolean, $not);
     }
 
     /**
@@ -757,6 +769,25 @@ class Builder
     public function orWhereNotExists(Closure $callback)
     {
         return $this->orWhereExists($callback, true);
+    }
+
+    /**
+     * Add an exists clause to the query.
+     *
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  string  $boolean
+     * @param  bool  $not
+     * @return $this
+     */
+    public function addWhereExistsQuery(Builder $query, $boolean = 'and', $not = false)
+    {
+        $type = $not ? 'NotExists' : 'Exists';
+
+        $this->wheres[] = compact('type', 'operator', 'query', 'boolean');
+
+        $this->addBinding($query->getBindings(), 'where');
+
+        return $this;
     }
 
     /**
@@ -941,6 +972,19 @@ class Builder
     public function whereDate($column, $operator, $value, $boolean = 'and')
     {
         return $this->addDateBasedWhere('Date', $column, $operator, $value, $boolean);
+    }
+
+    /**
+     * Add an "or where date" statement to the query.
+     *
+     * @param  string  $column
+     * @param  string   $operator
+     * @param  int   $value
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function orWhereDate($column, $operator, $value)
+    {
+        return $this->whereDate($column, $operator, $value, 'or');
     }
 
     /**
@@ -1584,7 +1628,7 @@ class Builder
 
         return $this->chunk($count, function ($results) use ($callback) {
             foreach ($results as $key => $value) {
-                if ($callback($item, $key) === false) {
+                if ($callback($value, $key) === false) {
                     return false;
                 }
             }
@@ -1607,8 +1651,8 @@ class Builder
         // are only keyed by the column itself. We'll strip the table out here.
         return Arr::pluck(
             $results,
-            $this->stripeTableForPluck($column),
-            $this->stripeTableForPluck($key)
+            $this->stripTableForPluck($column),
+            $this->stripTableForPluck($key)
         );
     }
 
@@ -1632,7 +1676,7 @@ class Builder
      * @param  string  $column
      * @return string|null
      */
-    protected function stripeTableForPluck($column)
+    protected function stripTableForPluck($column)
     {
         return is_null($column) ? $column : last(preg_split('~\.| ~', $column));
     }

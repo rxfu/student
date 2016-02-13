@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider {
 			// 判断是否是新生
 			$is_fresh = Fresh::whereXh(Auth::user()->xh)->exists();
 			// 判断是否是在校生
-			$is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'));
+			$is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists();
 
 			$view->withIsFresh($is_fresh)->withIsStudent($is_student);
 		});

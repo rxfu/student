@@ -5,10 +5,10 @@ namespace Illuminate\Foundation\Testing\Concerns;
 use Exception;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Illuminate\Http\UploadedFile;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Foundation\Testing\HttpException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use PHPUnit_Framework_ExpectationFailedException as PHPUnitException;
 
 trait InteractsWithPages
@@ -150,6 +150,8 @@ trait InteractsWithPages
      * @param  string  $uri
      * @param  string|null  $message
      * @return void
+     *
+     * @throws \Illuminate\Foundation\Testing\HttpException
      */
     protected function assertPageLoaded($uri, $message = null)
     {
@@ -204,25 +206,21 @@ trait InteractsWithPages
     /**
      * Assert that a given string is seen inside an element.
      *
-     * @param  bool|string|null  $element
+     * @param  string  $element
      * @param  string  $text
      * @param  bool  $negate
      * @return $this
      */
-    protected function seeInElement($element, $text, $negate = false)
+    public function seeInElement($element, $text, $negate = false)
     {
-        $method = $negate ? 'assertNotRegExp' : 'assertRegExp';
+        if ($negate) {
+            return $this->dontSeeInElement($element, $text);
+        }
 
-        $rawPattern = preg_quote($text, '/');
-
-        $escapedPattern = preg_quote(e($text), '/');
-
-        $content = $this->crawler->filter($element)->html();
-
-        $pattern = $rawPattern == $escapedPattern
-                ? $rawPattern : "({$rawPattern}|{$escapedPattern})";
-
-        $this->$method("/$pattern/i", $content);
+        $this->assertTrue(
+            $this->hasInElement($element, $text),
+            "Element [$element] should contain the expected text [{$text}]"
+        );
 
         return $this;
     }
@@ -230,13 +228,47 @@ trait InteractsWithPages
     /**
      * Assert that a given string is not seen inside an element.
      *
+     * @param  string  $element
      * @param  string  $text
-     * @param  string|null  $element
      * @return $this
      */
-    protected function dontSeeInElement($element, $text)
+    public function dontSeeInElement($element, $text)
     {
-        return $this->seeInElement($element, $text, true);
+        $this->assertFalse(
+            $this->hasInElement($element, $text),
+            "Element [$element] should not contain the expected text [{$text}]"
+        );
+
+        return $this;
+    }
+
+    /**
+     * Check if the page contains text within the given element.
+     *
+     * @param  string  $element
+     * @param  string  $text
+     * @return bool
+     */
+    protected function hasInElement($element, $text)
+    {
+        $elements = $this->crawler->filter($element);
+
+        $rawPattern = preg_quote($text, '/');
+
+        $escapedPattern = preg_quote(e($text), '/');
+
+        $pattern = $rawPattern == $escapedPattern
+            ? $rawPattern : "({$rawPattern}|{$escapedPattern})";
+
+        foreach ($elements as $element) {
+            $element = new Crawler($element);
+
+            if (preg_match("/$pattern/i", $element->html())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -301,10 +333,12 @@ trait InteractsWithPages
             return true;
         }
 
-        $url = $this->addRootToRelativeUrl($url);
+        $absoluteUrl = $this->addRootToRelativeUrl($url);
 
         foreach ($links as $link) {
-            if ($link->getAttribute('href') == $url) {
+            $linkHref = $link->getAttribute('href');
+
+            if ($linkHref == $url || $linkHref == $absoluteUrl) {
                 return true;
             }
         }
@@ -555,6 +589,8 @@ trait InteractsWithPages
      *
      * @param  string  $name
      * @return $this
+     *
+     * @throws \InvalidArgumentException
      */
     protected function click($name)
     {
@@ -684,6 +720,8 @@ trait InteractsWithPages
      *
      * @param  string|null  $buttonText
      * @return \Symfony\Component\DomCrawler\Form
+     *
+     * @throws \InvalidArgumentException
      */
     protected function getForm($buttonText = null)
     {
@@ -723,6 +761,8 @@ trait InteractsWithPages
      *
      * @param  string  $filter
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     protected function assertFilterProducesResults($filter)
     {
@@ -785,7 +825,7 @@ trait InteractsWithPages
      * @param  array  $file
      * @param  array  $uploads
      * @param  string  $name
-     * @return \Symfony\Component\HttpFoundation\File\UploadedFile
+     * @return \Illuminate\Http\UploadedFile
      */
     protected function getUploadedFileForTesting($file, $uploads, $name)
     {

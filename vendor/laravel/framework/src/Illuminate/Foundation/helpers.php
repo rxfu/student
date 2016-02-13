@@ -95,11 +95,16 @@ if (! function_exists('auth')) {
     /**
      * Get the available auth instance.
      *
+     * @param  string|null  $guard
      * @return \Illuminate\Contracts\Auth\Factory
      */
-    function auth()
+    function auth($guard = null)
     {
-        return app(AuthFactory::class);
+        if (is_null($guard)) {
+            return app(AuthFactory::class);
+        } else {
+            return app(AuthFactory::class)->guard($guard);
+        }
     }
 }
 
@@ -224,7 +229,7 @@ if (! function_exists('csrf_token')) {
      *
      * @return string
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     function csrf_token()
     {
@@ -415,7 +420,7 @@ if (! function_exists('logger')) {
      *
      * @param  string  $message
      * @param  array  $context
-     * @return null|\Illuminate\Contracts\Logging\Log
+     * @return \Illuminate\Contracts\Logging\Log|null
      */
     function logger($message = null, array $context = [])
     {
@@ -642,7 +647,7 @@ if (! function_exists('trans')) {
      * @param  array   $parameters
      * @param  string  $domain
      * @param  string  $locale
-     * @return string
+     * @return \Symfony\Component\Translation\TranslatorInterface|string
      */
     function trans($id = null, $parameters = [], $domain = 'messages', $locale = null)
     {
@@ -659,7 +664,7 @@ if (! function_exists('trans_choice')) {
      * Translates the given message based on a count.
      *
      * @param  string  $id
-     * @param  int     $number
+     * @param  int|array|\Countable  $number
      * @param  array   $parameters
      * @param  string  $domain
      * @param  string  $locale

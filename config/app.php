@@ -160,6 +160,7 @@ return [
 		 * Contribution Service Providers...
 		 */
 		Yajra\Datatables\DatatablesServiceProvider::class,
+		Intervention\Image\ImageServiceProvider::class,
 
 	],
 
@@ -211,6 +212,7 @@ return [
 		 * Contribution Facades...
 		 */
 		'Datatables' => Yajra\Datatables\Datatables::class,
+		'Image'      => Intervention\Image\Facades\Image::class,
 
 	],
 

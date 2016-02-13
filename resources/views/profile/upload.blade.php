@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-body">
                 <form id="upfile" name="upfile" action="{{ url('profile/upload') }}" role="form" method="post" enctype="multipart/form-data" class="form-inline">
@@ -20,7 +20,7 @@
 	            <p class="help-block">
 	                <strong>上传说明：</strong>请上传图像要求为高320（像素）*宽240（像素）的蓝底免冠证件照，要求jpg格式，大小不得超过2MB。
 	            </p>
-                <div>
+                <div class="text-center">
                     <img src="#" alt="{{ Auth::user()->profile->xm }}" />
                 </div>
             </div>

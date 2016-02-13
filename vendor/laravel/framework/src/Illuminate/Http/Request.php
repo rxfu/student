@@ -8,12 +8,16 @@ use SplFileInfo;
 use RuntimeException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 class Request extends SymfonyRequest implements Arrayable, ArrayAccess
 {
+    use Macroable;
+
     /**
      * The decoded JSON content for the request.
      *
@@ -96,7 +100,9 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     {
         $query = $this->getQueryString();
 
-        return $query ? $this->url().'?'.$query : $this->url();
+        $question = $this->getBaseUrl().$this->getPathInfo() == '/' ? '/?' : '?';
+
+        return $query ? $this->url().$question.$query : $this->url();
     }
 
     /**
@@ -157,6 +163,25 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     {
         foreach (func_get_args() as $pattern) {
             if (Str::is($pattern, urldecode($this->path()))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the current request URL and query string matches a pattern.
+     *
+     * @param  mixed  string
+     * @return bool
+     */
+    public function fullUrlIs()
+    {
+        $url = $this->fullUrl();
+
+        foreach (func_get_args() as $pattern) {
+            if (Str::is($pattern, $url)) {
                 return true;
             }
         }
@@ -276,7 +301,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function all()
     {
-        return array_replace_recursive($this->input(), $this->files->all());
+        return array_replace_recursive($this->input(), $this->allFiles());
     }
 
     /**
@@ -367,6 +392,31 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     }
 
     /**
+     * Get an array of all of the files on the request.
+     *
+     * @return array
+     */
+    public function allFiles()
+    {
+        return $this->convertUploadedFiles($this->files->all());
+    }
+
+    /**
+     * Convert the given array of Symfony UploadedFiles to custom Laravel UploadedFiles.
+     *
+     * @param  array  $files
+     * @return array
+     */
+    protected function convertUploadedFiles(array $files)
+    {
+        return array_map(function ($file) {
+            return is_array($file)
+                        ? $this->convertUploadedFiles($file)
+                        : UploadedFile::createFromBase($file);
+        }, $files);
+    }
+
+    /**
      * Retrieve a file from the request.
      *
      * @param  string  $key
@@ -375,7 +425,13 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function file($key = null, $default = null)
     {
-        return data_get($this->files->all(), $key, $default);
+        $file = data_get($this->files->all(), $key, $default);
+
+        if (is_array($file)) {
+            return $this->convertUploadedFiles($file);
+        } elseif ($file instanceof SymfonyUploadedFile) {
+            return $this->convertUploadedFiles([$file])[0];
+        }
     }
 
     /**
@@ -510,7 +566,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
             return $this->$source->all();
         }
 
-        return $this->$source->get($key, $default, true);
+        return $this->$source->get($key, $default);
     }
 
     /**
@@ -781,11 +837,12 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     /**
      * Get the user making the request.
      *
+     * @param  string|null  $guard
      * @return mixed
      */
-    public function user()
+    public function user($guard = null)
     {
-        return call_user_func($this->getUserResolver());
+        return call_user_func($this->getUserResolver(), $guard);
     }
 
     /**
@@ -810,6 +867,8 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      * Get a unique fingerprint for the request / route / IP address.
      *
      * @return string
+     *
+     * @throws \RuntimeException
      */
     public function fingerprint()
     {

@@ -48,6 +48,7 @@ return [
 	 * 上传文件参数
 	 */
 	'file'   => [
-		'path' => 'uploads',
+		'path' => [
+			'portrait' => 'uploads/portraits/'],
 	],
 ];
