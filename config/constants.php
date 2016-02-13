@@ -43,4 +43,11 @@ return [
 	'school' => [
 		'student' => '01',
 	],
+
+	/**
+	 * 上传文件参数
+	 */
+	'file'   => [
+		'path' => 'uploads',
+	],
 ];

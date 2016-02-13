@@ -16,7 +16,7 @@
                             <td width="240" height="320" class="text-center">
                                 <img src="#" alt="无考试照片" width="240" /><br><br>
                                 <div class="text-center">
-                                    <a href="#" role="button" class="btn btn-default">上传照片</a>
+                                    <a href="{{ url('profile/upfile') }}" role="button" class="btn btn-default">上传照片</a>
                                 </div>
                             </td>
                             <td width="240" height="320" class="text-center">

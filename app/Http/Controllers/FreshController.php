@@ -52,7 +52,7 @@ class FreshController extends Controller {
 					'hcdz' => 'required',
 				]);
 
-				$user = Fresh::find($xh);
+				$user = Fresh::findOrFail($xh);
 				$user->fill($request->all());
 				if ($user->save()) {
 					return redirect()->route('fresh.edit', [$user])->withStatus('更新成功');

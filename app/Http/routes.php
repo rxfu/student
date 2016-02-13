@@ -31,9 +31,11 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::group(['middleware' => ['auth']], function () {
 		Route::resource('home', 'HomeController', ['only' => ['index']]);
-		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 		Route::resource('requirement', 'RequirementController', ['only' => ['index']]);
 		Route::resource('fresh', 'FreshController', ['only' => ['edit', 'update']]);
+
+		Route::get('profile/upfile', 'ProfileController@showUpfileForm');
+		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 
 		Route::get('log/listing', 'LogController@listing');
 		Route::resource('log', 'LogController', ['only' => ['index']]);
