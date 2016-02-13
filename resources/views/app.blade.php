@@ -56,11 +56,15 @@
                 <!-- /.navbar-header -->
 
                 <ul class="nav navbar-top-links navbar-right">
-                    <li>欢迎{{ Auth::user()->profile->college->mc . Auth::user()->profile->nj }}级{{ Auth::user()->profile->major->mc }}专业{{ Auth::user()->profile->xm }}同学使用选课系统！</li>
+                    @if (count(Auth::user()->profile))
+                        <li>欢迎{{ Auth::user()->profile->college->mc . Auth::user()->profile->nj }}级{{ Auth::user()->profile->major->mc }}专业{{ Auth::user()->profile->xm }}同学使用选课系统！</li>
+                    @else
+                        <li>欢迎{{ $profile->college->mc . $profile->nj }}级{{ $profile->major->mc }}专业{{ $profile->xm }}同学使用选课系统！</li>
+                    @endif
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-user fa-fw"></i>
-                            <span>{{ Auth::user()->profile->xm }}</span>
+                            <span>{{ count(Auth::user()->profile) ? Auth::user()->profile->xm : $profile->xm }}</span>
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
@@ -77,8 +81,12 @@
                 <aside class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul id="side-menu" class="nav">
+                            @if ($is_fresh)
+                                <li>
+                                    <a href="{{ route('fresh.edit', auth::user()->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
+                                </li>
+                            @endif
                             <li>
-                                <a href="{{ route('fresh.edit', auth::user()->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>
                             </li>
                             <li>
