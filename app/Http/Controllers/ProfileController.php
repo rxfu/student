@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Auth;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManagerStatic as Image;
 use Storage;
 
 /**
@@ -56,9 +57,10 @@ class ProfileController extends Controller {
 			]);
 
 			if ($request->file('file')->isValid()) {
-				$file      = $request->file('file');
-				$extension = $file->getClientOriginalExtension();
-				Storage::put(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . $extension, file_get_contents($request->file('file')->getRealPath()));
+				$file     = $request->file('file');
+				$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . $file->getClientOriginalExtension();
+				$image    = Image::make($file)->resize(config('constants.file.image.width'), config('constants.file.image.height'));
+				Storage::put($filename, $image->stream());
 
 				return redirect('profile/upfile')->withStatus('上传照片成功');
 			}
