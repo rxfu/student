@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fresh;
+use Auth;
 use Illuminate\Http\Request;
 
 /**

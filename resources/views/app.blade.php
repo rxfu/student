@@ -86,6 +86,7 @@
                                     <a href="{{ route('fresh.edit', auth::user()->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>
                             @endif
+                            @if ($is_student)
                             <li>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>
                             </li>
@@ -245,6 +246,7 @@
                                     </li>
                                 </ul>
                             </li-->
+                            @endif
                             <li>
                                 <a href="#"><i class="fa fa-gear fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">

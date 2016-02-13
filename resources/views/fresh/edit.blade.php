@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="row">
-    <div class="col-sm-8">
+    <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-title">为完善个人学籍信息，尽快办妥学生证，请新生务必完善以下信息：</div>
