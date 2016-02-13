@@ -16,19 +16,12 @@ use Illuminate\Http\Request;
 class AuthLoginListener {
 
 	/**
-	 * Request 对象
-	 * @var Illuminate\Http\Request
-	 */
-	protected $request;
-
-	/**
 	 * Create the event listener.
 	 *
-	 * @param Illuminate\Http\Request $request 请求对象
 	 * @return void
 	 */
-	public function __construct(Request $request) {
-		$this->request = $request;
+	public function __construct() {
+		//
 	}
 
 	/**
@@ -40,7 +33,7 @@ class AuthLoginListener {
 	public function handle(Login $event) {
 		$log = new Slog;
 
-		$log->ip   = $this->request->ip();
+		$log->ip   = request()->ip();
 		$log->czlx = 'login';
 
 		$log->save();
