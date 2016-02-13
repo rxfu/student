@@ -19,12 +19,16 @@ class AppServiceProvider extends ServiceProvider {
 			if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
 				// 在校生对象
 				$user = Profile::find(Auth::user()->xh);
-			} elseif ($is_fresh = Fresh::whereXh(Auth::user()->xh)->exists()) {
+			}
+
+			if ($is_fresh = Fresh::whereXh(Auth::user()->xh)->exists()) {
 				// 新生对象
 				$user = Fresh::find(Auth::user()->xh);
 			}
 
-			$view->withIsFresh($is_fresh)->withIsStudent($is_student);
+			$view->withIsFresh($is_fresh)
+				->withIsStudent($is_student)
+				->withUser($user);
 		});
 	}
 

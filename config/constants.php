@@ -52,8 +52,11 @@ return [
 			'portrait' => 'uploads/portraits/',
 		],
 		'image' => [
-			'width'  => 240,
-			'height' => 320,
+			'width'   => 240,
+			'height'  => 320,
+			'ext'     => 'jpg',
+			'quality' => 75,
+			'mime'    => 'image/jpeg',
 		],
 	],
 ];

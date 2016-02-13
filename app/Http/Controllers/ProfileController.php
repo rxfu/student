@@ -58,8 +58,8 @@ class ProfileController extends Controller {
 
 			if ($request->file('file')->isValid()) {
 				$file     = $request->file('file');
-				$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . $file->getClientOriginalExtension();
-				$image    = Image::make($file)->resize(config('constants.file.image.width'), config('constants.file.image.height'));
+				$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
+				$image    = Image::make($file)->resize(config('constants.file.image.width'), config('constants.file.image.height'))->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
 				Storage::put($filename, $image->stream());
 
 				return redirect('profile/upfile')->withStatus('上传照片成功');
@@ -67,6 +67,25 @@ class ProfileController extends Controller {
 		}
 
 		abort(404, '没有文件');
+	}
+
+	/**
+	 * 显示考试照片
+	 * @author FuRongxin
+	 * @date    2016-02-14
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 考试照片
+	 */
+	public function portrait() {
+		$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
+
+		if (Storage::exists($filename)) {
+			$file = Storage::get($filename);
+
+			return response($file)->header('Content-Type', config('constants.file.image.mime'));
+		}
+
+		abort(404, '没有照片');
 	}
 
 }
