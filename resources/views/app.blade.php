@@ -56,15 +56,11 @@
                 <!-- /.navbar-header -->
 
                 <ul class="nav navbar-top-links navbar-right">
-                    @if (count(Auth::user()->profile))
-                        <li>欢迎{{ Auth::user()->profile->college->mc . Auth::user()->profile->nj }}级{{ Auth::user()->profile->major->mc }}专业{{ Auth::user()->profile->xm }}同学使用选课系统！</li>
-                    @else
-                        <li>欢迎{{ $profile->college->mc . $profile->nj }}级{{ $profile->major->mc }}专业{{ $profile->xm }}同学使用选课系统！</li>
-                    @endif
+                    <li>欢迎{{ $user->college->mc . $user->nj }}级{{ $user->major->mc }}专业{{ $user->xm }}同学使用选课系统！</li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-user fa-fw"></i>
-                            <span>{{ count(Auth::user()->profile) ? Auth::user()->profile->xm : $profile->xm }}</span>
+                            <span>{{ $user->xm }}</span>
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
@@ -83,7 +79,7 @@
                         <ul id="side-menu" class="nav">
                             @if ($is_fresh)
                                 <li>
-                                    <a href="{{ route('fresh.edit', auth::user()->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
+                                    <a href="{{ route('fresh.edit', $user->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>
                             @endif
                             @if ($is_student)
