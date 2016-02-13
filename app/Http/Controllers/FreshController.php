@@ -25,12 +25,16 @@ class FreshController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($xh) {
-		$profile = Fresh::find($xh);
+		if (Auth::user()->xh === $xh) {
+			$profile = Fresh::find($xh);
 
-		return view('fresh.edit')
-			->withTitle('新生信息核对')
-			->withStatus('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
-			->withProfile($profile);
+			return view('fresh.edit')
+				->withTitle('新生信息核对')
+				->withStatus('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
+				->withProfile($profile);
+		}
+
+		abort(404, '学号不匹配');
 	}
 
 	/**
@@ -62,7 +66,7 @@ class FreshController extends Controller {
 			}
 		}
 
-		abort(404);
+		abort(404, '学号不匹配');
 	}
 
 }
