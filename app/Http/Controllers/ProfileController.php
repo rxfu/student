@@ -88,4 +88,23 @@ class ProfileController extends Controller {
 		abort(404, '没有照片');
 	}
 
+	/**
+	 * 显示学历照片
+	 * @author FuRongxin
+	 * @date    2016-02-14
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 学历照片
+	 */
+	public function photo() {
+		$filename = config('constants.file.path.photo') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
+
+		if (Storage::exists($filename)) {
+			$file = Storage::get($filename);
+
+			return response($file)->header('Content-Type', config('constants.file.image.mime'));
+		}
+
+		abort(404, '没有照片');
+	}
+
 }

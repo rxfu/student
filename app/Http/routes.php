@@ -37,6 +37,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('profile/upfile', 'ProfileController@showUpfileForm');
 		Route::post('profile/upload', 'ProfileController@upload');
 		Route::get('profile/portrait', 'ProfileController@portrait');
+		Route::get('profile/photo', 'ProfileController@photo');
 		Route::resource('profile', 'ProfileController', ['only' => ['index']]);
 
 		Route::get('log/listing', 'LogController@listing');

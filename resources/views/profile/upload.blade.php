@@ -21,7 +21,7 @@
 	                <strong>上传说明：</strong>请上传图像要求为高{{ config('constants.file.image.height') }}（像素）*宽{{ config('constants.file.image.width') }}（像素）的蓝底免冠证件照，要求jpg格式，大小不得超过2MB。
 	            </p>
                 <div class="text-center">
-                    <img src="#" alt="{{ Auth::user()->profile->xm }}" />
+                    <img src="{{ url('profile/portrait') }}" alt="{{ Auth::user()->profile->xm }}" />
                 </div>
             </div>
         </div>

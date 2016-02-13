@@ -20,7 +20,7 @@
                                 </div>
                             </td>
                             <td width="240" height="320" class="text-center">
-                                <img src="#" alt="无学历照片" width="240" /><br><br>
+                                <img src="{{ url('profile/photo') }}" alt="无学历照片" width="240" /><br><br>
                                 <p class="text-info">注意：如果该学历照片有问题，请教务处学籍科反馈信息</p>
                             </td>
                         </tr>

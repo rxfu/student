@@ -49,7 +49,8 @@ return [
 	 */
 	'file'   => [
 		'path'  => [
-			'portrait' => 'uploads/portraits/',
+			'portrait' => 'portraits/',
+			'photo'    => 'photos/',
 		],
 		'image' => [
 			'width'   => 240,
