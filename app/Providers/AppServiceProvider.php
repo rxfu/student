@@ -16,7 +16,6 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot() {
 		view()->composer('app', function ($view) {
-			$is_fresh = Fresh::whereXh(Auth::user()->xh)->exists();
 			if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
 				// 在校生对象
 				$user = Profile::find(Auth::user()->xh);
