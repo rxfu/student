@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -39,7 +40,7 @@ class ProfileController extends Controller {
 	 * @return  \Illuminate\Http\Response 上传照片表单
 	 */
 	public function showUpfileForm() {
-		if ((config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value) && (config('constants.file.status.passed') !== Auth::user()->zpzt)) {
+		if ($this->allowUploadFile()) {
 			return view('profile.upload')->withTitle(' 上传照片');
 		}
 
@@ -111,6 +112,17 @@ class ProfileController extends Controller {
 		}
 
 		abort(404, '没有照片');
+	}
+
+	/**
+	 * 是否允许上传照片
+	 * @author FuRongxin
+	 * @date    2016-02-14
+	 * @version 2.0
+	 * @return  boolean true为允许，false为禁止
+	 */
+	private function allowUploadFile() {
+		return (config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value) && (config('constants.file.status.passed') !== Auth::user()->zpzt);
 	}
 
 }
