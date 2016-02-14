@@ -82,7 +82,7 @@ class ProfileController extends Controller {
 		if (Storage::exists($filename)) {
 			$file = Storage::get($filename);
 
-			return response($file)->header('Content-Type', config('constants.file.image.mime'));
+			return response($file)->header('Content-Type', Storage::mimeType($filename));
 		}
 
 		abort(404, '没有照片');
@@ -101,7 +101,7 @@ class ProfileController extends Controller {
 		if (Storage::exists($filename)) {
 			$file = Storage::get($filename);
 
-			return response($file)->header('Content-Type', config('constants.file.image.mime'));
+			return response($file)->header('Content-Type', Storage::mimeType($filename));
 		}
 
 		abort(404, '没有照片');
