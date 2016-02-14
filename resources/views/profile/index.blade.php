@@ -15,9 +15,11 @@
                         <tr>
                             <td width="240" height="320" class="text-center">
                                 <img src="{{ url('profile/portrait') }}" alt="无考试照片" width="240" /><br><br>
-                                <div class="text-center">
-                                    <a href="{{ url('profile/upfile') }}" role="button" class="btn btn-default">上传照片</a>
-                                </div>
+                                @if ($allowed)
+                                    <div class="text-center">
+                                        <a href="{{ url('profile/upfile') }}" role="button" class="btn btn-default">上传照片</a>
+                                    </div>
+                                @endif
                             </td>
                             <td width="240" height="320" class="text-center">
                                 <img src="{{ url('profile/photo') }}" alt="无学历照片" width="240" /><br><br>
@@ -27,6 +29,13 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
             <div class="panel-heading">基本资料</div>
             <div class="panel-body">
                 <div class="table-responsive">

@@ -29,7 +29,10 @@ class ProfileController extends Controller {
 	public function index() {
 		$profile = Profile::find(Auth::user()->xh);
 
-		return view('profile.index')->withTitle('个人资料')->withProfile($profile);
+		return view('profile.index')
+			->withTitle('个人资料')
+			->withProfile($profile)
+			->withAllowed($this->allowUploadFile());
 	}
 
 	/**
