@@ -39,7 +39,11 @@ class ProfileController extends Controller {
 	 * @return  \Illuminate\Http\Response 上传照片表单
 	 */
 	public function showUpfileForm() {
-		return view('profile.upload')->withTitle(' 上传照片');
+		if ((config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value) && (config('constants.file.status.passed') !== Auth::user()->zpzt)) {
+			return view('profile.upload')->withTitle(' 上传照片');
+		}
+
+		abort(403, '不允许上传照片');
 	}
 
 	/**
@@ -51,7 +55,7 @@ class ProfileController extends Controller {
 	 * @return  \Illuminate\Http\Response 上传照片表单
 	 */
 	public function upload(Request $request) {
-		if ($request->hasFile('file')) {
+		if ($request->isMethod('post') && $request->hasFile('file')) {
 			$this->validate($request, [
 				'file' => 'required|image',
 			]);
@@ -59,7 +63,9 @@ class ProfileController extends Controller {
 			if ($request->file('file')->isValid()) {
 				$file     = $request->file('file');
 				$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
-				$image    = Image::make($file)->resize(config('constants.file.image.width'), config('constants.file.image.height'))->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
+				$image    = Image::make($file)
+					->resize(config('constants.file.image.width'), config('constants.file.image.height'))
+					->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
 				Storage::put($filename, $image->stream());
 
 				return redirect('profile/upfile')->withStatus('上传照片成功');
