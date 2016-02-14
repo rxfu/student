@@ -56,24 +56,28 @@ class ProfileController extends Controller {
 	 * @return  \Illuminate\Http\Response 上传照片表单
 	 */
 	public function upload(Request $request) {
-		if ($request->isMethod('post') && $request->hasFile('file')) {
-			$this->validate($request, [
-				'file' => 'required|image',
-			]);
+		if ($this->allowUploadFile()) {
+			if ($request->isMethod('post') && $request->hasFile('file')) {
+				$this->validate($request, [
+					'file' => 'required|image',
+				]);
 
-			if ($request->file('file')->isValid()) {
-				$file     = $request->file('file');
-				$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
-				$image    = Image::make($file)
-					->resize(config('constants.file.image.width'), config('constants.file.image.height'))
-					->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
-				Storage::put($filename, $image->stream());
+				if ($request->file('file')->isValid()) {
+					$file     = $request->file('file');
+					$filename = config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
+					$image    = Image::make($file)
+						->resize(config('constants.file.image.width'), config('constants.file.image.height'))
+						->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
+					Storage::put($filename, $image->stream());
 
-				return redirect('profile/upfile')->withStatus('上传照片成功');
+					return redirect('profile/upfile')->withStatus('上传照片成功');
+				}
 			}
+
+			abort(404, '没有照片');
 		}
 
-		abort(404, '没有文件');
+		abort(403, '不允许上传照片');
 	}
 
 	/**
