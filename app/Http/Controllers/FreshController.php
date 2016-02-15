@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fresh;
+use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -25,16 +26,20 @@ class FreshController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($xh) {
-		if (Auth::user()->xh === $xh) {
-			$profile = Fresh::find($xh);
+		if ($this->allowUpdate()) {
+			if (Auth::user()->xh === $xh) {
+				$profile = Fresh::find($xh);
 
-			return view('fresh.edit')
-				->withTitle('新生信息核对')
-				->withStatus('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
-				->withProfile($profile);
+				return view('fresh.edit')
+					->withTitle('新生信息核对')
+					->withStatus('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
+					->withProfile($profile);
+			}
+
+			abort(404, '学号不匹配');
 		}
 
-		abort(404, '学号不匹配');
+		abort(403, '不允许填报信息');
 	}
 
 	/**
@@ -47,26 +52,41 @@ class FreshController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $xh) {
-		if ($request->isMethod('put')) {
-			if (Auth::user()->xh === $xh) {
-				$this->validate($request, [
-					'jg'   => 'required',
-					'jzxm' => 'required',
-					'jtdz' => 'required',
-					'hcdz' => 'required',
-				]);
+		if ($this->allowUpdate()) {
+			if ($request->isMethod('put')) {
+				if (Auth::user()->xh === $xh) {
+					$this->validate($request, [
+						'jg'   => 'required',
+						'jzxm' => 'required',
+						'jtdz' => 'required',
+						'hcdz' => 'required',
+					]);
 
-				$user = Fresh::findOrFail($xh);
-				$user->fill($request->all());
-				if ($user->save()) {
-					return redirect()->route('fresh.edit', [$user])->withStatus('更新成功');
-				} else {
-					return back()->withErrors()->withInput();
+					$user = Fresh::findOrFail($xh);
+					$user->fill($request->all());
+					if ($user->save()) {
+						return redirect()->route('fresh.edit', [$user])->withStatus('更新成功');
+					} else {
+						return back()->withErrors()->withInput();
+					}
 				}
 			}
+
+			abort(404, '学号不匹配');
 		}
 
-		abort(404, '学号不匹配');
+		abort(103, '不允许填报信息');
+	}
+
+	/**
+	 * 是否允许新生填报信息
+	 * @author FuRongxin
+	 * @date    2016-02-15
+	 * @version 2.0
+	 * @return  boolean true为允许，false为禁止
+	 */
+	private function allowUpdate() {
+		return Fresh::whereXh(Auth::user()->xh)->exists() && config('constants.status.enable') == Setting::find('XS_XSXX_KG')->value;
 	}
 
 }
