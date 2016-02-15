@@ -23,6 +23,30 @@ class Selcourse extends Model {
 	public $timestamps = false;
 
 	/**
+	 * 课程
+	 * @author FuRongxin
+	 * @date    2016-02-15
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function course() {
+		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
+	}
+
+	/**
+	 * 排课表
+	 * @author FuRongxin
+	 * @date    2016-02-15
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function timetables() {
+		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->whereNd(Setting::find('XK_ND')->value)
+			->whereXq(Setting::find('XK_XQ')->value);
+	}
+
+	/**
 	 * 扩展查询，用于获取已选课程学分
 	 * @author FuRongxin
 	 * @date    2016-01-23

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * 国籍
  *
  * @author FuRongxin
- * @date 2016-1-12
+ * @date 2016-01-12
  * @version 2.0
  */
 class Country extends Model {

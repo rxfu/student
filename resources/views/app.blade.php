@@ -159,7 +159,7 @@
                                         <a href="#">课程表</a>
                                     </li>
                                     <li>
-                                        <a href="#">已选课程列表</a>
+                                        <a href="{{ url('selcourse') }}">已选课程列表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
