@@ -45,12 +45,12 @@ class SelcourseController extends Controller {
 						'kcmc' => $selcourse->course->kcmc,
 						'xf'   => $selcourse->xf,
 						'xqh'  => $timetable->campus->mc,
-						'ksz'  => $timetable->ksz,
-						'jsz'  => $timetable->jsz,
 					];
 				}
 
 				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
 					'ksj'  => $timetable->ksj,
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,

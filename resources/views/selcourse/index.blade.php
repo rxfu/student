@@ -23,10 +23,23 @@
                                 <th class="active">周五</th>
                                 <th class="active">周六</th>
                                 <th class="active">周日</th>
-                                <th class="active">开始周</th>
-                                <th class="active">结束周</th>
                             </tr>
                         </thead>
+                        <tfoot>
+                            <tr>
+                                <th>课程代码</th>
+                                <th>课程名称</th>
+                                <th>学分</th>
+                                <th>所在校区</th>
+                                <th>周一</th>
+                                <th>周二</th>
+                                <th>周三</th>
+                                <th>周四</th>
+                                <th>周五</th>
+                                <th>周六</th>
+                                <th>周日</th>
+                            </tr>
+                        </tfoot>
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
@@ -38,15 +51,14 @@
                                 		<td{!! isset($course[$week]) ? ' class="success"' : '' !!}>
                                 			@if (isset($course[$week]))
                                 				@foreach ($course[$week] as $class)
-                                					第 {{ $class['ksj'] }} ~ {{ $class['jsj'] }} 节<br>
+                                					第 {{ $class['ksz'] === $class['jsz'] ? $class['ksz'] : $class['ksz'] . '~' . $class['jsz'] }} 周<br>
+                                					第 {{ $class['ksj'] === $class['jsj'] ? $class['ksj'] : $class['ksj'] . '~' . $class['jsj'] }} 节<br>
                                 					{{ empty($class['js']) ? '' : $class['js'] . '教室' }}<br>
                                 					{{ empty($class['jsxm']) ? '' : $class['jsxm'] }}<br>
                                 				@endforeach
                                 			@endif
                                 		</td>
                                 	@endfor
-                                	<td>{{ $course['ksz'] }}</td>
-                                	<td>{{ $course['jsz'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
