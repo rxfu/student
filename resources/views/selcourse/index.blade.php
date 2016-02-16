@@ -34,13 +34,17 @@
                                 	<td>{{ $course['kcmc'] }}</td>
                                 	<td>{{ $course['xf'] }}</td>
                                 	<td>{{ $course['xqh'] }}</td>
-                                	<td{!! isset($course[1]) ? ' class="warning"' : '' !!}>{!! isset($course[1]) ? $course[1] : '' !!}</td>
-                                	<td{!! isset($course[2]) ? ' class="warning"' : '' !!}>{!! isset($course[2]) ? $course[2] : '' !!}</td>
-                                	<td{!! isset($course[3]) ? ' class="warning"' : '' !!}>{!! isset($course[3]) ? $course[3] : '' !!}</td>
-                                	<td{!! isset($course[4]) ? ' class="warning"' : '' !!}>{!! isset($course[4]) ? $course[4] : '' !!}</td>
-                                	<td{!! isset($course[5]) ? ' class="warning"' : '' !!}>{!! isset($course[5]) ? $course[5] : '' !!}</td>
-                                	<td{!! isset($course[6]) ? ' class="warning"' : '' !!}>{!! isset($course[6]) ? $course[6] : '' !!}</td>
-                                	<td{!! isset($course[7]) ? ' class="warning"' : '' !!}>{!! isset($course[7]) ? $course[7] : '' !!}</td>
+                                	@for ($week = 1; $week <= 7; $week++)
+                                		<td{!! isset($course[$week]) ? ' class="success"' : '' !!}>
+                                			@if (isset($course[$week]))
+                                				@foreach ($course[$week] as $class)
+                                					第 {{ $class['ksj'] }} ~ {{ $class['jsj'] }} 节<br>
+                                					{{ empty($class['js']) ? '' : $class['js'] . '教室' }}<br>
+                                					{{ empty($class['jsxm']) ? '' : $class['jsxm'] }}<br>
+                                				@endforeach
+                                			@endif
+                                		</td>
+                                	@endfor
                                 	<td>{{ $course['ksz'] }}</td>
                                 	<td>{{ $course['jsz'] }}</td>
                                 </tr>

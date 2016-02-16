@@ -39,19 +39,23 @@ class SelcourseController extends Controller {
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
-				if (isset($courses[$selcourse->kcxh])) {
-					$courses[$selcourse->kcxh][$timetable->zc] = '第 ' . $timetable->ksj . '~' . $timetable->jsj . ' 节<br>' . $timetable->classroom->mc . '教室<br>' . $timetable->teacher->xm;
-				} else {
+				if (!isset($courses[$selcourse->kcxh])) {
 					$courses[$selcourse->kcxh] = [
-						'kcxh'         => $selcourse->kcxh,
-						'kcmc'         => $selcourse->course->kcmc,
-						'xf'           => $selcourse->xf,
-						'xqh'          => $timetable->campus->mc,
-						'ksz'          => $timetable->ksz,
-						'jsz'          => $timetable->jsz,
-						$timetable->zc => '第 ' . $timetable->ksj . '~' . $timetable->jsj . ' 节<br>' . $timetable->classroom->mc . '教室<br>' . $timetable->teacher->xm,
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+						'ksz'  => $timetable->ksz,
+						'jsz'  => $timetable->jsz,
 					];
 				}
+
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+				];
 			}
 		}
 
