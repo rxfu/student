@@ -64,16 +64,10 @@ class SelcourseController extends Controller {
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
-				if (!isset($courses[$selcourse->kcxh])) {
-					$courses[$selcourse->kcxh] = [
-						'kcxh' => $selcourse->kcxh,
-						'kcmc' => $selcourse->course->kcmc,
-						'xf'   => $selcourse->xf,
-						'xqh'  => $timetable->campus->mc,
-					];
-				}
-
-				$courses[$selcourse->kcxh][$timetable->zc][] = [
+				$courses[$timetable->ksj][$timetable->zc][] = [
+					'kcxh' => $selcourse->kcxh,
+					'kcmc' => $selcourse->course->kcmc,
+					'xqh'  => $timetable->campus->mc,
 					'ksz'  => $timetable->ksz,
 					'jsz'  => $timetable->jsz,
 					'ksj'  => $timetable->ksj,
@@ -82,6 +76,9 @@ class SelcourseController extends Controller {
 					'jsxm' => $timetable->teacher->xm,
 					'zc'   => $timetable->teacher->position->mc,
 				];
+
+				$courses[$timetable->ksj][$timetable->zc]['rows']     = $timetable->jsj - $timetable->ksj + 1;
+				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
 			}
 		}
 

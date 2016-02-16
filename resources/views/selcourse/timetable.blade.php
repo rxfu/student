@@ -22,82 +22,97 @@
                                 <th class="active">星期日</th>
                             </tr>
                         </thead>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">节次</th>
+                                <th>星期一</th>
+                                <th>星期二</th>
+                                <th>星期三</th>
+                                <th>星期四</th>
+                                <th>星期五</th>
+                                <th>星期六</th>
+                                <th>星期日</th>
+                            </tr>
+                        </tfoot>
                         <tbody>
-                            <?php for ($i = 1; $i <= 5; ++$i): ?>
+                            @for ($i = 1; $i <= 5; ++$i)
                                 <tr>
-                                    <?php if (1 == $i): ?>
-                                        <th rowspan="5" class="active text-center" style="vertical-align:middle">上午</th>
-                                    <?php endif;?>
-                                    <th class="active">第<?php echo $i ?>节</th>
-                                    <?php for ($j = 1; $j <= 7; ++$j): ?>
-                                        <?php if (is_array($courses[$i][$j])): ?>
-                                            <td<?php echo 1 < ($courses[$i][$j][0]['jsj'] - $i + 1) ? ' rowspan="' . ($courses[$i][$j][0]['jsj'] - $i + 1) . '"' : '' ?>>
-                                                <?php foreach ($courses[$i][$j] as $course): ?>
-                                                    <?php echo $course['kcmc'] ?><br>
-                                                    <?php echo $course['xqh'] ?>校区<?php echo $course['jsmc'] ?>教室<br>
-                                                    <?php echo $course['jsxm'] ?><br>
-                                                    第 <?php echo $course['ksz'] ?>~<?php echo $course['jsz'] ?> 周
-                                                    <hr>
-                                                <?php endforeach;?>
-                                            </td>
-                                        <?php elseif (!is_null($courses[$i][$j])): ?>
-                                            <td><?php echo $courses[$i][$j] ?></td>
-                                        <?php endif;?>
-                                    <?php endfor;?>
+                                    @if (1 == $i)
+                                        <th rowspan="5" class="active text-center">上午</th>
+                                    @endif
+                                    <th class="active">第{{ $i }}节</th>
+                                    @for ($j = 1; $j <= 7; ++$j)
+                                    	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
+										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
+                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
+                                    		@if (isset($courses[$i][$j]))
+                                    			@foreach ($courses[$i][$j] as $course)
+                                    				<p>
+                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+                                    				</p>
+                                    			@endforeach
+                                    		@endif
+                                    	</td>
+                                    @endfor
                                 </tr>
-                            <?php endfor;?>
+                            @endfor
                             <tr>
                                 <td colspan="9" class="text-center">午休</td>
                             </tr>
-                            <?php for ($i = 6; $i <= 9; ++$i): ?>
+                            @for ($i = 6; $i <= 9; ++$i)
                                 <tr>
-                                    <?php if (6 == $i): ?>
-                                        <th rowspan="4" class="active text-center" style="vertical-align:middle">下午</th>
-                                    <?php endif;?>
-                                    <th class="active">第<?php echo $i ?>节</th>
-                                    <?php for ($j = 1; $j <= 7; ++$j): ?>
-                                        <?php if (is_array($courses[$i][$j])): ?>
-                                            <td<?php echo 1 < ($courses[$i][$j][0]['jsj'] - $i + 1) ? ' rowspan="' . ($courses[$i][$j][0]['jsj'] - $i + 1) . '"' : '' ?>>
-                                                <?php foreach ($courses[$i][$j] as $course): ?>
-                                                    <?php echo $course['kcmc'] ?><br>
-                                                    <?php echo $course['xqh'] ?>校区<?php echo $course['jsmc'] ?>教室<br>
-                                                    <?php echo $course['jsxm'] ?><br>
-                                                    第 <?php echo $course['ksz'] ?>~<?php echo $course['jsz'] ?> 周
-                                                    <hr>
-                                                <?php endforeach;?>
-                                            </td>
-                                        <?php elseif (!is_null($courses[$i][$j])): ?>
-                                            <td><?php echo $courses[$i][$j] ?></td>
-                                        <?php endif;?>
-                                    <?php endfor;?>
+                                    @if (6 == $i)
+                                        <th rowspan="4" class="active text-center">下午</th>
+                                    @endif
+                                    <th class="active">第{{ $i }}节</th>
+                                    @for ($j = 1; $j <= 7; ++$j)
+                                    	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
+										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
+                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
+                                    		@if (isset($courses[$i][$j]))
+                                    			@foreach ($courses[$i][$j] as $course)
+                                    				<p>
+                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+                                    				</p>
+                                    			@endforeach
+                                    		@endif
+                                    	</td>
+                                    @endfor
                                 </tr>
-                            <?php endfor;?>
+                            @endfor
                             <tr>
                                 <td colspan="9" class="text-center">晚饭</td>
                             </tr>
-                            <?php for ($i = 10; $i <= 12; ++$i): ?>
+                            @for ($i = 10; $i <= 12; ++$i)
                                 <tr>
-                                    <?php if (10 == $i): ?>
-                                        <th rowspan="3" class="active text-center" style="vertical-align:middle">晚上</th>
-                                    <?php endif;?>
-                                    <th class="active">第<?php echo $i ?>节</th>
-                                    <?php for ($j = 1; $j <= 7; ++$j): ?>
-                                        <?php if (is_array($courses[$i][$j])): ?>
-                                            <td<?php echo 1 < ($courses[$i][$j][0]['jsj'] - $i + 1) ? ' rowspan="' . ($courses[$i][$j][0]['jsj'] - $i + 1) . '"' : '' ?>>
-                                                <?php foreach ($courses[$i][$j] as $course): ?>
-                                                    <?php echo $course['kcmc'] ?><br>
-                                                    <?php echo $course['xqh'] ?>校区<?php echo $course['jsmc'] ?>教室<br>
-                                                    <?php echo $course['jsxm'] ?><br>
-                                                    第 <?php echo $course['ksz'] ?>~<?php echo $course['jsz'] ?> 周
-                                                    <hr>
-                                                <?php endforeach;?>
-                                            </td>
-                                        <?php elseif (!is_null($courses[$i][$j])): ?>
-                                            <td><?php echo $courses[$i][$j] ?></td>
-                                        <?php endif;?>
-                                    <?php endfor;?>
+                                    @if (10 == $i)
+                                        <th rowspan="3" class="active text-center">晚上</th>
+                                    @endif
+                                    <th class="active">第{{ $i }}节</th>
+                                    @for ($j = 1; $j <= 7; ++$j)
+                                    	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
+										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
+                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
+                                    		@if (isset($courses[$i][$j]))
+                                    			@foreach ($courses[$i][$j] as $course)
+                                    				<p>
+                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+                                    				</p>
+                                    			@endforeach
+                                    		@endif
+                                    	</td>
+                                    @endfor
                                 </tr>
-                            <?php endfor;?>
+                            @endfor
                         </tbody>
                     </table>
                 </div>

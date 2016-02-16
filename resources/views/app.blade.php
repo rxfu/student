@@ -156,7 +156,7 @@
                                 <a href="#"><i class="fa fa-calendar fa-fw"></i> 课表管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">课程表</a>
+                                        <a href="{{ url('selcourse/timetable') }}">课程表</a>
                                     </li>
                                     <li>
                                         <a href="{{ url('selcourse') }}">已选课程列表</a>

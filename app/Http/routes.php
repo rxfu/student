@@ -58,6 +58,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('score/exam', 'ScoreController@exam');
 		Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
 
+		Route::get('selcourse/timetable', 'SelcourseController@timetable');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index']]);
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);

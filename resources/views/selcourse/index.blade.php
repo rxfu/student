@@ -55,7 +55,7 @@
 	                                					<div>第 {{ $class['ksz'] === $class['jsz'] ? $class['ksz'] : $class['ksz'] . ' ~ ' . $class['jsz'] }} 周</div>
 	                                					<div class="text-danger"><strong>第 {{ $class['ksj'] === $class['jsj'] ? $class['ksj'] : $class['ksj'] . ' ~ ' . $class['jsj'] }} 节</strong></div>
 	                                					<div class='text-warning'>{{ empty($class['js']) ? '未知' : $class['js'] }}教室</div>
-	                                					<div class='text-info'>{{ empty($class['jsxm']) ? '' : $class['jsxm'] . ' ' . $class['zc'] }}</div>
+	                                					<div class='text-info'>{{ empty($class['jsxm']) ? '未知老师' : $class['jsxm'] . ' ' . $class['zc'] }}</div>
                                 					</p>
                                 				@endforeach
                                 			@endif
