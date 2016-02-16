@@ -31,4 +31,15 @@ class Teacher extends Model {
 	public function timetables() {
 		return $this->hasMany('App\Models\Timetable', 'jsgh', 'jsgh');
 	}
+
+	/**
+	 * 职称
+	 * @author FuRongxin
+	 * @date    2016-02-16
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function position() {
+		return $this->belongsTo('App\Models\Position', 'zc', 'dm');
+	}
 }

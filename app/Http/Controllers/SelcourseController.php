@@ -25,10 +25,23 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
 	public function index() {
-		$selcourses = Selcourse::with(['timetables.classroom', 'timetables.campus', 'timetables.teacher', 'timetables' => function ($query) {
-			$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh');
-		}])
-			->with(['course' => function ($query) {
+		$selcourses = Selcourse::with([
+			'timetables'                  => function ($query) {
+				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh');
+			},
+			'timetables.classroom'        => function ($query) {
+				$query->select('jsh', 'mc');
+			},
+			'timetables.campus'           => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'timetables.teacher'          => function ($query) {
+				$query->select('jsgh', 'xm', 'zc');
+			},
+			'timetables.teacher.position' => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'course'                      => function ($query) {
 				$query->select('kch', 'kcmc');
 			}])
 			->whereXh(Auth::user()->xh)
@@ -55,6 +68,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
+					'zc'   => $timetable->teacher->position->mc,
 				];
 			}
 		}

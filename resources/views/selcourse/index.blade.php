@@ -54,7 +54,7 @@
                                 					第 {{ $class['ksz'] === $class['jsz'] ? $class['ksz'] : $class['ksz'] . '~' . $class['jsz'] }} 周<br>
                                 					第 {{ $class['ksj'] === $class['jsj'] ? $class['ksj'] : $class['ksj'] . '~' . $class['jsj'] }} 节<br>
                                 					{{ empty($class['js']) ? '' : $class['js'] . '教室' }}<br>
-                                					{{ empty($class['jsxm']) ? '' : $class['jsxm'] }}<br>
+                                					{{ empty($class['jsxm']) ? '' : $class['jsxm'] . ' ' . $class['zc'] }}<br>
                                 				@endforeach
                                 			@endif
                                 		</td>
