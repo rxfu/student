@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Selcourse;
-use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -25,30 +24,7 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
 	public function index() {
-		$selcourses = Selcourse::with([
-			'timetables'                  => function ($query) {
-				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh');
-			},
-			'timetables.classroom'        => function ($query) {
-				$query->select('jsh', 'mc');
-			},
-			'timetables.campus'           => function ($query) {
-				$query->select('dm', 'mc');
-			},
-			'timetables.teacher'          => function ($query) {
-				$query->select('jsgh', 'xm', 'zc');
-			},
-			'timetables.teacher.position' => function ($query) {
-				$query->select('dm', 'mc');
-			},
-			'course'                      => function ($query) {
-				$query->select('kch', 'kcmc');
-			}])
-			->whereXh(Auth::user()->xh)
-			->whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value)
-			->orderBy('kcxh', 'asc')
-			->get();
+		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
@@ -74,6 +50,42 @@ class SelcourseController extends Controller {
 		}
 
 		return view('selcourse.index')->withTitle('当前选课课程列表')->withCourses($courses);
+	}
+
+	/**
+	 * 显示学生课程表
+	 * @author FuRongxin
+	 * @date    2016-02-16
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function timetable() {
+		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->timetables as $timetable) {
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.timetable')->withTitle('当前课程表')->withCourses($courses);
 	}
 
 	/**

@@ -48,7 +48,7 @@
                                 	<td>{{ $course['xf'] }}</td>
                                 	<td>{{ $course['xqh'] }}</td>
                                 	@for ($week = 1; $week <= 7; $week++)
-                                		<td{!! isset($course[$week]) ? ' class="success text-nowrap"' : '' !!}>
+                                		<td{!! isset($course[$week]) ? ' class="success"' : '' !!}>
                                 			@if (isset($course[$week]))
                                 				@foreach ($course[$week] as $class)
                                 					<p>

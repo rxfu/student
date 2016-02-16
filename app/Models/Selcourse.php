@@ -63,4 +63,39 @@ class Selcourse extends Model {
 			->selectRaw('pt, xz, SUM(xf) AS xf');
 	}
 
+	/**
+	 * 扩展查询，用于获取已选课程列表
+	 * @author FuRongxin
+	 * @date    2016-02-16
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectedCourses($query, $user) {
+		return $query->with([
+			'timetables'                  => function ($query) {
+				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh');
+			},
+			'timetables.classroom'        => function ($query) {
+				$query->select('jsh', 'mc');
+			},
+			'timetables.campus'           => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'timetables.teacher'          => function ($query) {
+				$query->select('jsgh', 'xm', 'zc');
+			},
+			'timetables.teacher.position' => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'course'                      => function ($query) {
+				$query->select('kch', 'kcmc');
+			}])
+			->whereXh($user->xh)
+			->whereNd(Setting::find('XK_ND')->value)
+			->whereXq(Setting::find('XK_XQ')->value)
+			->orderBy('kcxh', 'asc');
+	}
+
 }
