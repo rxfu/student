@@ -94,8 +94,7 @@ class Selcourse extends Model {
 			}])
 			->whereXh($user->xh)
 			->whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value)
-			->orderBy('kcxh', 'asc');
+			->whereXq(Setting::find('XK_XQ')->value);
 	}
 
 }
