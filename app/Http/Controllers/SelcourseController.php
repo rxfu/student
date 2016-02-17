@@ -79,6 +79,10 @@ class SelcourseController extends Controller {
 
 				$courses[$timetable->ksj][$timetable->zc]['rows']     = $timetable->jsj - $timetable->ksj + 1;
 				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
+
+				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
+					$courses[$i][$timetable->zc]['rows'] = 0;
+				}
 			}
 		}
 

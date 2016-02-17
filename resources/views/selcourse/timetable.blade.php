@@ -9,7 +9,7 @@
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th colspan="2" class="active">节次</th>
@@ -44,18 +44,23 @@
                                     @for ($j = 1; $j <= 7; ++$j)
                                     	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
 										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
-                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
-                                    		@if (isset($courses[$i][$j]))
-                                    			@foreach ($courses[$i][$j] as $course)
-                                    				<p>
-                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
-	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
-	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
-	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
-                                    				</p>
-                                    			@endforeach
+                                    	@if (isset($courses[$i][$j]))
+                                    		@if ($rows)
+                                    			<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="warning"') : '' !!}>
+	                                    			@foreach ($courses[$i][$j] as $course)
+	                                    				<p>
+	                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+		                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                						<div class="text-success">第 {{ $course['ksj'] === $course['jsj'] ? $course['ksj'] : $course['ksj'] . ' ~ ' . $course['jsj'] }} 节</div>
+		                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+		                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+	                                    				</p>
+	                                    			@endforeach
+                                    			</td>
                                     		@endif
-                                    	</td>
+                                    	@else
+                                    		<td></td>
+                                    	@endif
                                     @endfor
                                 </tr>
                             @endfor
@@ -71,18 +76,23 @@
                                     @for ($j = 1; $j <= 7; ++$j)
                                     	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
 										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
-                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
-                                    		@if (isset($courses[$i][$j]))
-                                    			@foreach ($courses[$i][$j] as $course)
-                                    				<p>
-                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
-	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
-	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
-	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
-                                    				</p>
-                                    			@endforeach
+                                    	@if (isset($courses[$i][$j]))
+                                    		@if ($rows)
+                                    			<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="warning"') : '' !!}>
+	                                    			@foreach ($courses[$i][$j] as $course)
+	                                    				<p>
+	                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+		                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                						<div class="text-success">第 {{ $course['ksj'] === $course['jsj'] ? $course['ksj'] : $course['ksj'] . ' ~ ' . $course['jsj'] }} 节</div>
+		                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+		                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+	                                    				</p>
+	                                    			@endforeach
+                                    			</td>
                                     		@endif
-                                    	</td>
+                                    	@else
+                                    		<td></td>
+                                    	@endif
                                     @endfor
                                 </tr>
                             @endfor
@@ -98,18 +108,23 @@
                                     @for ($j = 1; $j <= 7; ++$j)
                                     	<?php $rows = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
 										<?php $conflict                        = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
-                                    	<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="success"') : '' !!}>
-                                    		@if (isset($courses[$i][$j]))
-                                    			@foreach ($courses[$i][$j] as $course)
-                                    				<p>
-                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
-	                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
-	                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
-	                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
-                                    				</p>
-                                    			@endforeach
+                                    	@if (isset($courses[$i][$j]))
+                                    		@if ($rows)
+                                    			<td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="warning"') : '' !!}>
+	                                    			@foreach ($courses[$i][$j] as $course)
+	                                    				<p>
+	                                    					<div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+		                                					<div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+	                                						<div class="text-success">第 {{ $course['ksj'] === $course['jsj'] ? $course['ksj'] : $course['ksj'] . ' ~ ' . $course['jsj'] }} 节</div>
+		                                					<div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+		                                					<div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+	                                    				</p>
+	                                    			@endforeach
+                                    			</td>
                                     		@endif
-                                    	</td>
+                                    	@else
+                                    		<td></td>
+                                    	@endif
                                     @endfor
                                 </tr>
                             @endfor
