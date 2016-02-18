@@ -5,7 +5,7 @@ return [
 	/**
 	 * 数据状态代码
 	 */
-	'status' => [
+	'status'    => [
 		'enable'  => true,
 		'disable' => false,
 	],
@@ -13,7 +13,7 @@ return [
 	/**
 	 * 日志操作类型
 	 */
-	'log'    => [
+	'log'       => [
 		'login'  => '登录系统',
 		'logout' => '登出系统',
 		'chgpwd' => '修改密码',
@@ -28,7 +28,7 @@ return [
 	/**
 	 * 成绩状态代码
 	 */
-	'score'  => [
+	'score'     => [
 		'uncommitted' => '0', // 未提交
 		'committed'   => '1', // 教师已提交
 		'confirmed'   => '2', // 学院已提交
@@ -40,14 +40,14 @@ return [
 	/**
 	 * 学籍状态
 	 */
-	'school' => [
+	'school'    => [
 		'student' => '01', // 在读学生
 	],
 
 	/**
 	 * 上传文件参数
 	 */
-	'file'   => [
+	'file'      => [
 
 		// 路径
 		'path'   => [
@@ -69,6 +69,30 @@ return [
 			'uploaded' => '1', // 照片已上传
 			'passed'   => '2', // 照片已确认
 			'refused'  => '3', // 照片审核未通过
+		],
+	],
+
+	/**
+	 * 课程表时间段参数
+	 */
+	'timetable' => [
+		'morning'   => [
+			'begin' => 1,
+			'end'   => 5,
+			'name'  => '上午',
+			'rest'  => '午休',
+		],
+		'afternoon' => [
+			'begin' => 6,
+			'end'   => 9,
+			'name'  => '下午',
+			'rest'  => '晚饭',
+		],
+		'evening'   => [
+			'begin' => 10,
+			'end'   => 12,
+			'name'  => '晚上',
+			'rest'  => '熄灯',
 		],
 	],
 ];
