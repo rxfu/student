@@ -77,18 +77,21 @@ return [
 	 */
 	'timetable' => [
 		'morning'   => [
+			'id'    => 'morning',
 			'begin' => 1,
 			'end'   => 5,
 			'name'  => '上午',
 			'rest'  => '午休',
 		],
 		'afternoon' => [
+			'id'    => 'afternoon',
 			'begin' => 6,
 			'end'   => 9,
 			'name'  => '下午',
 			'rest'  => '晚饭',
 		],
 		'evening'   => [
+			'id'    => 'evening',
 			'begin' => 10,
 			'end'   => 12,
 			'name'  => '晚上',

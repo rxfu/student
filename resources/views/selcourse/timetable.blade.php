@@ -35,6 +35,10 @@
                             </tr>
                         </tfoot>
                         <tbody>
+                        	@for ($i = config('constants.timetable.morning.begin'); $i <= config('constants.timetable.evening.end'); ++$i)
+                        		@if (in_array($i, $names = array_column(config('constants.timetable'), 'begin', 'id')))
+                        		@endif
+                        	@endfor
                             @for ($i = 1; $i <= 5; ++$i)
                                 <tr>
                                     @if (1 == $i)
