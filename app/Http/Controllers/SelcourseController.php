@@ -115,6 +115,18 @@ class SelcourseController extends Controller {
 					}
 				}
 
+				// 课程时间没有冲突
+				if (!isset($courses[$timetable->ksj][$timetable->zc])) {
+					$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
+					$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
+					$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+
+					for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
+						$courses[$i][$timetable->zc]['rbeg'] = 0;
+						$courses[$i][$timetable->zc]['rend'] = 0;
+					}
+				}
+
 				// 生成开始节、周次为索引的课程数组
 				$courses[$timetable->ksj][$timetable->zc][] = [
 					'kcxh' => $selcourse->kcxh,
@@ -128,13 +140,6 @@ class SelcourseController extends Controller {
 					'jsxm' => $timetable->teacher->xm,
 					'zc'   => $timetable->teacher->position->mc,
 				];
-
-				$courses[$timetable->ksj][$timetable->zc]['rows']     = $timetable->jsj - $timetable->ksj + 1;
-				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
-
-				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
-					$courses[$i][$timetable->zc]['rows'] = 0;
-				}
 			}
 		}
 
