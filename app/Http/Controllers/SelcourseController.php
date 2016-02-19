@@ -79,10 +79,39 @@ class SelcourseController extends Controller {
 					}
 				}
 
-				// 检测课程时间冲突：开始节
-				for ($i = $timetable->ksj; $i >= $periods[$id]['begin']; ++$i) {
-					if (isset($course[$i])) {
+				// 检测课程时间冲突
+				for ($i = $period[$id]['begin']; $i <= $periods[$id]['end']; ++$i) {
+					if (isset($courses[$i][$timetable->zc])) {
+						foreach ($courses[$i][$timetable->zc] as $course) {
 
+							// 判断开始周或结束周是否在其他课程开始周和结束周之间
+							if ($timetable->ksz >= $course['ksz'] && $timetable->ksz <= $course['jsz'] || $timetable->jsz >= $course['ksz'] && $timetable->jsz <= $course['jsz']) {
+
+								// 判断开始节是否在其它课程开始节和结束节之间
+								if ($timetable->ksj >= $course['ksj'] && $timetable->ksj <= $course['jsj']) {
+
+									// 设置冲突标志，修改表格行起止行数
+									$courses[$timetable->ksj][$timetable->zc]['conflict'] = true;
+									$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
+									$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+
+									// 修改冲突课程结束行数
+									$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+								}
+
+								// 判断结束节是否在其它课程开始节和结束节之间
+								if ($timetable->jsj >= $course['ksj'] && $timetable->jsj <= $course['jsj']) {
+
+									// 设置冲突标志，修改表格行起止行数
+									$courses[$timetable->ksj][$timetable->zc]['conflict'] = true;
+									$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
+									$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+
+									// 修改冲突课程结束行数
+									$courses[$i][$timetable->zc]['rbeg'] = $timetable->jsj;
+								}
+							}
+						}
 					}
 				}
 
