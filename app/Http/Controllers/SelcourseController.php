@@ -28,6 +28,8 @@ class SelcourseController extends Controller {
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
 				if (!isset($courses[$selcourse->kcxh])) {
 					$courses[$selcourse->kcxh] = [
 						'kcxh' => $selcourse->kcxh,
@@ -37,6 +39,7 @@ class SelcourseController extends Controller {
 					];
 				}
 
+				// 在课程信息数组下生成周次为索引的课程时间数组
 				$courses[$selcourse->kcxh][$timetable->zc][] = [
 					'ksz'  => $timetable->ksz,
 					'jsz'  => $timetable->jsz,
@@ -61,9 +64,29 @@ class SelcourseController extends Controller {
 	 */
 	public function timetable() {
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+		$periods    = config('constants.timetable');
 
 		foreach ($selcourses as $selcourse) {
+
+			// 获取课程时间
 			foreach ($selcourse->timetables as $timetable) {
+
+				// 获取课程所在时间段
+				foreach ($periods as $values) {
+					if ($timetable->ksj >= $values['begin'] && $timetable->jsj <= $values['end']) {
+						$id = $values['id'];
+						break;
+					}
+				}
+
+				// 检测课程时间冲突：开始节
+				for ($i = $timetable->ksj; $i >= $periods[$id]['begin']; ++$i) {
+					if (isset($course[$i])) {
+
+					}
+				}
+
+				// 生成开始节、周次为索引的课程数组
 				$courses[$timetable->ksj][$timetable->zc][] = [
 					'kcxh' => $selcourse->kcxh,
 					'kcmc' => $selcourse->course->kcmc,
@@ -89,7 +112,7 @@ class SelcourseController extends Controller {
 		return view('selcourse.timetable')
 			->withTitle('当前课程表')
 			->withCourses($courses)
-			->withPeriods(config('constants.timetable'));
+			->withPeriods($periods);
 	}
 
 	/**
