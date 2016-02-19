@@ -86,7 +86,10 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.timetable')->withTitle('当前课程表')->withCourses($courses);
+		return view('selcourse.timetable')
+			->withTitle('当前课程表')
+			->withCourses($courses)
+			->withPeriods(config('constants.timetable'));
 	}
 
 	/**

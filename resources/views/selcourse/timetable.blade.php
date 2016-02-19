@@ -35,9 +35,37 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                        	@for ($i = config('constants.timetable.morning.begin'); $i <= config('constants.timetable.evening.end'); ++$i)
-                        		@if (in_array($i, $names = array_column(config('constants.timetable'), 'begin', 'id')))
-                        		@endif
+                        	@for ($i = $periods['morning']['begin']; $i <= $periods['evening']['end']; ++$i)
+                                <tr>
+                            		@if ($id = array_search($i, array_column($periods, 'begin', 'id')))
+                                        <th rowspan="{{ $periods[$id]['end'] - $periods[$id]['begin'] + 1 }}" class="active text-cener">{{ $periods[$id]['name'] }}</th>
+                            		@endif
+                                    <th class="active">第{{ $i }}节</th>
+                                    @for ($j = 1; $j <= 7; ++$j)
+                                        <?php $rows     = isset($courses[$i][$j]['rows']) ? array_pull($courses[$i][$j], 'rows') : 1?>
+                                        <?php $conflict = isset($courses[$i][$j]['conflict']) ? array_pull($courses[$i][$j], 'conflict') : false?>
+                                        @if (isset($courses[$i][$j]))
+                                            @if ($rows)
+                                                <td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]) ? ($conflict ? ' class="danger"' : ' class="warning"') : '' !!}>
+                                                    @foreach ($courses[$i][$j] as $course)
+                                                        <p>
+                                                            <div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
+                                                            <div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
+                                                            <div class="text-success">第 {{ $course['ksj'] === $course['jsj'] ? $course['ksj'] : $course['ksj'] . ' ~ ' . $course['jsj'] }} 节</div>
+                                                            <div class='text-warning'>{{ empty($course['xqh']) ? '未知' : $course['xqh'] }}校区{{ empty($course['js']) ? '未知' : $course['js'] }}教室</div>
+                                                            <div class='text-info'>{{ empty($course['jsxm']) ? '未知老师' : $course['jsxm'] . ' ' . $course['zc'] }}</div>
+                                                        </p>
+                                                    @endforeach
+                                                </td>
+                                            @endif
+                                        @else
+                                            <td></td>
+                                        @endif
+                                    @endfor
+                                    @if ($i === $periods[$id]['end'])
+                                        <td colspan="9" class="text-center">{{ $periods[$id]['rest'] }}</td>
+                                    @endif
+                                </tr>
                         	@endfor
                             @for ($i = 1; $i <= 5; ++$i)
                                 <tr>
