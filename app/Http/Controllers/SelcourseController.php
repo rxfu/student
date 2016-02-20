@@ -70,8 +70,7 @@ class SelcourseController extends Controller {
 		$courses = [];
 		for ($i = $periods['morning']['begin']; $i <= $periods['evening']['end']; ++$i) {
 			for ($j = 1; $j <= 7; ++$j) {
-				$courses[$i][$j]['conflict'] = false;
-				$courses[$i][$j]['rbeg']     = $courses[$i][$j]['rend']     = $i;
+				$courses[$i][$j]['rbeg'] = $courses[$i][$j]['rend'] = $i;
 			}
 		}
 
@@ -82,8 +81,13 @@ class SelcourseController extends Controller {
 			foreach ($selcourse->timetables as $timetable) {
 
 				// 课程时间没有冲突
-				$courses[$timetable->ksj][$timetable->zc]['rbeg'] = $timetable->ksj;
-				$courses[$timetable->ksj][$timetable->zc]['rend'] = $timetable->jsj;
+				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
+				$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
+				$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+
+				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
+					$courses[$i][$timetable->zc]['rend'] -= 1;
+				}
 
 				// 生成开始节、周次为索引的课程数组
 				$courses[$timetable->ksj][$timetable->zc][] = [
@@ -123,10 +127,14 @@ class SelcourseController extends Controller {
 									// 设置冲突标志，修改表格行起止行数
 									$courses[$timetable->ksj][$timetable->zc]['conflict'] = true;
 									$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
-									$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+									$courses[$timetable->ksj][$timetable->zc]['rend']     = min($timetable->jsj, $course[$i][$timetable->zc]['jsj']);
 
 									// 修改冲突课程结束行数
 									$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+
+									// 设置新行
+									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'];
+									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rend'] = max($timetable->jsj, $course[$i][$timetable->zc]['jsj']);
 								}
 							}
 						}
