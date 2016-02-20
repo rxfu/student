@@ -161,6 +161,7 @@ return [
 		 */
 		Yajra\Datatables\DatatablesServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
+		Barryvdh\Debugbar\ServiceProvider::class,
 
 	],
 
@@ -213,6 +214,7 @@ return [
 		 */
 		'Datatables' => Yajra\Datatables\Datatables::class,
 		'Image'      => Intervention\Image\Facades\Image::class,
+		'Debugbar'   => Barryvdh\Debugbar\Facade::class,
 
 	],
 

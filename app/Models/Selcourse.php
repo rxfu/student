@@ -75,7 +75,10 @@ class Selcourse extends Model {
 	public function scopeSelectedCourses($query, $user) {
 		return $query->with([
 			'timetables'                  => function ($query) {
-				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh');
+				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh')
+					->orderBy('ksj', 'asc')
+					->orderBy('zc', 'asc')
+					->orderBy('ksz', 'asc');
 			},
 			'timetables.classroom'        => function ($query) {
 				$query->select('jsh', 'mc');
@@ -91,7 +94,8 @@ class Selcourse extends Model {
 			},
 			'course'                      => function ($query) {
 				$query->select('kch', 'kcmc');
-			}])
+			},
+		])
 			->whereXh($user->xh)
 			->whereNd(Setting::find('XK_ND')->value)
 			->whereXq(Setting::find('XK_XQ')->value);
