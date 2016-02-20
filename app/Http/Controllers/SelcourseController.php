@@ -120,21 +120,21 @@ class SelcourseController extends Controller {
 
 							// 判断开始周或结束周是否在其他课程开始周和结束周之间
 							if ($timetable->ksz >= $course['ksz'] && $timetable->ksz <= $course['jsz'] || $timetable->jsz >= $course['ksz'] && $timetable->jsz <= $course['jsz']) {
-
+								dd($timetable);
 								// 判断开始节是否在其它课程开始节和结束节之间
 								if ($timetable->ksj >= $course['ksj'] && $timetable->ksj <= $course['jsj']) {
 
 									// 设置冲突标志，修改表格行起止行数
 									$courses[$timetable->ksj][$timetable->zc]['conflict'] = true;
 									$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
-									$courses[$timetable->ksj][$timetable->zc]['rend']     = min($timetable->jsj, $course[$i][$timetable->zc]['jsj']);
+									$courses[$timetable->ksj][$timetable->zc]['rend']     = min($timetable->jsj, $course['jsj']);
 
 									// 修改冲突课程结束行数
 									$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
 
 									// 设置新行
 									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'];
-									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rend'] = max($timetable->jsj, $course[$i][$timetable->zc]['jsj']);
+									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
 								}
 							}
 						}

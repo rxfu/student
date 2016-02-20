@@ -32,7 +32,7 @@
                                     @for ($j = 1; $j <= 7; ++$j)
                                         @if ($rows = $courses[$i][$j]['rend'] - $courses[$i][$j]['rbeg'] + 1)
                                             <td{!! 1 < $rows ? ' rowspan="' . $rows . '"' : '' !!}{!! isset($courses[$i][$j]['conflict']) ? ($courses[$i][$j]['conflict'] ? ' class="danger"' : ' class="warning"') : '' !!}>
-                                                @foreach ($courses[$i][$j] as $course)
+                                                @foreach (array_filter($courses[$i][$j], function($v) { return is_array($v); }) as $course)
                                                     <p>
                                                         <div class="text-danger"><strong>{{ $course['kcmc'] }}</strong></div>
                                                         <div>第 {{ $course['ksz'] === $course['jsz'] ? $course['ksz'] : $course['ksz'] . ' ~ ' . $course['jsz'] }} 周</div>
