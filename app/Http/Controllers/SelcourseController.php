@@ -66,10 +66,38 @@ class SelcourseController extends Controller {
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
 		$periods    = config('constants.timetable');
 
+		// 初始化课程数组
+		$courses = [];
+		for ($i = $periods['morning']['begin']; $i <= $periods['evening']['end']; ++$i) {
+			for ($j = 1; $j <= 7; ++$j) {
+				$courses[$i][$j]['conflict'] = false;
+				$courses[$i][$j]['rbeg']     = $courses[$i][$j]['rend']     = $i;
+			}
+		}
+
+		// 遍历已选课程
 		foreach ($selcourses as $selcourse) {
 
 			// 获取课程时间
 			foreach ($selcourse->timetables as $timetable) {
+
+				// 课程时间没有冲突
+				$courses[$timetable->ksj][$timetable->zc]['rbeg'] = $timetable->ksj;
+				$courses[$timetable->ksj][$timetable->zc]['rend'] = $timetable->jsj;
+
+				// 生成开始节、周次为索引的课程数组
+				$courses[$timetable->ksj][$timetable->zc][] = [
+					'kcxh' => $selcourse->kcxh,
+					'kcmc' => $selcourse->course->kcmc,
+					'xqh'  => $timetable->campus->mc,
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => $timetable->teacher->position->mc,
+				];
 
 				// 获取课程所在时间段
 				foreach ($periods as $values) {
@@ -81,8 +109,10 @@ class SelcourseController extends Controller {
 
 				// 检测课程时间冲突
 				for ($i = $timetable->ksj; $i >= $periods[$id]['begin']; --$i) {
-					if (isset($courses[$i][$timetable->zc])) {
-						foreach ($courses[$i][$timetable->zc] as $course) {
+
+					// 只获取课程数组
+					if (!empty($classes = array_filter($courses[$i][$timetable->zc], function ($v) {return is_array($v);}))) {
+						foreach ($classes as $course) {
 
 							// 判断开始周或结束周是否在其他课程开始周和结束周之间
 							if ($timetable->ksz >= $course['ksz'] && $timetable->ksz <= $course['jsz'] || $timetable->jsz >= $course['ksz'] && $timetable->jsz <= $course['jsz']) {
@@ -102,27 +132,6 @@ class SelcourseController extends Controller {
 						}
 					}
 				}
-
-				// 课程时间没有冲突
-				if (!isset($courses[$timetable->ksj][$timetable->zc])) {
-					$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
-					$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
-					$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
-				}
-
-				// 生成开始节、周次为索引的课程数组
-				$courses[$timetable->ksj][$timetable->zc][] = [
-					'kcxh' => $selcourse->kcxh,
-					'kcmc' => $selcourse->course->kcmc,
-					'xqh'  => $timetable->campus->mc,
-					'ksz'  => $timetable->ksz,
-					'jsz'  => $timetable->jsz,
-					'ksj'  => $timetable->ksj,
-					'jsj'  => $timetable->jsj,
-					'js'   => $timetable->classroom->mc,
-					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
-				];
 			}
 		}
 
