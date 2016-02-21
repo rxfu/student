@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exregister;
+use App\Models\Extype;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -15,28 +16,33 @@ use Illuminate\Http\Request;
  * @version 2.0
  */
 class ExamController extends Controller {
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index() {
-		//
-	}
 
 	/**
-	 * 显示考试历史报名信息
+	 * 显示考试列表
 	 * @author FuRongxin
 	 * @date    2016-02-21
 	 * @version 2.0
-	 * @return  \Illuminate\Http\Response 历史报名信息列表
+	 * @return  \Illuminate\Http\Response 考试列表
+	 */
+	public function index() {
+		$exams = Extype::whereZt(config('constants.status.enable'))->get();
+
+		return view('exam.index')->withTitle('考试报名')->withExams($exams);
+	}
+
+	/**
+	 * 显示考试历次报名信息
+	 * @author FuRongxin
+	 * @date    2016-02-21
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 历次报名信息列表
 	 */
 	public function history() {
 		$exams = Exregister::whereXh(Auth::user()->xh)
 			->orderBy('bmsj', 'desc')
 			->get();
 
-		return view('exam.history')->withTitle('考试报名信息')->withExams($exams);
+		return view('exam.history')->withTitle('历次考试报名信息')->withExams($exams);
 	}
 
 	/**
