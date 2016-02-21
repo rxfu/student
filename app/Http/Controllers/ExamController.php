@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Exregister;
 use App\Models\Extype;
+use App\Models\Profile;
+use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -26,23 +28,30 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
-		$types = Extype::whereZt(config('constants.status.enable'))->get();
+		$exams = Extype::whereZt(config('constants.status.enable'))->get();
 
-		foreach ($types as $type) {
+		foreach ($exams as &$exam) {
 
 			// 检测是否CET4
-			if (in_array($type->kslx, Helper::getCet4())) {
+			if (in_array($exam->kslx, Helper::getCet4())) {
 
 				// 检测是否允许新生报考CET4
 				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
 
 					// 不允许新生报考CET4
-					$is_fresh = Student::whereXh(Auth::user()->xh)
-						->whereXjzt(config('constants.student.school'))
+					$is_fresh = Profile::whereXh(Auth::user()->xh)
+						->whereXjzt(config('constants.school.student'))
 						->whereRaw('age(rxrq) < \'1 year\'')
+						->where('xz', '<>', '2')
 						->exists();
+					if ($is_fresh) {
+						$exam->zt = config('constants.status.disable');
+					}
 				}
 			}
+
+			// 检测是否CET6
+			if (config('constants.exam.type.cet6') == $exam->kslx) {}
 		}
 
 		return view('exam.index')->withTitle('考试报名')->withExams($exams);
