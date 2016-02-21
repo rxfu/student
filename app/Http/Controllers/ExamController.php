@@ -25,7 +25,15 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
-		$exams = Extype::whereZt(config('constants.status.enable'))->get();
+		$types = Extype::whereZt(config('constants.status.enable'))->get();
+
+		foreach ($types as $type) {
+
+			// 检测是否CET考试
+			if (in_array($type->kslx, config('constants.exam.type'))) {
+
+			}
+		}
 
 		return view('exam.index')->withTitle('考试报名')->withExams($exams);
 	}
