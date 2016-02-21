@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 常用系统参数
+ *
+ * @author FuRongxin
+ * @date 2016-01-15
+ * @version 2.0
+ */
 return [
 
 	/**
@@ -76,6 +83,8 @@ return [
 	 * 课程表时间段参数
 	 */
 	'timetable' => [
+
+		// 上午
 		'morning'   => [
 			'id'    => 'morning',
 			'begin' => 1,
@@ -83,6 +92,8 @@ return [
 			'name'  => '上午',
 			'rest'  => '午休',
 		],
+
+		// 下午
 		'afternoon' => [
 			'id'    => 'afternoon',
 			'begin' => 6,
@@ -90,12 +101,36 @@ return [
 			'name'  => '下午',
 			'rest'  => '晚饭',
 		],
+
+		// 晚上
 		'evening'   => [
 			'id'    => 'evening',
 			'begin' => 10,
 			'end'   => 12,
 			'name'  => '晚上',
 			'rest'  => '熄灯',
+		],
+	],
+
+	/**
+	 * 考试代码
+	 */
+	'exam'      => [
+
+		// 考试类型代码
+		'type'   => [
+			'cet3' => '03', // 英语三级
+			'cet4' => '04', // 英语四级
+			'cet6' => '06', // 英语六级
+			'cjt4' => '22', // 日语四级
+			'cft4' => '23', // 法语四级
+		],
+
+		// 考试报名状态代码
+		'status' => [
+			'register'  => '1', // 已报名
+			'confirmed' => '2', // 报名已确认
+			'payment'   => '3', // 报名已缴费
 		],
 	],
 ];
