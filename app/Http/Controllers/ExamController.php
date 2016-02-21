@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Exregister;
 use App\Models\Extype;
 use Auth;
@@ -29,9 +30,18 @@ class ExamController extends Controller {
 
 		foreach ($types as $type) {
 
-			// 检测是否CET考试
-			if (in_array($type->kslx, config('constants.exam.type'))) {
+			// 检测是否CET4
+			if (in_array($type->kslx, Helper::getCet4())) {
 
+				// 检测是否允许新生报考CET4
+				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+
+					// 不允许新生报考CET4
+					$is_fresh = Student::whereXh(Auth::user()->xh)
+						->whereXjzt(config('constants.student.school'))
+						->whereRaw('age(rxrq) < \'1 year\'')
+						->exists();
+				}
 			}
 		}
 

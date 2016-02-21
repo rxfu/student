@@ -22,4 +22,15 @@ class Helper {
 	public static function trimString($value) {
 		return is_string($value) ? trim($value) : $value;
 	}
+
+	/**
+	 * 获取CET4考试列表
+	 * @author FuRongxin
+	 * @date    2016-02-21
+	 * @version 2.0
+	 * @return  array CET4考试列表
+	 */
+	public static function getCet4() {
+		return array_slice(config('constants.exam.type'), 3);
+	}
 }
