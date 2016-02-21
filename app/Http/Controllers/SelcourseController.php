@@ -89,20 +89,6 @@ class SelcourseController extends Controller {
 					$courses[$i][$timetable->zc]['rend'] -= 1;
 				}
 
-				// 生成开始节、周次为索引的课程数组
-				$courses[$timetable->ksj][$timetable->zc][] = [
-					'kcxh' => $selcourse->kcxh,
-					'kcmc' => $selcourse->course->kcmc,
-					'xqh'  => $timetable->campus->mc,
-					'ksz'  => $timetable->ksz,
-					'jsz'  => $timetable->jsz,
-					'ksj'  => $timetable->ksj,
-					'jsj'  => $timetable->jsj,
-					'js'   => $timetable->classroom->mc,
-					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
-				];
-
 				// 获取课程所在时间段
 				foreach ($periods as $values) {
 					if ($timetable->ksj >= $values['begin'] && $timetable->jsj <= $values['end']) {
@@ -120,7 +106,7 @@ class SelcourseController extends Controller {
 
 							// 判断开始周或结束周是否在其他课程开始周和结束周之间
 							if ($timetable->ksz >= $course['ksz'] && $timetable->ksz <= $course['jsz'] || $timetable->jsz >= $course['ksz'] && $timetable->jsz <= $course['jsz']) {
-								dd($timetable);
+
 								// 判断开始节是否在其它课程开始节和结束节之间
 								if ($timetable->ksj >= $course['ksj'] && $timetable->ksj <= $course['jsj']) {
 
@@ -140,6 +126,20 @@ class SelcourseController extends Controller {
 						}
 					}
 				}
+
+				// 生成开始节、周次为索引的课程数组
+				$courses[$timetable->ksj][$timetable->zc][] = [
+					'kcxh' => $selcourse->kcxh,
+					'kcmc' => $selcourse->course->kcmc,
+					'xqh'  => $timetable->campus->mc,
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => $timetable->teacher->position->mc,
+				];
 			}
 		}
 
