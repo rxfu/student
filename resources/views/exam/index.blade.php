@@ -15,12 +15,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($exams->where('zt', config('constants.status.disable')) as $exam)
+                            @foreach ($exams as $exam)
                             <tr>
-                            	<td>{{ $exam->ksmc }}</td>
-                            	<td>{{ $exam->sj }}</td>
+                            	<td>{{ $exam['ksmc'] }}</td>
+                            	<td>{{ $exam['sj'] }}</td>
                             	<td>
-                            		<a href="{{ url('exam/register', $exam->kslx) }}" title="报名" class="btn btn-primary">报名</a>
+                            		<a href="{{ url('exam/register', $exam['kslx']) }}" title="报名" class="btn btn-primary">报名</a>
                             	</td>
                             </tr>
                             @endforeach

@@ -28,12 +28,12 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
-		$exams = Extype::whereZt(config('constants.status.enable'))->get();
+		$types = Extype::whereZt(config('constants.status.enable'))->get();
 
-		foreach ($exams as &$exam) {
+		foreach ($types as $type) {
 
 			// 检测是否CET4
-			if (in_array($exam->kslx, Helper::getCet4())) {
+			if (in_array($type->kslx, Helper::getCet4())) {
 
 				// 检测是否允许新生报考CET4
 				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
@@ -45,13 +45,15 @@ class ExamController extends Controller {
 						->where('xz', '<>', '2')
 						->exists();
 					if ($is_fresh) {
-						$exam->zt = config('constants.status.disable');
+						continue;
 					}
 				}
 			}
 
 			// 检测是否CET6
-			if (config('constants.exam.type.cet6') == $exam->kslx) {}
+			if (config('constants.exam.type.cet6') == $type->kslx) {}
+
+			$exams[] = $type;
 		}
 
 		return view('exam.index')->withTitle('考试报名')->withExams($exams);
