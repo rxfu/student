@@ -182,16 +182,11 @@
                             <li>
                                 <a href="#"><i class="fa fa-tablet fa-fw"></i> 考试报名<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
-                                            <li>
-                                                <a href="#">#<span class="fa arrow"></span></a>
-                                                <ul class="nav nav-third-level">
-                                                        <li>
-                                                            <a href="#">#</a>
-                                                        </li>
-                                                </ul>
-                                            </li>
                                     <li>
-                                        <a href="#">历史报名信息</a>
+                                        <a href="{{ url('exam') }}">考试列表</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('exam/history') }}">历史报名信息</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->

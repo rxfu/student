@@ -61,6 +61,9 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index']]);
 
+		Route::get('exam/history', 'ExamController@history');
+		Route::resource('exam', 'ExamController', ['only' => ['index']]);
+
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 		Route::get('password/change', 'Auth\PasswordController@showChangeForm');
 		Route::put('password/change', 'Auth\PasswordController@change');
