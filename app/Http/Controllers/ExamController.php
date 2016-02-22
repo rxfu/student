@@ -147,6 +147,22 @@ class ExamController extends Controller {
 			return redirect('profile/upfile');
 		}
 
+		$exam = Extype::find($kslx);
+
+		// 检测是否已经报过CET考试
+		if (config('constants.exam.type.cet') == $exam->ksdl) {
+
+			$registered = Exregister::with('type')
+				->whereNd($exam->nd)
+				->whereXh(Auth::user()->xh);
+
+			foreach ($registered as $cet) {
+				if (config('constants.exam.type.cet') == $cet->type->ksdl) {
+					abort(403,'已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名')
+				}
+			}
+		}
+
 		$profile = Profile::find(Auth::user()->xh);
 		$exam    = Extype::find($kslx);
 
@@ -158,14 +174,56 @@ class ExamController extends Controller {
 	}
 
 	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
+	 * 学生考试报名
+	 * @author FuRongxin
+	 * @date    2016-02-22
+	 * @version 2.0
+	 * @param   \Illuminate\Http\Request $request 报名请求
+	 * @param   string $kslx 考试类型代码
+	 * @return  \Illuminate\Http\Response 报名列表
 	 */
-	public function update(Request $request, $id) {
+	public function update(Request $request, $kslx) {
+		$exam       = Extype::find($kslx);
+		$registered = Exregister::whereNd($exam->nd)
+			->whereXh(Auth::user()->xh)
+			->whereKslx($kslx)
+			->exists();
 
+		// 检测是否已经报过名
+		if (!$registered) {
+
+			// 检测是否CET4
+			if (in_array($exam->kslx, Helper::getCet4())) {
+
+				// 检测是否允许新生报考CET4
+				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+
+					// 不允许新生报考CET4
+					if (Profile::isFresh(Auth::user())->exists()) {
+						abort(403, '不允许新生报考CET4');
+					}
+
+				}
+			}
+
+			// 检测是否CET6
+			if (config('constants.exam.type.cet6') == $exam->kslx) {
+
+				// 检测是否允许新生报考CET6
+				if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
+
+					// 不允许新生报考CET6
+					if (Profile::isFresh(Auth::user())->exists()) {
+						abort(403, '不允许新生报考CET6');
+					}
+				}
+
+				// 检测CET6是否具有过往成绩或者CET4是否及格
+				if (!Exscore::whereC_xh(Auth::user()->xh)->whereC_kslx(config('constants.exam.type.cet6'))->exists() && !Exscore::isPassed(Auth::user(), Helper::getCet4())->exists()) {
+					abort(403, '四级成绩不达标，不能参加CET6考试');
+				}
+			}
+		}
 	}
 
 	/**
