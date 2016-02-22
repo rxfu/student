@@ -11,6 +11,7 @@ use App\Models\Profile;
 use App\Models\Setting;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 显示并处理国家考试信息
@@ -142,6 +143,10 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试报名表单
 	 */
 	public function edit($kslx) {
+		if (!Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext'))) {
+			return redirect('profile/upfile');
+		}
+
 		$profile = Profile::find(Auth::user()->xh);
 		$exam    = Extype::find($kslx);
 
@@ -160,7 +165,7 @@ class ExamController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id) {
-		//
+
 	}
 
 	/**

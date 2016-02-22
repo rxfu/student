@@ -8,6 +8,31 @@
 
 ##Change Log
 
+###v6.6.1 - 2016-02-20
+    - Fix eager loading search (SQLSTATE[21000]: Cardinality violation:). Issue #403.
+
+###v6.6.0 - 2016-02-20
+    - Add totalCount on contact and remove excess new line.
+    - Remove unnecessary abstract function on BaseEngine since we have a contract.
+    - Remove engine implementation of contract since BaseEngine already requires it.
+    - Improve column name detection for filtering and sorting.
+    - Dynamically determine if oracle depending on connection used.
+    - Automatic detection of primary key when using Eloquent engine.
+    - Use primary key when column name could not be resolve.
+    - Update DataTable service doc blocks and refactor render method.
+
+###v6.5.1 - 2016-02-19
+    - Fix ordering column name detection. Issue #339.
+    - Refactor Builder parameterize method.
+
+###v6.5.0 - 2016-02-18
+    - Add support for DataTables valid callbacks.
+    - Fix issue #387 & #401.
+
+###v6.4.5 - 2016-02-18
+    - Allow edit columns for nested arrays. PR #399 - credits to @ramilexe
+    - Fix flag for case insensitive search. PR #400 - credits to @ansient 
+    
 ###v6.4.4 - 2016-02-13
     - Fix filtering in nested columns of Collections. PR #392
     

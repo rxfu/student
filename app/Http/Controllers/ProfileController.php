@@ -44,7 +44,12 @@ class ProfileController extends Controller {
 	 */
 	public function showUpfileForm() {
 		if ($this->allowUploadFile()) {
-			return view('profile.upload')->withTitle(' 上传照片');
+			$exists = Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext'));
+
+			return view('profile.upload')
+				->withTitle(' 上传照片')
+				->withExists($exists)
+				->withStatus(Auth::user()->zpzt);
 		}
 
 		abort(403, '不允许上传照片');
@@ -73,7 +78,11 @@ class ProfileController extends Controller {
 						->encode(config('constants.file.image.ext'), config('constants.file.image.quality'));
 					Storage::put($filename, $image->stream());
 
-					return redirect('profile/upfile')->withStatus('上传照片成功');
+					$user       = Auth::user();
+					$user->zpzt = config('constants.file.status.uploaded');
+					$user->save();
+
+					return redirect('profile')->withStatus('上传照片成功');
 				}
 			}
 

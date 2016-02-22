@@ -28,3 +28,17 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+@if (!$exists || config('constants.file.status.none') == $status)
+    alert('请上传图像要求为高320（像素）*宽240（像素）的蓝底免冠证件照，要求jpg格式，方能进行考试报名。若因照片不符合要求而引起的考生无法参加考试等情况，由考生自行负责。');
+@elseif (config('constants.file.status.uploaded') == $status)
+    alert('考生照片未审核，待审核通过后方能进行报名，审核将于半个工作日内完成。');
+@elseif (config('constants.file.status.refused') == $status)
+    alert('考生照片审核不合格，请上传图像要求为高320（像素）*宽240（像素）的蓝底免冠证件照，要求jpg格式，待审核通过后方能进行报名，审核将于半个工作日内完成。');
+@elseif (config('constants.file.status.passed') == $status)
+    alert('请核对考生个人信息无误并确认本人照片为符合要求的蓝底免冠证件照，方能进行考试报名。若因照片不符合要求而引起的考生无法参加考试等情况，由考生自行负责。');
+@endif
+</script>
+@endpush

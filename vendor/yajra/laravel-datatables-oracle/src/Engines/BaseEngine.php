@@ -233,62 +233,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Setup column name to be use for filtering.
-     *
-     * @param integer $i
-     * @param bool $wantsAlias
-     * @return string
-     */
-    public function setupColumnName($i, $wantsAlias = false)
-    {
-        $column = $this->getColumnName($i);
-        if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->extractColumnName($column, $wantsAlias);
-        }
-
-        return $column;
-    }
-
-    /**
-     * Get column name by order column index.
-     *
-     * @param int $column
-     * @return mixed
-     */
-    protected function getColumnName($column)
-    {
-        $name = $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
-
-        return in_array($name, $this->extraColumns, true) ? $this->columns[0] : $name;
-    }
-
-    /**
-     * Get column name from string.
-     *
-     * @param string $str
-     * @param bool $wantsAlias
-     * @return string
-     */
-    public function extractColumnName($str, $wantsAlias)
-    {
-        $matches = explode(' as ', Str::lower($str));
-
-        if (! empty($matches)) {
-            if ($wantsAlias) {
-                return array_pop($matches);
-            } else {
-                return array_shift($matches);
-            }
-        } elseif (strpos($str, '.')) {
-            $array = explode('.', $str);
-
-            return array_pop($array);
-        }
-
-        return $str;
-    }
-
-    /**
      * Will prefix column if needed.
      *
      * @param string $column
@@ -421,6 +365,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Allows previous API calls where the methods were snake_case.
      * Will convert a camelCase API call to a snake_case call.
+     * Allow query builder method to be used by the engine.
      *
      * @param  $name
      * @param  $arguments
@@ -604,13 +549,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Count total items.
-     *
-     * @return integer
-     */
-    abstract public function totalCount();
-
-    /**
      * Sort records.
      *
      * @param  boolean $skip
@@ -622,13 +560,6 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->ordering();
         }
     }
-
-    /**
-     * Perform sorting of columns.
-     *
-     * @return void
-     */
-    abstract public function ordering();
 
     /**
      * Perform necessary filters.
@@ -650,27 +581,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Perform global search.
-     *
-     * @return void
-     */
-    abstract public function filtering();
-
-    /**
-     * Perform column search.
-     *
-     * @return void
-     */
-    abstract public function columnSearch();
-
-    /**
-     * Count results.
-     *
-     * @return integer
-     */
-    abstract public function count();
-
-    /**
      * Apply pagination.
      *
      * @return void
@@ -681,13 +591,6 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->paging();
         }
     }
-
-    /**
-     * Perform pagination
-     *
-     * @return void
-     */
-    abstract public function paging();
 
     /**
      * Render json response.
@@ -742,13 +645,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get results
-     *
-     * @return array
-     */
-    abstract public function results();
-
-    /**
      * Get processed data
      *
      * @param bool|false $object
@@ -788,15 +684,6 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $output;
     }
-
-    /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search
-     *
-     * @param \Closure $callback
-     * @return $this
-     */
-    abstract public function filter(\Closure $callback);
 
     /**
      * Update flags to disable global search
@@ -857,12 +744,88 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Check if the current sql language is based on oracle syntax.
+     * Get column name to be use for filtering and sorting.
+     *
+     * @param integer $index
+     * @param bool $wantsAlias
+     * @return string
+     */
+    protected function getColumnName($index, $wantsAlias = false)
+    {
+        $column = $this->request->columnName($index);
+
+        // DataTables is using make(false)
+        if (is_numeric($column)) {
+            $column = $this->getColumnNameByIndex($index);
+        }
+
+        if (Str::contains(Str::upper($column), ' AS ')) {
+            $column = $this->extractColumnName($column, $wantsAlias);
+        }
+
+        return $column;
+    }
+
+    /**
+     * Get column name by order column index.
+     *
+     * @param int $index
+     * @return mixed
+     */
+    protected function getColumnNameByIndex($index)
+    {
+        $name = isset($this->columns[$index]) && $this->columns[$index] <> '*' ? $this->columns[$index] : $this->getPrimaryKeyName();
+
+        return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
+    }
+
+    /**
+     * If column name could not be resolved then use primary key.
+     *
+     * @return string
+     */
+    protected function getPrimaryKeyName()
+    {
+        if ($this->isEloquent()) {
+            return $this->query->getModel()->getKeyName();
+        }
+
+        return 'id';
+    }
+
+    /**
+     * Check if the engine used was eloquent.
      *
      * @return bool
      */
-    public function isOracleSql()
+    protected function isEloquent()
     {
-        return Config::get('datatables.oracle_sql', false);
+        return $this->query_type === 'eloquent';
+    }
+
+    /**
+     * Get column name from string.
+     *
+     * @param string $str
+     * @param bool $wantsAlias
+     * @return string
+     */
+    protected function extractColumnName($str, $wantsAlias)
+    {
+        $matches = explode(' as ', Str::lower($str));
+
+        if (! empty($matches)) {
+            if ($wantsAlias) {
+                return array_pop($matches);
+            } else {
+                return array_shift($matches);
+            }
+        } elseif (strpos($str, '.')) {
+            $array = explode('.', $str);
+
+            return array_pop($array);
+        }
+
+        return $str;
     }
 }

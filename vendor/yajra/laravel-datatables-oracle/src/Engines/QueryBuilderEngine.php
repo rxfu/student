@@ -13,11 +13,10 @@ namespace Yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
 
-class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
+class QueryBuilderEngine extends BaseEngine
 {
     /**
      * @param \Illuminate\Database\Query\Builder $builder
@@ -107,7 +106,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
             function ($query) use ($eagerLoads) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $columnName = $this->setupColumnName($index);
+                    $columnName = $this->getColumnName($index);
 
                     if (isset($this->columnDef['filter'][$columnName])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
@@ -216,8 +215,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     {
         $myQuery = clone $this->query;
         $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
-            $q->where($column, 'like', $keyword);
-            $sql = $q->toSql();
+            $sql = $q->select($this->connection->raw('count(1)'))
+                     ->where($column, 'like', $keyword)
+                     ->toSql();
             $sql = "($sql) >= 1";
             $query->orWhereRaw($sql, [$keyword]);
         });
@@ -268,7 +268,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->setupColumnName($i);
+                $column  = $this->getColumnName($i);
                 $keyword = $this->getSearchKeyword($i);
 
                 if (isset($this->columnDef['filter'][$column])) {
@@ -278,10 +278,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->compileColumnSearch($i, $column, $keyword, true);
+                        $this->compileColumnSearch($i, $column, $keyword, false);
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->compileColumnSearch($i, $col, $keyword, false);
+                        $this->compileColumnSearch($i, $col, $keyword, true);
                     }
                 }
 
@@ -343,6 +343,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    protected function isOracleSql()
+    {
+        return $this->database === 'oracle';
+    }
+
+    /**
      * Perform sorting of columns.
      *
      * @return void
@@ -356,7 +366,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->setupOrderColumn($orderable);
+            $column = $this->getColumnName($orderable['column'], true);
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
@@ -364,41 +374,15 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                     $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
                 );
             } else {
-                /**
-                 * If we perform a select("*"), the ORDER BY clause will look like this:
-                 * ORDER BY * ASC
-                 * which causes a query exception
-                 * The temporary fix is modify `*` column to `id` column
-                 */
-                if ($column === '*') {
-                    $column = 'id';
-                }
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
     }
 
     /**
-     * Get order by column name.
+     * Perform pagination
      *
-     * @param array $orderable
-     * @return string
-     */
-    private function setupOrderColumn(array $orderable)
-    {
-        $r_column = $this->request->input('columns')[$orderable['column']];
-        $column   = isset($r_column['name']) ? $r_column['name'] : $r_column['data'];
-        if ($column >= 0) {
-            $column = $this->setupColumnName($orderable['column'], true);
-
-            return $column;
-        }
-
-        return $column;
-    }
-
-    /**
-     * @inheritdoc
+     * @return void
      */
     public function paging()
     {

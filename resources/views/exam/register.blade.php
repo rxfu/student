@@ -52,3 +52,8 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+</script>
+@endpush
