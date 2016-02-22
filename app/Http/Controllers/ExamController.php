@@ -147,16 +147,20 @@ class ExamController extends Controller {
 			return redirect('profile/upfile');
 		}
 
-		$exam = Extype::find($kslx);
+		$exam       = Extype::find($kslx);
+		$registered = Exregister::whereNd($exam->nd)
+			->whereXh(Auth::user()->xh)
+			->whereKslx($kslx)
+			->exists();
 
 		// 检测是否已经报过CET考试
 		if (config('constants.exam.type.cet') == $exam->ksdl) {
 
-			$registered = Exregister::with('type')
+			$exams = Exregister::with('type')
 				->whereNd($exam->nd)
 				->whereXh(Auth::user()->xh);
 
-			foreach ($registered as $cet) {
+			foreach ($exams as $cet) {
 				if (config('constants.exam.type.cet') == $cet->type->ksdl) {
 					abort(403, '已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名');
 				}
@@ -170,7 +174,8 @@ class ExamController extends Controller {
 			->withTitle('考试报名')
 			->withInfo('请认真核准自己的报名信息')
 			->withProfile($profile)
-			->withExam($exam);
+			->withExam($exam)
+			->withRegistered($registered);
 	}
 
 	/**
@@ -240,7 +245,7 @@ class ExamController extends Controller {
 		}
 
 		$register       = new Exregister();
-		$register->xh   = Auth::usre()->xh;
+		$register->xh   = Auth::user()->xh;
 		$register->xq   = Auth::user()->profile->college->pivot->xq;
 		$register->kslx = $kslx;
 		$register->bklb = '00';
@@ -250,7 +255,7 @@ class ExamController extends Controller {
 		$register->nd   = $exam->nd;
 		$register->save();
 
-		return redirect('exam/register')->withStatus('考试报名成功');
+		return redirect('exam')->withStatus('考试报名成功');
 	}
 
 	/**

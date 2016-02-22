@@ -32,15 +32,27 @@
                                 <label for="cno" class="col-sm-4">所在校区</label>
                                 <div class="col-sm-8">{{ $profile->college->pivot->campus->mc }}</div>
                             </div>
-                            <form id="registerForm" name="registerForm" method="post" action="{{ route('exam.update', $exam->kslx) }}" role="form">
-                            	{!! method_field('put') !!}
-                            	{!! csrf_field() !!}
-                                <div class="form-group">
-                                    <div class="col-sm-8 col-sm-offset-4">
-                                        <button type="submit" class="btn btn-primary">报名</button>
-                                    </div>
-                                </div>
-                            </form>
+                            @if ($registered)
+                            	<form id="registerForm" name="registerForm" method="post" action="{{ route('exam.destroy', $exam->kslx) }}" role="form">
+	                            	{!! method_field('delete') !!}
+	                            	{!! csrf_field() !!}
+	                                <div class="form-group">
+	                                    <div class="col-sm-8 col-sm-offset-4">
+	                                        <button type="submit" class="btn btn-danger">取消报名</button>
+	                                    </div>
+	                                </div>
+	                            </form>
+                            @else
+	                            <form id="registerForm" name="registerForm" method="post" action="{{ route('exam.update', $exam->kslx) }}" role="form">
+	                            	{!! method_field('put') !!}
+	                            	{!! csrf_field() !!}
+	                                <div class="form-group">
+	                                    <div class="col-sm-8 col-sm-offset-4">
+	                                        <button type="submit" class="btn btn-primary">报名</button>
+	                                    </div>
+	                                </div>
+	                            </form>
+                            @endif
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -52,8 +64,3 @@
     </div>
 </section>
 @stop
-
-@push('scripts')
-<script>
-</script>
-@endpush
