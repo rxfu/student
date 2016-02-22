@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Exregister;
 use App\Models\Fresh;
 use App\Models\Profile;
 use Auth;
@@ -31,11 +32,7 @@ class AppServiceProvider extends ServiceProvider {
 				->withUser($user);
 		});
 
-		Exregistered::created(function ($exam) {
-			if (!$exam->isValid()) {
-				return false;
-			}
-
+		Exregister::created(function ($exam) {
 			$log = new Slog;
 
 			$log->ip   = request()->ip();
@@ -44,11 +41,7 @@ class AppServiceProvider extends ServiceProvider {
 			$log->save();
 		});
 
-		Exregistered::deleted(function ($exam) {
-			if (!$exam->isValid()) {
-				return false;
-			}
-
+		Exregister::deleted(function ($exam) {
 			$log = new Slog;
 
 			$log->ip   = request()->ip();
