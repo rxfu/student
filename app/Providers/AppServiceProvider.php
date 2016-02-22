@@ -30,6 +30,32 @@ class AppServiceProvider extends ServiceProvider {
 				->withIsStudent($is_student)
 				->withUser($user);
 		});
+
+		Exregistered::created(function ($exam) {
+			if (!$exam->isValid()) {
+				return false;
+			}
+
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'regist';
+
+			$log->save();
+		});
+
+		Exregistered::deleted(function ($exam) {
+			if (!$exam->isValid()) {
+				return false;
+			}
+
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'cancel';
+
+			$log->save();
+		});
 	}
 
 	/**
