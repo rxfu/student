@@ -32,7 +32,7 @@ class FreshController extends Controller {
 
 				return view('fresh.edit')
 					->withTitle('新生信息核对')
-					->withStatus('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
+					->withInfo('初次登录请务必修改密码，若密码忘记请联系年级辅导员初始化。')
 					->withProfile($profile);
 			}
 

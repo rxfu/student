@@ -22,6 +22,14 @@ class Extype extends Model {
 	public $timestamps = false;
 
 	/**
+	 * 转换数据类型
+	 * @var array
+	 */
+	protected $casts = [
+		'kslx' => 'string',
+	];
+
+	/**
 	 * 国家考试成绩
 	 * @author FuRongxin
 	 * @date    2016-01-28

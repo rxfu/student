@@ -59,8 +59,8 @@ class ExamController extends Controller {
 					}
 				}
 
-				// 检测CET4是否及格
-				if (!Exscore::isPassed(Auth::user(), Helper::getCet4())->exists()) {
+				// 检测CET6是否具有过往成绩或者CET4是否及格
+				if (!Exscore::whereC_xh(Auth::user()->xh)->whereC_kslx(config('constants.exam.type.cet6'))->exists() && !Exscore::isPassed(Auth::user(), Helper::getCet4())->exists()) {
 					continue;
 				}
 			}
@@ -84,6 +84,24 @@ class ExamController extends Controller {
 			->get();
 
 		return view('exam.history')->withTitle('历次考试报名信息')->withExams($exams);
+	}
+
+	/**
+	 * 显示学生报名表
+	 * @author FuRongxin
+	 * @date    2016-02-22
+	 * @version 2.0
+	 * @param   string $kslx 考试类型代码
+	 * @return  \Illuminate\Http\Response 考试报名表单
+	 */
+	public function register($kslx) {
+		$profile = Profile::find(Auth::user()->xh);
+		$exam    = Extype::find($kslx);
+
+		return view('exam.register')
+			->withTitle('考试报名')
+			->withProfile($profile)
+			->withExam($exam);
 	}
 
 	/**
@@ -116,13 +134,22 @@ class ExamController extends Controller {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
+	 * 显示学生报名表
+	 * @author FuRongxin
+	 * @date    2016-02-22
+	 * @version 2.0
+	 * @param   string $kslx 考试类型代码
+	 * @return  \Illuminate\Http\Response 考试报名表单
 	 */
-	public function edit($id) {
-		//
+	public function edit($kslx) {
+		$profile = Profile::find(Auth::user()->xh);
+		$exam    = Extype::find($kslx);
+
+		return view('exam.register')
+			->withTitle('考试报名')
+			->withInfo('请认真核准自己的报名信息')
+			->withProfile($profile)
+			->withExam($exam);
 	}
 
 	/**
