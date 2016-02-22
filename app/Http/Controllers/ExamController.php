@@ -158,7 +158,7 @@ class ExamController extends Controller {
 
 			foreach ($registered as $cet) {
 				if (config('constants.exam.type.cet') == $cet->type->ksdl) {
-					abort(403,'已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名')
+					abort(403, '已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名');
 				}
 			}
 		}
@@ -223,16 +223,54 @@ class ExamController extends Controller {
 					abort(403, '四级成绩不达标，不能参加CET6考试');
 				}
 			}
+
+			// 检测是否已经报过CET考试
+			if (config('constants.exam.type.cet') == $exam->ksdl) {
+
+				$registered = Exregister::with('type')
+					->whereNd($exam->nd)
+					->whereXh(Auth::user()->xh);
+
+				foreach ($registered as $cet) {
+					if (config('constants.exam.type.cet') == $cet->type->ksdl) {
+						abort(403, '已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名');
+					}
+				}
+			}
 		}
+
+		$register       = new Exregister();
+		$register->xh   = Auth::usre()->xh;
+		$register->xq   = Auth::user()->profile->college->pivot->xq;
+		$register->kslx = $kslx;
+		$register->bklb = '00';
+		$register->kssj = $exam->sj;
+		$register->clbz = config('constants.exam.status.register');
+		$register->bmsj = date('Y-m-d H:i:s');
+		$register->nd   = $exam->nd;
+		$register->save();
+
+		return redirect('exam/register')->withStatus('考试报名成功');
 	}
 
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
+	 * 取消学生考试报名
+	 * @author FuRongxin
+	 * @date    2016-02-22
+	 * @version 2.0
+	 * @param   string $kslx 考试类型代码
+	 * @return  \Illuminate\Http\Response 报名列表
 	 */
-	public function destroy($id) {
-		//
+	public function destroy($kslx) {
+		$exam = Extype::find($kslx);
+
+		if (!empty($exam)) {
+			$deleteRows = Exregister::whereXh(Auth::user()->xh)
+				->whereKslx($kslx)
+				->whereKssj($exam->sj)
+				->delete();
+
+			return redirect('exam')->withStatus('取消报名成功');
+		}
 	}
 }
