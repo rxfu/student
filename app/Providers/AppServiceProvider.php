@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Exregister;
 use App\Models\Fresh;
 use App\Models\Profile;
+use App\Models\Slog;
 use Auth;
 use Illuminate\Support\ServiceProvider;
 
