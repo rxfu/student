@@ -230,4 +230,20 @@ class Profile extends Model {
 		return $this->belongsTo('App\Models\Entrance', 'rxfs', 'dm');
 	}
 
+	/**
+	 * 扩展查询，用于查找学生是否是全日制本科新生
+	 * @author FuRongxin
+	 * @date    2016-02-22
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeIsFresh($query, $user) {
+		return $query->whereXh($user->xh)
+			->whereXjzt(config('constants.school.student'))
+			->whereRaw('age(rxrq) < \'1 year\'')
+			->where('xz', '<>', '2');
+	}
+
 }

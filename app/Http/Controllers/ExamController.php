@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Exregister;
+use App\Models\Exscore;
 use App\Models\Extype;
 use App\Models\Profile;
 use App\Models\Setting;
@@ -39,19 +40,30 @@ class ExamController extends Controller {
 				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
 
 					// 不允许新生报考CET4
-					$is_fresh = Profile::whereXh(Auth::user()->xh)
-						->whereXjzt(config('constants.school.student'))
-						->whereRaw('age(rxrq) < \'1 year\'')
-						->where('xz', '<>', '2')
-						->exists();
-					if ($is_fresh) {
+					if (Profile::isFresh(Auth::user())->exists()) {
 						continue;
 					}
+
 				}
 			}
 
 			// 检测是否CET6
-			if (config('constants.exam.type.cet6') == $type->kslx) {}
+			if (config('constants.exam.type.cet6') == $type->kslx) {
+
+				// 检测是否允许新生报考CET6
+				if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
+
+					// 不允许新生报考CET6
+					if (Profile::isFresh(Auth::user())->exists()) {
+						continue;
+					}
+				}
+
+				// 检测CET4是否及格
+				if (!Exscore::isPassed(Auth::user(), Helper::getCet4())->exists()) {
+					continue;
+				}
+			}
 
 			$exams[] = $type;
 		}
