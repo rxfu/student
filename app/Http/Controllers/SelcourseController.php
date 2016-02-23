@@ -247,6 +247,14 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
 	public function destroy($kcxh) {
-		//
+		$course = Selcourse::whereXh(Auth::user()->xh)
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereKcxh($kcxh)
+			->firstOrFail();
+
+		$course->delete();
+
+		return back()->withStatus('退选课程成功');
 	}
 }

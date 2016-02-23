@@ -21,6 +21,28 @@ class Selcourse extends Model {
 
 	public $timestamps = false;
 
+	public static function boot() {
+		parent::boot();
+
+		static::created(function ($course) {
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'insert';
+
+			$log->save();
+		});
+
+		static::deleted(function ($course) {
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'delete';
+
+			$log->save();
+		});
+	}
+
 	/**
 	 * 课程
 	 * @author FuRongxin
