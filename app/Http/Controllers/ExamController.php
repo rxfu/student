@@ -273,6 +273,7 @@ class ExamController extends Controller {
 			$deleteRows = Exregister::whereXh(Auth::user()->xh)
 				->whereKslx($kslx)
 				->whereKssj($exam->sj)
+				->first()
 				->delete();
 
 			return redirect('exam')->withStatus('取消报名成功');

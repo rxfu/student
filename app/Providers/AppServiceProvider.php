@@ -2,10 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Exregister;
 use App\Models\Fresh;
 use App\Models\Profile;
-use App\Models\Slog;
 use Auth;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,24 +29,6 @@ class AppServiceProvider extends ServiceProvider {
 			$view->withIsFresh($is_fresh)
 				->withIsStudent($is_student)
 				->withUser($user);
-		});
-
-		Exregister::created(function ($exam) {
-			$log = new Slog;
-
-			$log->ip   = request()->ip();
-			$log->czlx = 'regist';
-
-			$log->save();
-		});
-
-		Exregister::deleted(function ($exam) {
-			$log = new Slog;
-
-			$log->ip   = request()->ip();
-			$log->czlx = 'cancel';
-
-			$log->save();
 		});
 	}
 

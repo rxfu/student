@@ -21,6 +21,28 @@ class Exregister extends Model {
 
 	public $timestamps = false;
 
+	public static function boot() {
+		parent::boot();
+
+		static::created(function ($exam) {
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'regist';
+
+			$log->save();
+		});
+
+		static::deleted(function ($exam) {
+			$log = new Slog;
+
+			$log->ip   = request()->ip();
+			$log->czlx = 'cancel';
+
+			$log->save();
+		});
+	}
+
 	/**
 	 * 考试类型
 	 * @author FuRongxin
