@@ -147,7 +147,7 @@
                                             <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
                                         </li>
                                     <li>
-                                        <a href="#">课程申请进度</a>
+                                        <a href="{{ url('application') }}">课程申请进度</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->

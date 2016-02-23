@@ -2,13 +2,14 @@
 
 @section('content')
 <section class="row">
-    <div class="col-lg-12">
+    <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover data-table">
+                    <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th class="active">操作</th>
                                 <th class="active">申请时间</th>
                                 <th class="active">年度</th>
                                 <th class="active">学期</th>
@@ -24,43 +25,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($courses as $course): ?>
+                            @foreach ($apps as $app)
                             <tr>
-                                <td><?php echo $course['xksj'] ?></td>
-                                <td><?php echo $course['nd'] ?></td>
-                                <td><?php echo Dictionary::get('xq', $course['xq']) ?></td>
-                                <td><?php echo $course['kcxh'] ?></td>
-                                <td><?php echo $course['xf'] ?></td>
-                                <td><?php echo $course['ynd'] ?></td>
-                                <td><?php echo isEmpty($course['yxq']) ? $course['yxq'] : Dictionary::get('xq', $course['yxq']) ?></td>
-                                <td><?php echo $course['ykcxh'] ?></td>
-                                <td><?php echo $course['yxf'] ?></td>
-                                <td><?php switch ($course['xklx']) {
-case 0:
-	echo '其他课程';
-	break;
-case 1:
-	echo '重修';
-	break;
-default:
-	echo '其他课程';
-	break;
-}?></td>
-                                <td><?php echo $course['shyj'] ?></td>
                                 <td>
-                                    <?php if (Config::get('course.apply.passed') == $course['sh']): ?>
-                                        已批准
-                                    <?php elseif (Config::get('course.apply.refused') == $course['sh']): ?>
-                                        已拒绝
-                                    <?php elseif (Config::get('course.apply.unauditted') == $course['sh']): ?>
-                                        <form method="post" name="revoke" action="<?php echo Route::to('course.revoke') ?>" role="form">
-                                            <input type="hidden" name="cno" value="<?php echo $course['kcxh'] ?>">
-                                            <button type="button" class="btn btn-primary" title="撤销申请" data-toggle="modal" data-target="#confirmDialog" data-title="撤销选课申请" data-message="你确定要撤销<?php echo $course['kcxh'] ?>课程的选课申请？">撤销申请</button>
-                                        </form>
-                                    <?php endif;?>
+                                	@if (!$app->sh)
+                                		<form id="deleteForm" name="deleteForm" action="{{ route('application.destroy', $app->kcxh) }}" method="post" role="form">
+                                			{!! method_field('delete') !!}
+                                			{!! csrf_field() !!}
+                                			<button type="submit" class="btn btn-danger">撤销申请</button>
+                                			}
+                                		</form>
+                                	@endif
                                 </td>
+                                <td>{{ $app->xksj }}</td>
+                                <td>{{ $app->nd }}</td>
+                                <td>{{ $app->term->mc }}</td>
+                                <td>{{ $app->kcxh }}</td>
+                                <td>{{ $app->xf }}</td>
+                                <td>{{ $app->ynd }}</td>
+                                <td>{{ count($app->oterm) ? $app->oterm->mc : '' }}</td>
+                                <td>{{ $app->ykcxh }}</td>
+                                <td>{{ $app->yxf }}</td>
+                                <td>{{ config('constants.application.type.' . $app->xklx) }}</td>
+                                <td>{{ $app->shyj }}</td>
+                                <td>{{ config('constants.application.audit.' . $app->sh) }}</td>
                             </tr>
-                            <?php endforeach;?>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

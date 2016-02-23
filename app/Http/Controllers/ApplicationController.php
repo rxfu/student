@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
+use Auth;
 use Illuminate\Http\Request;
 
 /**
@@ -91,7 +93,23 @@ class ApplicationController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
-		//
+	/**
+	 * 撤销选课申请
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  \Illuminate\Http\Response 选课申请列表
+	 */
+	public function destroy($kcxh) {
+		$app = Application::whereXh(Auth::user()->xh)
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereKcxh($kcxh)
+			->firstOrFail();
+
+		$app->delete();
+
+		return back()->withStatus('撤销课程申请成功');
 	}
 }

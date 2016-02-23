@@ -62,7 +62,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'destroy']]);
 
-		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store']]);
+		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
 
 		Route::get('exam/history', 'ExamController@history');
 		Route::resource('exam', 'ExamController', [
