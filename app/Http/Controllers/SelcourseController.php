@@ -236,8 +236,16 @@ class SelcourseController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
-		//
+	/**
+	 * 显示可选课程列表
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   string $type 课程类型
+	 * @return  \Illuminate\Http\Response 可选课程列表
+	 */
+	public function show($type) {
+		return view('selcourse.show')->withTitle('选课表');
 	}
 
 	/**
