@@ -226,7 +226,7 @@ class ExamController extends Controller {
 		$register->nd   = $exam->nd;
 		$register->save();
 
-		return redirect('exam')->withStatus('考试报名成功');
+		return redirect('exam')->withStatus('考试报名成功，请交费！');
 	}
 
 	/**
