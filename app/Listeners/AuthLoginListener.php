@@ -33,8 +33,9 @@ class AuthLoginListener {
 	 */
 	public function handle(Login $event) {
 		session([
-			'year' => Setting::find('XK_ND')->value,
-			'term' => Setting::find('XK_XQ')->value,
+			'year'   => Setting::find('XK_ND')->value,
+			'term'   => Setting::find('XK_XQ')->value,
+			'campus' => Auth::user()->profile->college->pivot->xq,
 		]);
 
 		$log = new Slog;

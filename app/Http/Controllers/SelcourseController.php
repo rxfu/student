@@ -189,6 +189,29 @@ class SelcourseController extends Controller {
 	}
 
 	/**
+	 * 显示课程检索表单
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 课程检索框
+	 */
+	public function showSearchForm() {
+		return view('selcourse.search')->withTitle('课程检索')->withInfo('请输入课程序号或课程中文名称进行检索');
+	}
+
+	/**
+	 * 检索课程
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   \Illuminate\Http\Request $request 检索请求
+	 * @return  \Illuminate\Http\Response 检索结果
+	 */
+	public function search(Request $request) {
+
+	}
+
+	/**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return \Illuminate\Http\Response

@@ -60,6 +60,8 @@ Route::group(['middleware' => ['web']], function () {
 
 		Route::get('selcourse/deletable', 'SelcourseController@deletable');
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
+		Route::get('selcourse/search', 'SelcourseController@showSearchForm');
+		Route::post('selcourse/search', 'SelcourseController@search');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'destroy']]);
 
 		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
