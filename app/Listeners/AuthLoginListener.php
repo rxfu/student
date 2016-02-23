@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\Setting;
 use App\Models\Slog;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
@@ -31,6 +32,11 @@ class AuthLoginListener {
 	 * @return void
 	 */
 	public function handle(Login $event) {
+		session([
+			'year' => Setting::find('XK_ND')->value,
+			'term' => Setting::find('XK_XQ')->value,
+		]);
+
 		$log = new Slog;
 
 		$log->ip   = request()->ip();

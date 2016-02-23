@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -42,8 +41,8 @@ class Selcourse extends Model {
 	 */
 	public function timetables() {
 		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
-			->whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value);
+			->whereNd(session('year'))
+			->whereXq(session('term'));
 	}
 
 	/**
@@ -56,8 +55,8 @@ class Selcourse extends Model {
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
 	public function scopeSelectedCredits($query, $user) {
-		return $query->whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value)
+		return $query->whereNd(session('year'))
+			->whereXq(session('term'))
 			->whereXh($user->xh)
 			->groupBy('pt', 'xz')
 			->selectRaw('pt, xz, SUM(xf) AS xf');
@@ -97,8 +96,8 @@ class Selcourse extends Model {
 			},
 		])
 			->whereXh($user->xh)
-			->whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value);
+			->whereNd(session('year'))
+			->whereXq(session('term'));
 	}
 
 }

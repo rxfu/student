@@ -239,12 +239,6 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	/**
 	 * 退选课程
 	 * @author FuRongxin
 	 * @date    2016-02-23

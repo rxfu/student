@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Mjcourse;
-use App\Models\Setting;
 use Auth;
 use Yajra\Datatables\Datatables;
 
@@ -37,8 +36,8 @@ class CourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 专业课程信息
 	 */
 	public function major() {
-		$courses = Mjcourse::whereNd(Setting::find('XK_ND')->value)
-			->whereXq(Setting::find('XK_XQ')->value)
+		$courses = Mjcourse::whereNd(session('year'))
+			->whereXq(session('term'))
 			->whereNj(Auth::user()->profile->nj)
 			->whereZy(Auth::user()->profile->zy)
 			->get();
