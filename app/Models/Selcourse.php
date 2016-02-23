@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Count;
+use App\Models\Slog;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,20 +27,24 @@ class Selcourse extends Model {
 		parent::boot();
 
 		static::created(function ($course) {
-			$log = new Slog;
+			$count = Count::find($course->kcxh);
+			$count->rs += 1;
+			$count->save();
 
+			$log       = new Slog;
 			$log->ip   = request()->ip();
 			$log->czlx = 'insert';
-
 			$log->save();
 		});
 
 		static::deleted(function ($course) {
-			$log = new Slog;
+			$count = Count::find($course->kcxh);
+			$count->rs -= 1;
+			$count->save();
 
+			$log       = new Slog;
 			$log->ip   = request()->ip();
 			$log->czlx = 'delete';
-
 			$log->save();
 		});
 	}
