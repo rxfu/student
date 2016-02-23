@@ -150,6 +150,45 @@ class SelcourseController extends Controller {
 	}
 
 	/**
+	 * 可退选课程表
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @return  \Illuminate\Http\Response 可退选课程表
+	 */
+	public function deletable() {
+		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->timetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				// 在课程信息数组下生成周次为索引的课程时间数组
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.deletable')->withTitle('可退选课程列表')->withCourses($courses);
+	}
+
+	/**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return \Illuminate\Http\Response
@@ -205,7 +244,15 @@ class SelcourseController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	/**
+	 * 退选课程
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function destroy($kcxh) {
 		//
 	}
 }

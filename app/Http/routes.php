@@ -58,8 +58,9 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('score/exam', 'ScoreController@exam');
 		Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
 
+		Route::get('selcourse/deletable', 'SelcourseController@deletable');
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
-		Route::resource('selcourse', 'SelcourseController', ['only' => ['index']]);
+		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'destroy']]);
 
 		Route::get('exam/history', 'ExamController@history');
 		Route::resource('exam', 'ExamController', [

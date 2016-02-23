@@ -144,7 +144,7 @@
                                             <a href="#">重修课程</a>
                                         </li>
                                         <li>
-                                            <a href="#">可退选课程列表</a>
+                                            <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
                                         </li>
                                     <li>
                                         <a href="#">课程申请进度</a>
