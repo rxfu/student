@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lmttime;
+use App\Models\Profile;
 use App\Models\Selcourse;
+use App\Models\Setting;
+use App\Models\Timetable;
+use App\Models\Unpaid;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -290,7 +295,10 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.show')->withTitle('选课表');
+		$courses = Timetable::selectable($type)->get();
+		dd($courses);
+
+		return view('selcourse.show')->withTitle('选课表')->withCourses($courses);
 	}
 
 	/**

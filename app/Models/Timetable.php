@@ -73,7 +73,7 @@ class Timetable extends Model {
 	 * @return  object 所属对象
 	 */
 	public function task() {
-		return $this->belongsTo('App\Models\Task', 'kxch', 'kxch')
+		return $this->belongsTo('App\Models\Task', 'kcxh', 'kcxh')
 			->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereId(1);
@@ -90,16 +90,89 @@ class Timetable extends Model {
 		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
-	public function scopeSelectable($query) {
+	/**
+	 * 专业课程信息
+	 * @author FuRongxin
+	 * @date    2016-02-24
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function mjcourse() {
+		return $this->belongsTo('App\Models\Mjcourse', 'kcxh', 'kcxh')
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereZsjj(session('season'));
+	}
+
+	public function scopeSelectable($query, $type) {
 		return $query->with([
-			'campus'      => function ($query) {
+			'campus'             => function ($query) {
 				$query->select('dm', 'mc');
 			},
-			'teacher'     => function ($query) {
+			'teacher'            => function ($query) {
 				$query->select('jsgh', 'xm', 'zc');
 			},
-			'task.course' => function ($query) {
+			'task.course'        => function ($query) {
 				$query->select('kch', 'kcmc');
+			},
+			'mjcourse.plan'      => function ($query) {
+				$query->whereZy(session('major'))
+					->select('zy', 'zxf', 'kh');
+			},
+			'mjcourse.plan.mode' => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'mjcourse'           => function ($query) use ($type) {
+				$query = $query->select('kcxh', 'rs');
+
+				switch ($type) {
+				case 'public':
+					$query->wherePt('T')
+						->whereXz('B')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+					break;
+
+				case 'require':
+					$query->whereXz('B')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+					break;
+
+				case 'elect':
+					$query->whereXz('X')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+					break;
+
+				case 'human':
+					$query->wherePt('T')
+						->whereXz('W')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+
+				case 'nature':
+					$query->wherePt('T')
+						->whereXz('I')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+
+				case 'art':
+					$query->wherePt('T')
+						->whereXz('Y')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+
+				case 'other':
+					$query->wherePt('T')
+						->whereXz('Q')
+						->whereNj(session('grade'))
+						->whereZy(session('major'));
+					break;
+
+				default:
+					break;
+				}
 			},
 			'selcount',
 		])

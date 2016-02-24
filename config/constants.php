@@ -194,5 +194,13 @@ return [
 				'name' => '其他专项通识素质课程',
 			],
 		],
+		'others'  => [
+			'type' => 'OTHERS',
+			'name' => '其他课程',
+		],
+		'retake'  => [
+			'type' => 'RETAKE',
+			'name' => '重修课程',
+		],
 	],
 ];

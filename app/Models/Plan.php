@@ -88,4 +88,5 @@ class Plan extends Model {
 			->whereNj($this->nj)
 			->whereZsjj($this->zsjj);
 	}
+
 }

@@ -37,6 +37,9 @@ class AuthLoginListener {
 			'year'   => Setting::find('XK_ND')->value,
 			'term'   => Setting::find('XK_XQ')->value,
 			'campus' => Auth::user()->profile->college->pivot->xq,
+			'season' => Auth::user()->profile->zsjj,
+			'grade'  => Auth::user()->profile->nj,
+			'major'  => Auth::user()->profile->zy,
 		]);
 
 		$log       = new Slog;

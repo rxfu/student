@@ -112,7 +112,7 @@
                                 <ul class="nav nav-second-level">
                                     @if ($allowed_select)
                                         <li>
-                                            <a href="#">公共课程</a>
+                                            <a href="{{ route('selcourse.show','public') }}">公共课程</a>
                                         </li>
                                         <li>
                                             <a href="#">必修课程</a>

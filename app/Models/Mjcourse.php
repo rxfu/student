@@ -70,4 +70,17 @@ class Mjcourse extends Model {
 			->whereZsjj($this->zsjj)
 			->whereKch(Str::substr($this->kcxh, 2, 8));
 	}
+
+	/**
+	 * 课程表
+	 * @author FuRongxin
+	 * @date    2016-02-24
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function timetables() {
+		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->whereNd($this->nd)
+			->whereXq($this->xq);
+	}
 }
