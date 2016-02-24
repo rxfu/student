@@ -231,12 +231,6 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	/**
 	 * 显示可选课程列表
 	 * @author FuRongxin
 	 * @date    2016-02-23
@@ -245,6 +239,57 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 可选课程列表
 	 */
 	public function show($type) {
+		if (config('constants.status.disable') == Setting::find('XK_KG')->value) {
+			abort(403, '现在未开放选课，不允许选课');
+		}
+
+		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+			abort(403, '请交清费用再进行选课');
+		}
+
+		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
+			$profile = Profile::whereXh(Auth::user()->xh)
+				->select('nj', 'xz')
+				->first();
+			$limit = Lmttime::whereNj($profile->nj)
+				->whereXz($profile->xz)
+				->first();
+
+			if (!empty($limit)) {
+				$now = date('Y-m-d H:i:s');
+
+				if ($now < $limit->kssj || $now > $limit->jssj) {
+					abort(403, '现在未到选课时间，不允许选课');
+				}
+			}
+		}
+
+		if (in_array($type, array_keys(config('constants.course.general')))) {
+			if (config('constants.stauts.disable') == Setting::find('XK_TS')->value) {
+				abort(403, '现在未开放通识素质课选课，不允许选课');
+			}
+
+			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->first();
+				$limit = Lmttime::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->first();
+
+				if (!empty($limit)) {
+					$now = date('Y-m-d H:i:s');
+
+					if ($now < $limit->kssj || $now > $limit->jssj) {
+						abort(403, '现在未到通识素质课选课时间，不允许选课');
+					} else {
+						$limit_course = $limit->ms;
+						$limit_ratio  = $limit->bl / 100;
+					}
+				}
+			}
+		}
+
 		return view('selcourse.show')->withTitle('选课表');
 	}
 
