@@ -65,4 +65,46 @@ class Timetable extends Model {
 		return $this->belongsTo('App\Models\Teacher', 'jsgh', 'jsgh');
 	}
 
+	/**
+	 * 教学任务书
+	 * @author FuRongxin
+	 * @date    2016-02-24
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function task() {
+		return $this->belongsTo('App\Models\Task', 'kxch', 'kxch')
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereId(1);
+	}
+
+	/**
+	 * 已选人数统计
+	 * @author FuRongxin
+	 * @date    2016-02-24
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function selcount() {
+		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
+	}
+
+	public function scopeSelectable($query) {
+		return $query->with([
+			'campus'      => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'teacher'     => function ($query) {
+				$query->select('jsgh', 'xm', 'zc');
+			},
+			'task.course' => function ($query) {
+				$query->select('kch', 'kcmc');
+			},
+			'selcount',
+		])
+			->whereNd(session('year'))
+			->whereXq(session('term'));
+	}
+
 }
