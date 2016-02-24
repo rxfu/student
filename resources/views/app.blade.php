@@ -110,6 +110,7 @@
                             <li>
                                 <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
+                                    @if ($allowed_select)
                                         <li>
                                             <a href="#">公共课程</a>
                                         </li>
@@ -119,6 +120,7 @@
                                         <li>
                                             <a href="#">选修课程</a>
                                         </li>
+                                        @if ($allowed_general)
                                             <li>
                                                 <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
                                                 <ul class="nav nav-third-level">
@@ -137,15 +139,19 @@
                                                 </ul>
                                                 <!-- /.nav-third-level -->
                                             </li>
+                                        @endif
+                                        @if ($allowed_others)
                                             <li>
                                                 <a href="#">其他课程</a>
                                             </li>
+                                        @endif
                                         <li>
                                             <a href="#">重修课程</a>
                                         </li>
                                         <li>
                                             <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
                                         </li>
+                                    @endif
                                     <li>
                                         <a href="{{ url('application') }}">课程申请进度</a>
                                     </li>

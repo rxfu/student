@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Models\Setting;
 use App\Models\Slog;
+use Auth;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 
@@ -38,11 +39,9 @@ class AuthLoginListener {
 			'campus' => Auth::user()->profile->college->pivot->xq,
 		]);
 
-		$log = new Slog;
-
+		$log       = new Slog;
 		$log->ip   = request()->ip();
 		$log->czlx = 'login';
-
 		$log->save();
 	}
 }

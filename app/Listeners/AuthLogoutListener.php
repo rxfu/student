@@ -31,11 +31,11 @@ class AuthLogoutListener {
 	 * @return void
 	 */
 	public function handle(Logout $event) {
-		$log = new Slog;
+		request()->session()->flush();
 
+		$log       = new Slog;
 		$log->ip   = request()->ip();
 		$log->czlx = 'logout';
-
 		$log->save();
 	}
 }
