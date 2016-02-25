@@ -80,17 +80,6 @@ class Timetable extends Model {
 	}
 
 	/**
-	 * 已选人数统计
-	 * @author FuRongxin
-	 * @date    2016-02-24
-	 * @version 2.0
-	 * @return  object 所属对象
-	 */
-	public function selcount() {
-		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
-	}
-
-	/**
 	 * 专业课程信息
 	 * @author FuRongxin
 	 * @date    2016-02-24

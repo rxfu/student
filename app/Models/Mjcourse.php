@@ -79,50 +79,62 @@ class Mjcourse extends Model {
 	 * @return  object 所属对象
 	 */
 	public function timetables() {
-		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh');
+		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->orderBy('zc');
+	}
+
+	/**
+	 * 已选人数统计
+	 * @author FuRongxin
+	 * @date    2016-02-24
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function selcount() {
+		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
 	public function scopeOfType($query, $type) {
 		switch ($type) {
 		case 'public':
-			return $query->wherePt('T')
-				->whereXz('B')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'B')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'require':
-			return $query->whereXz('B')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.xz', '=', 'B')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'elect':
-			return $query->whereXz('X')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.xz', '=', 'X')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'human':
-			return $query->wherePt('T')
-				->whereXz('W')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'W')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'nature':
-			return $query->wherePt('T')
-				->whereXz('I')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'I')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'art':
-			return $query->wherePt('T')
-				->whereXz('Y')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'Y')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'other':
-			return $query->wherePt('T')
-				->whereXz('Q')
-				->whereNj(session('grade'))
-				->whereZy(session('major'));
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'Q')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
 
 		default:
 			break;
@@ -130,27 +142,18 @@ class Mjcourse extends Model {
 	}
 
 	public function scopeSelectable($query) {
-		return $query->with([
-			'plan'               => function ($query) {
-				$query->select('zy', 'zxf', 'kh');
-			},
-			'plan.course'        => function ($query) {
-				$query->select('kch', 'kcmc');
-			},
-			'plan.mode'          => function ($query) {
-				$query->select('dm', 'mc');
-			},
-			'timetables'         => function ($query) {
-				$query->whereNd(session('year'))
-					->whereXq(session('term'));
-			},
-			'timetables.teacher' => function ($query) {
-				$query->select('jsgh', 'xm');
-			},
-		])
-			->whereNd(session('year'))
-			->whereXq(session('term'))
-			->whereZsjj(session('season'));
+		return $query->join('jx_jxjh', function ($join) {
+			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
+				->on('pk_kczy.nj', '=', 'jx_jxjh.nj')
+				->on('pk_kczy.zsjj', '=', 'jx_jxjh.zsjj');
+		})
+			->join('xk_tj', function ($join) {
+				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh');
+			})
+			->whereRaw('t_jx_jxjh.kch = substring(t_pk_kczy.kcxh, 3, 8)')
+			->where('pk_kczy.nd', '=', session('year'))
+			->where('pk_kczy.xq', '=', session('term'))
+			->where('pk_kczy.zsjj', '=', session('season'));
 	}
 
 }

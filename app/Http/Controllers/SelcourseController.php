@@ -298,10 +298,8 @@ class SelcourseController extends Controller {
 
 		$courses = Mjcourse::ofType($type)
 			->selectable()
-			->whereZy(session('major'))
-			->whereNj(session('grade'))
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'pk_kczy.rs AS zrs', 'xk_tj.rs')
 			->get();
-		dd($courses);
 
 		return view('selcourse.show')->withTitle('选课表')->withCourses($courses);
 	}
