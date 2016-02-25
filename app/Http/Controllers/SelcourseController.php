@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lmttime;
+use App\Models\Mjcourse;
 use App\Models\Profile;
 use App\Models\Selcourse;
 use App\Models\Setting;
@@ -295,7 +296,11 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		$courses = Timetable::selectable($type)->get();
+		$courses = Mjcourse::ofType($type)
+			->selectable()
+			->whereZy(session('major'))
+			->whereNj(session('grade'))
+			->get();
 		dd($courses);
 
 		return view('selcourse.show')->withTitle('选课表')->withCourses($courses);
