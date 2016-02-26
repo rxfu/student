@@ -103,7 +103,10 @@ class Mjcourse extends Model {
 				->where('pk_kczy.zy', '=', session('major'));
 
 		case 'require':
-			return $query->where('pk_kczy.xz', '=', 'B')
+			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
+			unset($platforms[array_search('T', $platforms)]);
+			return $query->whereIn('pk_kczy.pt', $platforms)
+				->where('pk_kczy.xz', '=', 'B')
 				->where('pk_kczy.nj', '=', session('grade'))
 				->where('pk_kczy.zy', '=', session('major'));
 
@@ -147,13 +150,23 @@ class Mjcourse extends Model {
 				->on('pk_kczy.nj', '=', 'jx_jxjh.nj')
 				->on('pk_kczy.zsjj', '=', 'jx_jxjh.zsjj');
 		})
+			->join('zd_khfs', 'jx_jxjh.kh', '=', 'zd_khfs.dm')
+			->join('jx_kc', 'jx_jxjh.kch', '=', 'jx_kc.kch')
+			->join('pk_kb', function ($join) {
+				$join->on('pk_kczy.nd', '=', 'pk_kb.nd')
+					->on('pk_kczy.xq', '=', 'pk_kb.xq')
+					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
+			})
+			->join('zd_xqh', 'pk_kb.xqh', '=', 'zd_xqh.dm')
+			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
 			->join('xk_tj', function ($join) {
 				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh');
 			})
 			->whereRaw('t_jx_jxjh.kch = substring(t_pk_kczy.kcxh, 3, 8)')
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
-			->where('pk_kczy.zsjj', '=', session('season'));
+			->where('pk_kczy.zsjj', '=', session('season'))
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.ksz', 'pk_kb.jsz', 'pk_kb.zc', 'pk_kb.ksj', 'pk_kb.jsj', 'pk_kb.xqh', 'zd_xqh.mc AS xqmc', 'xk_tj.rs', 'pk_js.xm AS jsxm', 'zd_khfs.mc AS kh');
 	}
 
 }

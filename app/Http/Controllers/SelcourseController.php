@@ -296,10 +296,35 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		$courses = Mjcourse::ofType($type)
+		$selectables = Mjcourse::ofType($type)
 			->selectable()
-			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'pk_kczy.rs AS zrs', 'xk_tj.rs')
 			->get();
+
+		foreach ($selectables as $course) {
+
+			// 生成课程序号为索引的课程信息数组
+			if (!isset($courses[$course->kcxh])) {
+				$courses[$course->kcxh] = [
+					'kcxh' => $course->kcxh,
+					'kcmc' => $course->kcmc,
+					'xf'   => $course->zxf,
+					'xqh'  => $course->xqh,
+					'xqmc' => $course->xqmc,
+					'zrs'  => $course->zrs,
+					'rs'   => $course->rs,
+					'kh'   => $course->kh,
+				];
+			}
+
+			// 在课程信息数组下生成周次为索引的课程时间数组
+			$courses[$course->kcxh][$course->zc][] = [
+				'ksz'  => $course->ksz,
+				'jsz'  => $course->jsz,
+				'ksj'  => $course->ksj,
+				'jsj'  => $course->jsj,
+				'jsxm' => $course->jsxm,
+			];
+		}
 
 		return view('selcourse.show')->withTitle('选课表')->withCourses($courses);
 	}
