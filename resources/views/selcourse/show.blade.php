@@ -13,7 +13,7 @@
                     </ul>
                     <div class="tab-content">
                         @foreach ($campuses as $campus)
-                            <div id="campus-{{ $campus->dm }}" class="tab-pane fade{{ session('campus') == $campus->id ? ' in active' : '' }}" role="tabpanel">
+                            <div id="campus-{{ $campus->dm }}" class="tab-pane fade{{ session('campus') == $campus->dm ? ' in active' : '' }}" role="tabpanel">
 					            <div class="table-responsive tab-table">
 					                <table id="selcourses-table-{{ $campus->dm }}" class="table table-bordered table-striped table-hover">
 					                    <thead>

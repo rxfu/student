@@ -345,30 +345,30 @@ class SelcourseController extends Controller {
 
 		if (empty($courses)) {
 			return response()->json(['data' => $courses]);
+		} else {
+			$datatable = Datatables::of($courses)
+				->addColumn('action', function ($course) {
+					return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+				});
+
+			for ($i = 1; $i <= 7; ++$i) {
+				$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) {
+					$info = '';
+					foreach ($course[$i] as $class) {
+						$info .= '<p><div>第 ';
+						$info .= ($class['ksz'] === $class['jsz']) ? $class['ksz'] : $class['ksz'] . ' ~ ' . $class['jsz'];
+						$info .= ' 周</div><div class="text-danger"><strong>第 ';
+						$info .= ($class['ksj'] === $class['jsj']) ? $class['ksj'] : $class['ksj'] . ' ~ ' . $class['jsj'];
+						$info .= ' 节</strong></div><div class="text-info">';
+						$info .= empty($class['jsxm']) ? '未知老师' : $class['jsxm'];
+						$info .= '</div></p>';
+					}
+					return $info;
+				});
+			}
+
+			return $datatable->make(true);
 		}
-
-		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) {
-				return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-			});
-
-		for ($i = 1; $i <= 7; ++$i) {
-			$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) {
-				$info = '';
-				foreach ($course[$i] as $class) {
-					$info .= '<p><div>第 ';
-					$info .= ($class['ksz'] === $class['jsz']) ? $class['ksz'] : $class['ksz'] . ' ~ ' . $class['jsz'];
-					$info .= ' 周</div><div class="text-danger"><strong>第 ';
-					$info .= ($class['ksj'] === $class['jsj']) ? $class['ksj'] : $class['ksj'] . ' ~ ' . $class['jsj'];
-					$info .= ' 节</strong></div><div class="text-info">';
-					$info .= empty($class['jsxm']) ? '未知老师' : $class['jsxm'];
-					$info .= '</div></p>';
-				}
-				return $info;
-			});
-		}
-
-		return $datatable->make(true);
 	}
 
 	/**
