@@ -47,7 +47,7 @@
                                 					<p>
 	                                					<div>第 {{ $class['ksz'] === $class['jsz'] ? $class['ksz'] : $class['ksz'] . ' ~ ' . $class['jsz'] }} 周</div>
 	                                					<div class="text-danger"><strong>第 {{ $class['ksj'] === $class['jsj'] ? $class['ksj'] : $class['ksj'] . ' ~ ' . $class['jsj'] }} 节</strong></div>
-	                                					<div class='text-info'>{{ empty($class['jsxm']) ? '未知老师' : $class['jsxm'] . ' 老师' }}</div>
+	                                					<div class='text-info'>{{ empty($class['jsxm']) ? '未知老师' : $class['jsxm'] }}</div>
                                 					</p>
                                 				@endforeach
                                 			@endif
@@ -66,3 +66,9 @@
     </div>
 </section>
 @stop
+
+@push('scripts')
+<script>
+
+</script>
+@endpush

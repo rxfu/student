@@ -117,27 +117,19 @@ class Mjcourse extends Model {
 
 		case 'human':
 			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'W')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+				->where('pk_kczy.xz', '=', 'W');
 
 		case 'nature':
 			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'I')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+				->where('pk_kczy.xz', '=', 'I');
 
 		case 'art':
 			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Y')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+				->where('pk_kczy.xz', '=', 'Y');
 
 		case 'other':
 			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Q')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+				->where('pk_kczy.xz', '=', 'Q');
 
 		default:
 			break;
