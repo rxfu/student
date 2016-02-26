@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive tab-table">
-                    <table class="table table-bordered table-striped table-hover">
+                    <table id="selcourses-table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="active">操作</th>
@@ -69,6 +69,21 @@
 
 @push('scripts')
 <script>
-
+$(function() {
+    $('#selcourses-table').dataTable({
+        'ajax': '{!! url('selcourse/listing') !!}',
+        'columns': [
+        	{ data: 'action', name: 'action'},
+            { data: 'kcxh', name: 'kcxh' },
+            { data: 'kcmc', name: 'kcmc' },
+            { data: 'xf', name: 'xf' },
+            { data: 'xqmc', name: 'xqmc' },
+            { data: '1', name: 'monday'},
+            { data: 'kh', name: 'kh' },
+            { data: 'zrs', name: 'zrs' },
+            { data: 'rs', name: 'rs' }
+        ]
+    });
+});
 </script>
 @endpush

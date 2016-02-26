@@ -136,7 +136,7 @@ class Mjcourse extends Model {
 		}
 	}
 
-	public function scopeSelectable($query) {
+	public function scopeSelectable($query, $campus) {
 		return $query->join('jx_jxjh', function ($join) {
 			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
 				->on('pk_kczy.nj', '=', 'jx_jxjh.nj')
@@ -147,7 +147,8 @@ class Mjcourse extends Model {
 			->join('pk_kb', function ($join) {
 				$join->on('pk_kczy.nd', '=', 'pk_kb.nd')
 					->on('pk_kczy.xq', '=', 'pk_kb.xq')
-					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
+					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh')
+					->whereXqh($campus);
 			})
 			->join('zd_xqh', 'pk_kb.xqh', '=', 'zd_xqh.dm')
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
