@@ -8,7 +8,7 @@
                 <div role="tabpanel">
                     <ul id="campus-tab" class="nav nav-tabs" role="tablist">
                         @foreach ($campuses as $campus)
-                            <li role="presentation"{!! session('campus') == $campus->dm ? ' class="active"' : '' !!}><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab">{{ $campus->mc }}</a></li>
+                            <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab">{{ $campus->mc }}</a></li>
                         @endforeach
                     </ul>
                     <div class="tab-content">
@@ -88,9 +88,21 @@ $(function() {
             { data: 'kh', name: 'kh' },
             { data: 'zrs', name: 'zrs' },
             { data: 'rs', name: 'rs' }
-        ]
+        ],
+        'initComplete': function (settings, json) {
+        	@for ($i = 6; $i <= 12; $i++)
+    			$('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
+        	@endfor
+        }
     });
     @endforeach
+
+	$('#campus-tab a').click(function(e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+
+	$('#campus-tab a[href="#campus-' + {{ session('campus') }} + '"]').tab('show');
 });
 </script>
 @endpush

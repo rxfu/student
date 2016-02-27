@@ -238,10 +238,6 @@ $(document).ready(function() {
 			'url': $().getBaseUrl() + 'js/plugins/dataTables/i18n/zh_cn.lang'
 		}
 	});
-	$('#campus-tab a').click(function(e) {
-		e.preventDefault();
-		$(this).tab('show');
-	});
 	$('#courseConfirm').on('show.bs.modal', function(e) {
 		var form = $(e.relatedTarget).closest('form');
 		$(this).find('.modal-footer #confirm').data('form', form);
@@ -337,13 +333,6 @@ $(document).ready(function() {
 	$('#confirmDialog').find('.modal-footer #confirm').on('click', function(e) {
 		$(this).data('form').submit();
 	});
-
-	var campusId = '#campus-' + $('#campus').text();
-	if ($('#campus-tab a[href="' + campusId + '"]').length) {
-		$('#campus-tab a[href="' + campusId + '"]').tab('show');
-	} else {
-		$('#campus-tab a:first').tab('show');
-	}
 
 	$('#speciality').chained('#college');
 	$('#course').chained('#department');
