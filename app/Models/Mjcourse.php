@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -137,6 +138,7 @@ class Mjcourse extends Model {
 	}
 
 	public function scopeSelectable($query, $campus) {
+		$campus = ('unknown' == $campus) ? '' : $campus;
 		return $query->join('jx_jxjh', function ($join) {
 			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
 				->on('pk_kczy.nj', '=', 'jx_jxjh.nj')
@@ -159,7 +161,14 @@ class Mjcourse extends Model {
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
-			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.ksz', 'pk_kb.jsz', 'pk_kb.zc', 'pk_kb.ksj', 'pk_kb.jsj', 'pk_kb.xqh', 'zd_xqh.mc AS xqmc', 'xk_tj.rs', 'pk_js.xm AS jsxm', 'zd_khfs.mc AS kh');
+			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'zd_xqh.mc', 'xk_tj.rs', 'zd_khfs.mc')
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'zd_xqh.mc AS xqmc', 'xk_tj.rs', 'zd_khfs.mc AS kh')
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksz), \',\') AS kszs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsz), \',\') AS jszs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksj), \',\') AS ksjs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsj), \',\') AS jsjs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_js.xm), \',\') AS jsxms'));
 	}
 
 }

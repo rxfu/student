@@ -312,63 +312,40 @@ class SelcourseController extends Controller {
 	}
 
 	public function listing($type, $campus) {
-		$selectables = Mjcourse::ofType($type)
+		$courses = Mjcourse::ofType($type)
 			->selectable($campus)
 			->get();
 
-		$courses = [];
-		foreach ($selectables as $course) {
+		$datatable = Datatables::of($courses)
+			->addColumn('action', function ($course) {
+				return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+			});
 
-			// 生成课程序号为索引的课程信息数组
-			if (!isset($courses[$course->kcxh])) {
-				$courses[$course->kcxh] = [
-					'kcxh' => $course->kcxh,
-					'kcmc' => $course->kcmc,
-					'xf'   => $course->zxf,
-					'xqh'  => $course->xqh,
-					'xqmc' => $course->xqmc,
-					'zrs'  => $course->zrs,
-					'rs'   => $course->rs,
-					'kh'   => $course->kh,
-				];
-			}
+		for ($i = 1; $i <= 7; ++$i) {
+			$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
+				$info = '';
 
-			// 在课程信息数组下生成周次为索引的课程时间数组
-			$courses[$course->kcxh][$course->zc][] = [
-				'ksz'  => $course->ksz,
-				'jsz'  => $course->jsz,
-				'ksj'  => $course->ksj,
-				'jsj'  => $course->jsj,
-				'jsxm' => $course->jsxm,
-			];
+				if (false !== ($pos = array_search($i, explode(',', $course->zcs)))) {
+					$ksz  = array_get(explode(',', $course->kszs), $pos);
+					$jsz  = array_get(explode(',', $course->jszs), $pos);
+					$ksj  = array_get(explode(',', $course->ksjs), $pos);
+					$jsj  = array_get(explode(',', $course->jsjs), $pos);
+					$jsxm = array_get(explode(',', $course->jsxms), $pos);
+
+					$info .= '<p><div>第 ';
+					$info .= ($ksz === $jsz) ? $ksz : $ksz . ' ~ ' . $jsz;
+					$info .= ' 周</div><div class="text-danger"><strong>第 ';
+					$info .= ($ksj === $jsj) ? $ksj : $ksj . ' ~ ' . $jsj;
+					$info .= ' 节</strong></div><div class="text-info">';
+					$info .= empty($jsxm) ? '未知老师' : $jsxm;
+					$info .= '</div></p>';
+				}
+
+				return $info;
+			});
 		}
 
-		if (empty($courses)) {
-			return response()->json(['data' => $courses]);
-		} else {
-			$datatable = Datatables::of($courses)
-				->addColumn('action', function ($course) {
-					return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-				});
-
-			for ($i = 1; $i <= 7; ++$i) {
-				$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) {
-					$info = '';
-					foreach ($course[$i] as $class) {
-						$info .= '<p><div>第 ';
-						$info .= ($class['ksz'] === $class['jsz']) ? $class['ksz'] : $class['ksz'] . ' ~ ' . $class['jsz'];
-						$info .= ' 周</div><div class="text-danger"><strong>第 ';
-						$info .= ($class['ksj'] === $class['jsj']) ? $class['ksj'] : $class['ksj'] . ' ~ ' . $class['jsj'];
-						$info .= ' 节</strong></div><div class="text-info">';
-						$info .= empty($class['jsxm']) ? '未知老师' : $class['jsxm'];
-						$info .= '</div></p>';
-					}
-					return $info;
-				});
-			}
-
-			return $datatable->make(true);
-		}
+		return $datatable->make(true);
 	}
 
 	/**
