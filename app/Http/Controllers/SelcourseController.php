@@ -306,9 +306,13 @@ class SelcourseController extends Controller {
 					}
 				}
 			}
+
+			$type_name = config('constants.course.general.' . $type . '.name');
 		}
 
-		return view('selcourse.show')->withTitle('选课表')->withType($type)->withCampuses(Campus::all());
+		$type_name = isset($type_name) ? $type_name : config('constants.course.' . $type . '.name');
+
+		return view('selcourse.show')->withTitle($type_name . '选课表')->withType($type)->withCampuses(Campus::all());
 	}
 
 	public function listing($type, $campus) {
