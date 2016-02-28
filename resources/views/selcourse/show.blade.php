@@ -102,7 +102,7 @@ $(function() {
 		$(this).tab('show');
 	});
 
-	$('#campus-tab a[href="#campus-' + {{ session('campus') }} + '"]').tab('show');
+	$('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
 });
 </script>
 @endpush
