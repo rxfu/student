@@ -89,7 +89,7 @@ $(function() {
             { data: 'zrs', name: 'zrs' },
             { data: 'rs', name: 'rs' }
         ],
-        'initComplete': function (settings, json) {
+        'drawCallback': function (settings) {
         	@for ($i = 6; $i <= 12; $i++)
     			$('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
         	@endfor
