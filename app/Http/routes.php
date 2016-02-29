@@ -63,7 +63,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('selcourse/search', 'SelcourseController@showSearchForm');
 		Route::post('selcourse/search', 'SelcourseController@search');
 		Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing');
-		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'show', 'destroy']]);
+		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'show', 'store', 'destroy']]);
 
 		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
 

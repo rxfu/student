@@ -329,7 +329,17 @@ class SelcourseController extends Controller {
 
 		$datatable = Datatables::of($courses)
 			->addColumn('action', function ($course) {
-				return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+				$exists = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKcxh($course->kcxh)
+					->exists();
+
+				if ($exists) {
+					return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+				} else {
+					return '<form id="createForm" name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"></form>';
+				}
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
