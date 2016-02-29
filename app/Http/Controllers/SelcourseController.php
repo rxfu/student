@@ -14,6 +14,7 @@ use App\Models\Timetable;
 use App\Models\Unpaid;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 
 /**
@@ -338,10 +339,10 @@ class SelcourseController extends Controller {
 
 				if ($exists) {
 					return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-				} elseif (Prior::ofCourse($course->kcxh)->exists()) {
-					return '前修课未修';
+				} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
+					return '<div class="text-danger">前修课未修读</div>';
 				} elseif ($course->rs >= $course->zrs) {
-					return '人数已满';
+					return '<div class="text-danger">人数已满</div>';
 				} else {
 					return '<form id="createForm" name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"></form>';
 				}
