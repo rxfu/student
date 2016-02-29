@@ -312,7 +312,14 @@ class SelcourseController extends Controller {
 
 		$type_name = isset($type_name) ? $type_name : config('constants.course.' . $type . '.name');
 
-		return view('selcourse.show')->withTitle($type_name . '选课表')->withType($type)->withCampuses(Campus::all());
+		$campuses = Campus::all()->each(function ($course) {
+			if (empty($course->dm)) {
+				$course->dm = 'unknown';
+				$course->mc = '未知';
+			}
+		});
+
+		return view('selcourse.show')->withTitle($type_name . '选课表')->withType($type)->withCampuses($campuses);
 	}
 
 	public function listing($type, $campus) {
@@ -338,9 +345,9 @@ class SelcourseController extends Controller {
 
 					$info .= '<p><div>第 ';
 					$info .= ($ksz === $jsz) ? $ksz : $ksz . ' ~ ' . $jsz;
-					$info .= ' 周</div><div class="text-danger"><strong>第 ';
+					$info .= ' 周</div><div class="text-danger">第 ';
 					$info .= ($ksj === $jsj) ? $ksj : $ksj . ' ~ ' . $jsj;
-					$info .= ' 节</strong></div><div class="text-info">';
+					$info .= ' 节</div><div class="text-info">';
 					$info .= empty($jsxm) ? '未知老师' : $jsxm;
 					$info .= '</div></p>';
 				}

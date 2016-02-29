@@ -22,30 +22,6 @@ class Campus extends Model {
 	public $timestamps = false;
 
 	/**
-	 * 获取校区代码
-	 * @author FuRongxin
-	 * @date    2016-02-26
-	 * @version 2.0
-	 * @param   string $value 校区代码
-	 * @return  string 校区代码
-	 */
-	public function getDmAttribute($value) {
-		return empty(trim($value)) ? 'unknown' : $value;
-	}
-
-	/**
-	 * 获取校区名称
-	 * @author FuRongxin
-	 * @date    2016-02-26
-	 * @version 2.0
-	 * @param   string $value 校区名称
-	 * @return  string 校区名称
-	 */
-	public function getMcAttribute($value) {
-		return empty(trim($value)) ? '未知' : $value;
-	}
-
-	/**
 	 * 排课表
 	 * @author FuRongxin
 	 * @date    2016-02-15
