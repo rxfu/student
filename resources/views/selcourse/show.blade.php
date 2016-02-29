@@ -22,7 +22,6 @@
 					                            <th class="active">课程序号</th>
 					                            <th class="active">课程名称</th>
 					                            <th class="active">学分</th>
-					                            <th class="active">校区</th>
 					                            <th class="active">周一</th>
 					                            <th class="active">周二</th>
 					                            <th class="active">周三</th>
@@ -41,7 +40,6 @@
 					                            <th>课程序号</th>
 					                            <th>课程名称</th>
 					                            <th>学分</th>
-					                            <th>校区</th>
 					                            <th>周一</th>
 					                            <th>周二</th>
 					                            <th>周三</th>
@@ -77,7 +75,6 @@ $(function() {
             { data: 'kcxh', name: 'kcxh' },
             { data: 'kcmc', name: 'kcmc' },
             { data: 'zxf', name: 'zxf' },
-            { data: 'xqmc', name: 'xqmc' },
             { data: 'Monday', name: 'Monday'},
             { data: 'Tuesday', name: 'Tuesday'},
             { data: 'Wednesday', name: 'Wednesday'},

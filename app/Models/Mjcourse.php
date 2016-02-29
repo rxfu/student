@@ -151,7 +151,6 @@ class Mjcourse extends Model {
 					->on('pk_kczy.xq', '=', 'pk_kb.xq')
 					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
 			})
-			->join('zd_xqh', 'pk_kb.xqh', '=', 'zd_xqh.dm')
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
 			->join('xk_tj', function ($join) {
 				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh');
@@ -161,8 +160,8 @@ class Mjcourse extends Model {
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
-			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'zd_xqh.mc', 'xk_tj.rs', 'zd_khfs.mc')
-			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'zd_xqh.mc AS xqmc', 'xk_tj.rs', 'zd_khfs.mc AS kh')
+			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc')
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksz), \',\') AS kszs'))
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsz), \',\') AS jszs'))
