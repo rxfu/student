@@ -95,6 +95,15 @@ class Mjcourse extends Model {
 		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
+	/**
+	 * 扩展查询：用于获取课程类型相应课程的课程列表
+	 * @author FuRongxin
+	 * @date    2016-03-01
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $type 课程类型
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
 	public function scopeOfType($query, $type) {
 		switch ($type) {
 		case 'public':
@@ -137,6 +146,15 @@ class Mjcourse extends Model {
 		}
 	}
 
+	/**
+	 * 扩展查询：用于获取可选课程列表
+	 * @author FuRongxin
+	 * @date    2016-03-01
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $campus 校区号
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
 	public function scopeSelectable($query, $campus) {
 		$campus = ('unknown' == $campus) ? '' : $campus;
 		return $query->join('jx_jxjh', function ($join) {

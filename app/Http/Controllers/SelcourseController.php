@@ -324,6 +324,15 @@ class SelcourseController extends Controller {
 		return view('selcourse.show')->withTitle($type_name . '选课表')->withType($type)->withCampuses($campuses);
 	}
 
+	/**
+	 * 按校区列出可选课程
+	 * @author FuRongxin
+	 * @date    2016-03-01
+	 * @version 2.0
+	 * @param   string $type 课程类型
+	 * @param   string $campus 校区号
+	 * @return  JSON 可选课程列表
+	 */
 	public function listing($type, $campus) {
 		$courses = Mjcourse::ofType($type)
 			->selectable($campus)
