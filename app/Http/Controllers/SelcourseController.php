@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\Timetable;
 use App\Models\Unpaid;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
@@ -252,21 +253,37 @@ class SelcourseController extends Controller {
 			]);
 
 			$inputs = $request->all();
-			if (Mjcourse::ofType($type)->selectable()->where('pk_kczy.kcxh', '=', $inputs['kcxh'])->exists()) {
-				$course = Mjcourse::whereNd(session('year'))
-					->whereXq(session('term'))
-					->whereZsjj(esssion('season'))
-					->whereKcxh($inputs['kcxh'])
-					->firstOrFail();
+			$course = Mjcourse::ofType($type)
+				->whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereZsjj(esssion('season'))
+				->whereKcxh($inputs['kcxh'])
+				->firstOrFail();
+			if (!empty($course)) {
+				$selcourse       = new Selcourse;
+				$selcourse->xh   = Auth::user()->xh;
+				$selcourse->xm   = Auth::user()->profile->xm;
+				$selcourse->nd   = $course->nd;
+				$selcourse->xq   = $course->xq;
+				$selcourse->kcxh = $inputs['kcxh'];
+				$selcourse->kch  = Str::substr($inputs['kcxh'], 2, 8);
+				$selcourse->pt   = $course->pt;
+				$selcourse->xz   = $course->xz;
+				$selcourse->xl   = $course->xl;
+				$selcourse->jsgh = $course->timetables()->first()->jsgh;
+				$selcourse->xf   = $course->plan->zxf;
+				$selcourse->sf   = config('constants.status.enable');
+				$selcourse->zg   = $course->bz;
+				$selcourse->cx   = config('constants.status.disable');
+				$selcourse->bz   = config('constants.status.disable');
+				$selcourse->sj   = Carbon::now();
+				$selcourse->kkxy = $course->kkxy;
 
-				$course       = new Selcourse;
-				$course->xh   = Auth::user()->xh;
-				$course->xm   = Auth::user()->profile->xm;
-				$course->nd   = session('year');
-				$course->xq   = session('term');
-				$course->kcxh = $inputs['kcxh'];
-				$course->kch  = Str::substr($inputs['kcxh'], 2, 8);
-				$course->save();
+				if ($selcourse->save()) {
+					return redirect()->route('selcourse.show', $type)->withStatus('选课成功');
+				} else {
+					return back()->withErrors()->withInput();
+				}
 			}
 		}
 	}
