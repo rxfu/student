@@ -246,7 +246,29 @@ class SelcourseController extends Controller {
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
 	public function store(Request $request) {
-		//
+		if ($request->isMethod('post')) {
+			$this->validate($request, [
+				'kcxh' => 'required|alpha_num|size:12',
+			]);
+
+			$inputs = $request->all();
+			if (Mjcourse::ofType($type)->selectable()->where('pk_kczy.kcxh', '=', $inputs['kcxh'])->exists()) {
+				$course = Mjcourse::whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereZsjj(esssion('season'))
+					->whereKcxh($inputs['kcxh'])
+					->firstOrFail();
+
+				$course       = new Selcourse;
+				$course->xh   = Auth::user()->xh;
+				$course->xm   = Auth::user()->profile->xm;
+				$course->nd   = session('year');
+				$course->xq   = session('term');
+				$course->kcxh = $inputs['kcxh'];
+				$course->kch  = Str::substr($inputs['kcxh'], 2, 8);
+				$course->save();
+			}
+		}
 	}
 
 	/**
@@ -352,7 +374,7 @@ class SelcourseController extends Controller {
 				} elseif ($course->rs >= $course->zrs) {
 					return '<div class="text-danger">人数已满</div>';
 				} else {
-					return '<form id="createForm" name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"></form>';
+					return '<form id="createForm" name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
 				}
 			});
 
