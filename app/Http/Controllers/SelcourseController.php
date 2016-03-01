@@ -241,10 +241,9 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
+	 * 保存所选课程
+	 * @param  \Illuminate\Http\Request  $request 保存请求
+	 * @return \Illuminate\Http\Response 选课列表
 	 */
 	public function store(Request $request) {
 		//
