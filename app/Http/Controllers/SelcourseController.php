@@ -260,6 +260,10 @@ class SelcourseController extends Controller {
 				->whereKcxh($inputs['kcxh'])
 				->firstOrFail();
 			if (!empty($course)) {
+				if ($Count::whereKcxh($course->kcxh)->first()->rs >= $course->rs) {
+					abort(403, '选课人数已满，请选其他课程');
+				}
+
 				$selcourse       = new Selcourse;
 				$selcourse->xh   = Auth::user()->xh;
 				$selcourse->xm   = Auth::user()->profile->xm;
@@ -336,7 +340,7 @@ class SelcourseController extends Controller {
 					->first();
 
 				if (!empty($limit)) {
-					$now = date('Y-m-d H:i:s');
+					$now = Carbon::now();
 
 					if ($now < $limit->kssj || $now > $limit->jssj) {
 						abort(403, '现在未到通识素质课选课时间，不允许选课');
