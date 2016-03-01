@@ -96,7 +96,7 @@ class ScoreController extends Controller {
 			->orderBy('xq', 'desc')
 			->get();
 
-		$ratios = $this->arrangeScores($scores);
+		$ratios = $this->_arrangeScores($scores);
 
 		return view('score.show')->withTitle(Course::find($kch)->kcmc . '课程详细成绩单')->withRatios($ratios);
 	}
@@ -125,7 +125,7 @@ class ScoreController extends Controller {
 			->orderBy('xq', 'desc')
 			->get();
 
-		$ratios = $this->arrangeScores($scores);
+		$ratios = $this->_arrangeScores($scores);
 
 		return view('score.show')->withTitle('待确认成绩单')->withRatios($ratios);
 	}
@@ -154,12 +154,12 @@ class ScoreController extends Controller {
 	 * @param   array $scores 学生成绩
 	 * @return  array 按成绩比例方式排列的成绩
 	 */
-	private function arrangeScores($scores) {
+	private function _arrangeScores($scores) {
 		$ratios = [];
 		foreach ($scores as $score) {
 			if (count($score->task)) {
 				if (!array_key_exists($score->task->cjfs, $ratios)) {
-					$items = Ratio::whereFs($score->task->cjfs)->get();
+					$items = Ratio::whereFs($score->task->cjfs)->orderBy('id')->get();
 					foreach ($items as $ratio) {
 						$ratios[$ratio->fs][] = [
 							'id'    => $ratio->id,
