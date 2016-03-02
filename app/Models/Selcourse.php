@@ -128,4 +128,54 @@ class Selcourse extends Model {
 			->whereXq(session('term'));
 	}
 
+	/**
+	 * 扩展查询：用于获取课程类型相应课程的课程列表
+	 * @author FuRongxin
+	 * @date    2016-03-02
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $type 课程类型
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeOfType($query, $type) {
+		switch ($type) {
+		case 'public':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'B')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
+
+		case 'require':
+			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
+			unset($platforms[array_search('T', $platforms)]);
+			return $query->whereIn('pk_kczy.pt', $platforms)
+				->where('pk_kczy.xz', '=', 'B')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
+
+		case 'elect':
+			return $query->where('pk_kczy.xz', '=', 'X')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'));
+
+		case 'human':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'W');
+
+		case 'nature':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'I');
+
+		case 'art':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'Y');
+
+		case 'other':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'Q');
+
+		default:
+			break;
+		}
+	}
 }

@@ -247,6 +247,57 @@ class SelcourseController extends Controller {
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
 	public function store(Request $request) {
+		if (config('constants.status.disable') == Setting::find('XK_KG')->value) {
+			abort(403, '现在未开放选课，不允许选课');
+		}
+
+		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+			abort(403, '请交清费用再进行选课');
+		}
+
+		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
+			$profile = Profile::whereXh(Auth::user()->xh)
+				->select('nj', 'xz')
+				->first();
+			$limit = Lmttime::whereNj($profile->nj)
+				->whereXz($profile->xz)
+				->first();
+
+			if (!empty($limit)) {
+				$now = Carbon::now();
+
+				if ($now < $limit->kssj || $now > $limit->jssj) {
+					abort(403, '现在未到选课时间，不允许选课');
+				}
+			}
+		}
+
+		if (in_array($type, array_keys(config('constants.course.general')))) {
+			if (config('constants.stauts.disable') == Setting::find('XK_TS')->value) {
+				abort(403, '现在未开放通识素质课选课，不允许选课');
+			}
+
+			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->first();
+				$limit = Lmttime::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->first();
+
+				if (!empty($limit)) {
+					$now = Carbon::now();
+
+					if ($now < $limit->kssj || $now > $limit->jssj) {
+						abort(403, '现在未到通识素质课选课时间，不允许选课');
+					} else {
+						$limit_course = $limit->ms;
+						$limit_ratio  = $limit->bl / 100;
+					}
+				}
+			}
+		}
+
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
 				'kcxh' => 'required|alpha_num|size:12',
@@ -259,35 +310,64 @@ class SelcourseController extends Controller {
 				->whereZsjj(esssion('season'))
 				->whereKcxh($inputs['kcxh'])
 				->firstOrFail();
-			if (!empty($course)) {
-				if ($Count::whereKcxh($course->kcxh)->first()->rs >= $course->rs) {
+
+			if (in_array($type, array_keys(config('constants.course.general')))) {
+				$ms = isset($limit_course) ? $limit_course : -1;
+				$rs = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
+
+				if (-1 < $ms) {
+					$count = Selcourse::ofType($type)
+						->whereNd(session('year'))
+						->whereXq(sessiion('term'))
+						->whereXh(Auth::user()->xh)
+						->count();
+
+					if ($count >= $ms) {
+						abort(403, '通识素质课课选课已达门数限制，请选其他课程');
+					}
+				}
+
+				if (-1 < $rs) {
+					$count = Count::whereKcxh($course->kcxh)
+						->first()->rs;
+
+					if ($count >= $rs) {
+						abort(403, '选课人数已满，请选其他课程');
+					}
+				}
+			} else {
+				if (Count::whereKcxh($course->kcxh)->first()->rs >= $course->rs) {
 					abort(403, '选课人数已满，请选其他课程');
 				}
+			}
 
-				$selcourse       = new Selcourse;
-				$selcourse->xh   = Auth::user()->xh;
-				$selcourse->xm   = Auth::user()->profile->xm;
-				$selcourse->nd   = $course->nd;
-				$selcourse->xq   = $course->xq;
-				$selcourse->kcxh = $inputs['kcxh'];
-				$selcourse->kch  = Str::substr($inputs['kcxh'], 2, 8);
-				$selcourse->pt   = $course->pt;
-				$selcourse->xz   = $course->xz;
-				$selcourse->xl   = $course->xl;
-				$selcourse->jsgh = $course->timetables()->first()->jsgh;
-				$selcourse->xf   = $course->plan->zxf;
-				$selcourse->sf   = config('constants.status.enable');
-				$selcourse->zg   = $course->bz;
-				$selcourse->cx   = config('constants.status.disable');
-				$selcourse->bz   = config('constants.status.disable');
-				$selcourse->sj   = Carbon::now();
-				$selcourse->kkxy = $course->kkxy;
+			if (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
+				abort(403, '前修课未修读');
+			}
 
-				if ($selcourse->save()) {
-					return redirect()->route('selcourse.show', $type)->withStatus('选课成功');
-				} else {
-					return back()->withErrors()->withInput();
-				}
+			$selcourse       = new Selcourse;
+			$selcourse->xh   = Auth::user()->xh;
+			$selcourse->xm   = Auth::user()->profile->xm;
+			$selcourse->nd   = $course->nd;
+			$selcourse->xq   = $course->xq;
+			$selcourse->kcxh = $inputs['kcxh'];
+			$selcourse->kch  = Str::substr($inputs['kcxh'], 2, 8);
+			$selcourse->pt   = $course->pt;
+			$selcourse->xz   = $course->xz;
+			$selcourse->xl   = $course->xl;
+			$selcourse->jsgh = $course->timetables()->first()->jsgh;
+			$selcourse->xf   = $course->plan->zxf;
+			$selcourse->sf   = config('constants.status.enable');
+			$selcourse->zg   = $course->bz;
+			$selcourse->cx   = config('constants.status.disable');
+			$selcourse->bz   = config('constants.status.disable');
+			$selcourse->sj   = Carbon::now();
+			$selcourse->kkxy = $course->kkxy;
+
+			if ($selcourse->save()) {
+				return redirect()->route('selcourse.show', $type)->withStatus('选课成功');
+			} else {
+				return back()->withErrors()->withInput();
 			}
 		}
 	}
@@ -318,7 +398,7 @@ class SelcourseController extends Controller {
 				->first();
 
 			if (!empty($limit)) {
-				$now = date('Y-m-d H:i:s');
+				$now = Carbon::now();
 
 				if ($now < $limit->kssj || $now > $limit->jssj) {
 					abort(403, '现在未到选课时间，不允许选课');
