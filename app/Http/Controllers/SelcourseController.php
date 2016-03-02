@@ -373,6 +373,39 @@ class SelcourseController extends Controller {
 	}
 
 	/**
+	 * 选课时间冲突检测
+	 * @author FuRongxin
+	 * @date    2016-03-02
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  array 冲突返回冲突的课程序号，否则返回空数组
+	 */
+	public function checktime($kcxh) {
+		$currents = Timetable::whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereKcxh($kcxh)
+			->get();
+		$compares = Selcourse::whereNd(session('year'))
+			->whereXq(sessioin('term'))
+			->whereXh(Auth::user()->xh)
+			->get();
+
+		foreach ($currents as $current) {
+			foreach ($compares as $compare) {
+				if ($compare->zc === $current->zc) {
+					if ($current->ksj >= $compare->ksj && $current->ksj <= $compare->jsj) {
+						if ($current->ksz >= $compare->ksz && $current->ksz <= $compare->jsz) {
+							$confilicts[] = $compare['kcxh'];
+						}
+					}
+				}
+			}
+		}
+
+		return isset($conflicts) ? $conflicts : [];
+	}
+
+	/**
 	 * 显示可选课程列表
 	 * @author FuRongxin
 	 * @date    2016-02-23
