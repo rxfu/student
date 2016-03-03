@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campus;
+use App\Models\Count;
 use App\Models\Lmttime;
 use App\Models\Mjcourse;
 use App\Models\Prior;
@@ -272,73 +273,58 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		if (in_array($type, array_keys(config('constants.course.general')))) {
-			if (config('constants.stauts.disable') == Setting::find('XK_TS')->value) {
-				abort(403, '现在未开放通识素质课选课，不允许选课');
-			}
-
-			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
-				$profile = Profile::whereXh(Auth::user()->xh)
-					->select('nj', 'xz')
-					->first();
-				$limit = Lmttime::whereNj($profile->nj)
-					->whereXz($profile->xz)
-					->first();
-
-				if (!empty($limit)) {
-					$now = Carbon::now();
-
-					if ($now < $limit->kssj || $now > $limit->jssj) {
-						abort(403, '现在未到通识素质课选课时间，不允许选课');
-					} else {
-						$limit_course = $limit->ms;
-						$limit_ratio  = $limit->bl / 100;
-					}
-				}
-			}
-		}
-
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
 				'kcxh' => 'required|alpha_num|size:12',
 			]);
 
 			$inputs = $request->all();
-			$course = Mjcourse::ofType($type)
-				->whereNd(session('year'))
-				->whereXq(session('term'))
-				->whereZsjj(esssion('season'))
-				->whereKcxh($inputs['kcxh'])
-				->firstOrFail();
 
-			if (in_array($type, array_keys(config('constants.course.general')))) {
-				$ms = isset($limit_course) ? $limit_course : -1;
-				$rs = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
-
-				if (-1 < $ms) {
-					$count = Selcourse::ofType($type)
-						->whereNd(session('year'))
-						->whereXq(sessiion('term'))
-						->whereXh(Auth::user()->xh)
-						->count();
-
-					if ($count >= $ms) {
-						abort(403, '通识素质课课选课已达门数限制，请选其他课程');
-					}
+			if (in_array($inputs['type'], array_keys(config('constants.course.general')))) {
+				if (config('constants.stauts.disable') == Setting::find('XK_TS')->value) {
+					abort(403, '现在未开放通识素质课选课，不允许选课');
 				}
 
-				if (-1 < $rs) {
-					$count = Count::whereKcxh($course->kcxh)
-						->first()->rs;
+				if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
+					$profile = Profile::whereXh(Auth::user()->xh)
+						->select('nj', 'xz')
+						->first();
+					$limit = Lmttime::whereNj($profile->nj)
+						->whereXz($profile->xz)
+						->first();
 
-					if ($count >= $rs) {
-						abort(403, '选课人数已满，请选其他课程');
+					if (!empty($limit)) {
+						$now = Carbon::now();
+
+						if ($now < $limit->kssj || $now > $limit->jssj) {
+							abort(403, '现在未到通识素质课选课时间，不允许选课');
+						} else {
+							$limit_course = $limit->ms;
+							$limit_ratio  = $limit->bl / 100;
+						}
 					}
 				}
 			} else {
-				if (Count::whereKcxh($course->kcxh)->first()->rs >= $course->rs) {
-					abort(403, '选课人数已满，请选其他课程');
-				}
+				$limit_ratio = 100;
+			}
+
+			$course = Mjcourse::ofType($inputs['type'])
+				->whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereZsjj(session('season'))
+				->whereKcxh($inputs['kcxh'])
+				->firstOrFail();
+
+			$ms     = isset($limit_course) ? $limit_course : -1;
+			$rs     = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
+			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
+
+			if ($limits['ms']) {
+				abort(403, '通识素质课课选课已达门数限制，请选其他课程');
+			}
+
+			if ($limits['rs']) {
+				abort(403, '选课人数已满，请选其他课程');
 			}
 
 			if (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
@@ -365,7 +351,7 @@ class SelcourseController extends Controller {
 			$selcourse->kkxy = $course->kkxy;
 
 			if ($selcourse->save()) {
-				return redirect()->route('selcourse.show', $type)->withStatus('选课成功');
+				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
 			} else {
 				return back()->withErrors()->withInput();
 			}
@@ -402,7 +388,55 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return isset($conflicts) ? $conflicts : [];
+		$conflicts = isset($conflicts) ? $conflicts : [];
+
+		return request()->ajax() ? response()->json($conflicts) : $conflicts;
+	}
+
+	/**
+	 * 选课门数和人数限制检测
+	 * @author FuRongxin
+	 * @date    2016-03-03
+	 * @version 2.0
+	 * @param   string $type 课程类型
+	 * @param   string $kcxh 12位课程序号
+	 * @param   integer $ms 课程门数限制，-1为无限制
+	 * @param   integer $rs 选课人数限制，-1为无限制
+	 * @return  array 课程门数和人数限制标志数组，true为超限，false为未超限
+	 */
+	public function checkcourse($type, $kcxh, $ms = -1, $rs = -1) {
+		$limits = [
+			'ms' => false,
+			'rs' => false,
+		];
+		if (in_array($type, array_keys(config('constants.course.general')))) {
+			if (-1 < $ms) {
+				$count = Selcourse::ofType($type)
+					->whereNd(session('year'))
+					->whereXq(sessiion('term'))
+					->whereXh(Auth::user()->xh)
+					->count();
+
+				if ($count >= $ms) {
+					$limits['ms'] = true;
+				}
+			}
+
+			if (-1 < $rs) {
+				$count = Count::whereKcxh($kcxh)
+					->first()->rs;
+
+				if ($count >= $rs) {
+					$limits['rs'] = true;
+				}
+			}
+		} else {
+			if (Count::whereKcxh($kcxh)->first()->rs >= $rs) {
+				$limits['rs'] = true;
+			}
+		}
+
+		return request()->ajax() ? $response()->json($limits) : $limits;
 	}
 
 	/**
@@ -494,7 +528,7 @@ class SelcourseController extends Controller {
 			->get();
 
 		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) {
+			->addColumn('action', function ($course) use ($type) {
 				$exists = Selcourse::whereXh(Auth::user()->xh)
 					->whereNd(session('year'))
 					->whereXq(session('term'))
@@ -502,13 +536,13 @@ class SelcourseController extends Controller {
 					->exists();
 
 				if ($exists) {
-					return '<form id="deleteForm" name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
 					return '<div class="text-danger">前修课未修读</div>';
 				} elseif ($course->rs >= $course->zrs) {
 					return '<div class="text-danger">人数已满</div>';
 				} else {
-					return '<form id="createForm" name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
+					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
 				}
 			});
 
