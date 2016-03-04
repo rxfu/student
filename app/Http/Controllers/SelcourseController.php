@@ -47,6 +47,7 @@ class SelcourseController extends Controller {
 	 */
 	public function index() {
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
@@ -180,6 +181,7 @@ class SelcourseController extends Controller {
 	 */
 	public function deletable() {
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
 			foreach ($selcourse->timetables as $timetable) {
