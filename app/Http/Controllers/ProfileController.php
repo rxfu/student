@@ -138,7 +138,7 @@ class ProfileController extends Controller {
 	 * @return  boolean true为允许，false为禁止
 	 */
 	private function allowUploadFile() {
-		return config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value && config('constants.file.status.passed') !== Auth::user()->zpzt;
+		return config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value;
 	}
 
 }

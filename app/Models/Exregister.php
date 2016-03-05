@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel as Model;
 
 /**
  * 考试报名信息
@@ -20,6 +20,9 @@ class Exregister extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	// 修复删除操作
+	protected $secondaryKey = ['xh', 'kslx', 'kssj'];
 
 	public static function boot() {
 		parent::boot();

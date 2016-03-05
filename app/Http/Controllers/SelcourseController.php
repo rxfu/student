@@ -610,7 +610,6 @@ class SelcourseController extends Controller {
 			->whereXq(session('term'))
 			->whereKcxh($kcxh)
 			->firstOrFail();
-
 		$course->delete();
 
 		return back()->withStatus('退选课程成功');
