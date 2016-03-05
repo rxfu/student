@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel as Model;
 use App\Models\Count;
 use App\Models\Slog;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * 选课信息
@@ -22,6 +22,9 @@ class Selcourse extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	// 修复删除操作
+	protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh'];
 
 	public static function boot() {
 		parent::boot();
