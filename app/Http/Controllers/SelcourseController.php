@@ -109,7 +109,7 @@ class SelcourseController extends Controller {
 				$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
 
 				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
-					$courses[$i][$timetable->zc]['rend'] -= 1;
+					$courses[$i][$timetable->zc]['rend'] = $courses[$i][$timetable->zc]['rbeg'] - 1;
 				}
 
 				// 获取课程所在时间段
