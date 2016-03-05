@@ -322,15 +322,24 @@ class SelcourseController extends Controller {
 			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
 
 			if ($limits['ms']) {
-				abort(403, '通识素质课课选课已达门数限制，请选其他课程');
+				$request->session()->flash('forbidden', '通识素质课课选课已达门数限制，请选其他课程');
+				return back()->withErrors()->withInput();
 			}
 
 			if ($limits['rs']) {
-				abort(403, '选课人数已满，请选其他课程');
+				$request->session()->flash('forbidden', '选课人数已满，请选其他课程');
+				return back()->withErrors()->withInput();
 			}
 
 			if (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
-				abort(403, '前修课未修读');
+				$request->session()->flash('forbidden', '前修课未修读');
+				return back()->withErrors()->withInput();
+			}
+
+			$confilict = $this->checktime($course->kcxh);
+			if (count($confilict)) {
+				$request->session()->flash('confirm', '课程与已选课程上课时间有冲突，确定选课吗？');
+				return back()->withErrors()->withInput();
 			}
 
 			$selcourse       = new Selcourse;
@@ -374,16 +383,16 @@ class SelcourseController extends Controller {
 			->whereKcxh($kcxh)
 			->get();
 		$compares = Selcourse::whereNd(session('year'))
-			->whereXq(sessioin('term'))
+			->whereXq(session('term'))
 			->whereXh(Auth::user()->xh)
 			->get();
 
 		foreach ($currents as $current) {
 			foreach ($compares as $compare) {
-				if ($compare->zc === $current->zc) {
+				if ($current->zc == $compare->zc) {
 					if ($current->ksj >= $compare->ksj && $current->ksj <= $compare->jsj) {
 						if ($current->ksz >= $compare->ksz && $current->ksz <= $compare->jsz) {
-							$confilicts[] = $compare['kcxh'];
+							$conflicts[] = $compare['kcxh'];
 						}
 					}
 				}

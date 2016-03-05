@@ -67,6 +67,14 @@
 @push('scripts')
 <script>
 $(function() {
+	@if (session('forbidden'))
+		alert({{ session('forbidden') }});
+	@endif
+
+	@if (session('confirm'))
+		confirm({{ session('confirm') }});
+	@endif
+
 	@foreach ($campuses as $campus)
     $('#selcourses-table-{{ $campus->dm }}').dataTable({
         'ajax': '{!! url('selcourse/listing', [$type, $campus->dm]) !!}',
