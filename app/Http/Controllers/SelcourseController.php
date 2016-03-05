@@ -561,7 +561,7 @@ class SelcourseController extends Controller {
 			$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
 				$info = '';
 
-				if (false !== ($pos = array_search($i, explode(',', $course->zcs)))) {
+				foreach (array_keys(explode(',', $course->zcs), $i) as $pos) {
 					$ksz  = array_get(explode(',', $course->kszs), $pos);
 					$jsz  = array_get(explode(',', $course->jszs), $pos);
 					$ksj  = array_get(explode(',', $course->ksjs), $pos);
