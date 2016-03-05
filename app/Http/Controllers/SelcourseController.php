@@ -342,24 +342,27 @@ class SelcourseController extends Controller {
 				return back()->withErrors()->withInput();
 			}
 
-			$selcourse       = new Selcourse;
-			$selcourse->xh   = Auth::user()->xh;
-			$selcourse->xm   = Auth::user()->profile->xm;
-			$selcourse->nd   = $course->nd;
-			$selcourse->xq   = $course->xq;
-			$selcourse->kcxh = $inputs['kcxh'];
-			$selcourse->kch  = Str::substr($inputs['kcxh'], 2, 8);
-			$selcourse->pt   = $course->pt;
-			$selcourse->xz   = $course->xz;
-			$selcourse->xl   = $course->xl;
-			$selcourse->jsgh = $course->timetables()->first()->jsgh;
-			$selcourse->xf   = $course->plan->zxf;
-			$selcourse->sf   = config('constants.status.enable');
-			$selcourse->zg   = $course->bz;
-			$selcourse->cx   = config('constants.status.disable');
-			$selcourse->bz   = config('constants.status.disable');
-			$selcourse->sj   = Carbon::now();
-			$selcourse->kkxy = $course->kkxy;
+			$selcourse        = new Selcourse;
+			$selcourse->xh    = Auth::user()->xh;
+			$selcourse->xm    = Auth::user()->profile->xm;
+			$selcourse->nd    = $course->nd;
+			$selcourse->xq    = $course->xq;
+			$selcourse->kcxh  = $inputs['kcxh'];
+			$selcourse->kch   = Str::substr($inputs['kcxh'], 2, 8);
+			$selcourse->pt    = $course->pt;
+			$selcourse->xz    = $course->xz;
+			$selcourse->xl    = $course->xl;
+			$selcourse->jsgh  = $course->timetables()->first()->jsgh;
+			$selcourse->xf    = $course->plan->zxf;
+			$selcourse->sf    = config('constants.status.enable');
+			$selcourse->zg    = $course->bz;
+			$selcourse->cx    = config('constants.status.disable');
+			$selcourse->bz    = config('constants.status.disable');
+			$selcourse->sj    = Carbon::now();
+			$selcourse->kkxy  = $course->kkxy;
+			$selcourse->qz    = 0;
+			$selcourse->tdkch = '';
+			$selcourse->tdyy  = '';
 
 			if ($selcourse->save()) {
 				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
