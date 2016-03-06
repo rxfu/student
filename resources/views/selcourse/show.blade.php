@@ -8,7 +8,7 @@
                 <div role="tabpanel">
                     <ul id="campus-tab" class="nav nav-tabs" role="tablist">
                         @foreach ($campuses as $campus)
-                            <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab">{{ $campus->mc }}</a></li>
+                            <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab" id="{{ $campus->dm }}">{{ $campus->mc }}</a></li>
                         @endforeach
                     </ul>
                     <div class="tab-content">
@@ -75,32 +75,33 @@
 @endif
 
 $(function() {
-	@foreach ($campuses as $campus)
-    $('#selcourses-table-{{ $campus->dm }}').dataTable({
-        'ajax': '{!! url('selcourse/listing', [$type, $campus->dm]) !!}',
-        'columns': [
-        	{ data: 'action', name: 'action'},
-            { data: 'kcxh', name: 'kcxh' },
-            { data: 'kcmc', name: 'kcmc' },
-            { data: 'zxf', name: 'zxf' },
-            { data: 'Monday', name: 'Monday'},
-            { data: 'Tuesday', name: 'Tuesday'},
-            { data: 'Wednesday', name: 'Wednesday'},
-            { data: 'Thursday', name: 'Thursday'},
-            { data: 'Friday', name: 'Friday'},
-            { data: 'Saturday', name: 'Saturday'},
-            { data: 'Sunday', name: 'Sunday'},
-            { data: 'kh', name: 'kh' },
-            { data: 'zrs', name: 'zrs' },
-            { data: 'rs', name: 'rs' }
-        ],
-        'drawCallback': function (settings) {
-        	@for ($i = 5; $i <= 11; $i++)
-    			$('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
-        	@endfor
-        }
+    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
+	        'ajax': '{!! url('selcourse/listing', [$type]) !!}/' + $(e.target).attr('id'),
+	        'columns': [
+	        	{ data: 'action', name: 'action'},
+	            { data: 'kcxh', name: 'kcxh' },
+	            { data: 'kcmc', name: 'kcmc' },
+	            { data: 'zxf', name: 'zxf' },
+	            { data: 'Monday', name: 'Monday'},
+	            { data: 'Tuesday', name: 'Tuesday'},
+	            { data: 'Wednesday', name: 'Wednesday'},
+	            { data: 'Thursday', name: 'Thursday'},
+	            { data: 'Friday', name: 'Friday'},
+	            { data: 'Saturday', name: 'Saturday'},
+	            { data: 'Sunday', name: 'Sunday'},
+	            { data: 'kh', name: 'kh' },
+	            { data: 'zrs', name: 'zrs' },
+	            { data: 'rs', name: 'rs' }
+	        ],
+	        'drawCallback': function (settings) {
+	        	@for ($i = 5; $i <= 11; $i++)
+	    			$('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
+	        	@endfor
+	        },
+	        'destroy': true
+	    });
     });
-    @endforeach
 
 	$('#campus-tab a').click(function(e) {
 		e.preventDefault();
