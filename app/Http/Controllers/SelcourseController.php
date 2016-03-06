@@ -339,7 +339,7 @@ class SelcourseController extends Controller {
 			$conflict = $this->checktime($course->kcxh);
 			if (count($conflict)) {
 				$request->session()->flash('confirm', '课程与已选课程上课时间有冲突，确定选课吗？');
-				return back()->withInput();
+				return redirect()->route('selcourse.show', $inputs['type'])->withInput()->withConfirm('课程与已选课程上课时间有冲突，确定选课吗？');
 			}
 
 			$selcourse        = new Selcourse;
