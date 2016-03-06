@@ -323,23 +323,23 @@ class SelcourseController extends Controller {
 
 			if ($limits['ms']) {
 				$request->session()->flash('forbidden', '通识素质课课选课已达门数限制，请选其他课程');
-				return back()->withErrors()->withInput();
+				return back()->withInput();
 			}
 
 			if ($limits['rs']) {
 				$request->session()->flash('forbidden', '选课人数已满，请选其他课程');
-				return back()->withErrors()->withInput();
+				return back()->withInput();
 			}
 
 			if (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
 				$request->session()->flash('forbidden', '前修课未修读');
-				return back()->withErrors()->withInput();
+				return back()->withInput();
 			}
 
-			$confilict = $this->checktime($course->kcxh);
-			if (count($confilict)) {
+			$conflict = $this->checktime($course->kcxh);
+			if (count($conflict)) {
 				$request->session()->flash('confirm', '课程与已选课程上课时间有冲突，确定选课吗？');
-				return back()->withErrors()->withInput();
+				return back()->withInput();
 			}
 
 			$selcourse        = new Selcourse;
@@ -367,7 +367,7 @@ class SelcourseController extends Controller {
 			if ($selcourse->save()) {
 				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
 			} else {
-				return back()->withErrors()->withInput();
+				return back()->withInput()->withStatus('选课失败');
 			}
 		}
 	}
@@ -385,17 +385,20 @@ class SelcourseController extends Controller {
 			->whereXq(session('term'))
 			->whereKcxh($kcxh)
 			->get();
-		$compares = Selcourse::whereNd(session('year'))
+		$selcourses = Selcourse::with('timetables')
+			->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereXh(Auth::user()->xh)
 			->get();
 
 		foreach ($currents as $current) {
-			foreach ($compares as $compare) {
-				if ($current->zc == $compare->zc) {
-					if ($current->ksj >= $compare->ksj && $current->ksj <= $compare->jsj) {
-						if ($current->ksz >= $compare->ksz && $current->ksz <= $compare->jsz) {
-							$conflicts[] = $compare['kcxh'];
+			foreach ($selcourses as $selcourse) {
+				foreach ($selcourse->timetables as $compare) {
+					if ($current->zc == $compare->zc) {
+						if ($current->ksj >= $compare->ksj && $current->ksj <= $compare->jsj) {
+							if ($current->ksz >= $compare->ksz && $current->ksz <= $compare->jsz) {
+								$conflicts[] = $compare['kcxh'];
+							}
 						}
 					}
 				}
