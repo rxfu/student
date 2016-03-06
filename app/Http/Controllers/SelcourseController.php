@@ -223,13 +223,21 @@ class SelcourseController extends Controller {
 		$grades = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereNj('nj', '<>', '')
+			->select('nj')
+			->distinct()
 			->orderBy('nj')
+			->get();
+
+		$colleges = Department::colleges()
+			->select('dw', 'mc')
+			->orderBy('dw')
 			->get();
 
 		return view('selcourse.search')
 			->withTitle('课程检索')
 			->withInfo('请输入课程序号或课程中文名称进行检索')
-			->withGrades($grades);
+			->withGrades($grades)
+			->withColleges($colleges);
 	}
 
 	/**

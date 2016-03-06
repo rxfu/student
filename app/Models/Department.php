@@ -52,8 +52,8 @@ class Department extends Model {
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
 	public function scopeColleges($query) {
-		return $query->whereLx('1')
-			->whereZt('constants.status.enable');
+		return $query->whereLx(config('constants.department.college'))
+			->whereZt(config('constants.status.enable'));
 	}
 
 }
