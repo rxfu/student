@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Campus;
 use App\Models\Count;
+use App\Models\Department;
 use App\Models\Lmttime;
+use App\Models\Major;
 use App\Models\Mjcourse;
 use App\Models\Prior;
 use App\Models\Profile;
@@ -243,7 +245,7 @@ class SelcourseController extends Controller {
 			->withInfo('请输入课程序号或课程中文名称进行检索')
 			->withGrades($grades)
 			->withColleges($colleges)
-			->withMajor($majors);
+			->withMajors($majors);
 	}
 
 	/**
@@ -252,10 +254,65 @@ class SelcourseController extends Controller {
 	 * @date    2016-02-23
 	 * @version 2.0
 	 * @param   \Illuminate\Http\Request $request 检索请求
+	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
 	 */
-	public function search(Request $request) {
+	public function search(Request $request, $campus) {
+		if ($request->isMethod('post')) {
+			$this->validate($request, [
+				'nj' => 'required|numeric',
+				'xy' => 'required',
+				'zy' => 'required',
+			]);
 
+			$courses = Mjcourse::selectable($campus)
+				->get();
+
+			$datatable = Datatables::of($courses)
+				->addColumn('action', function ($course) use ($type) {
+					$exists = Selcourse::whereXh(Auth::user()->xh)
+						->whereNd(session('year'))
+						->whereXq(session('term'))
+						->whereKcxh($course->kcxh)
+						->exists();
+
+					if ($exists) {
+						return '<form name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
+						return '<div class="text-danger">前修课未修读</div>';
+					} elseif ($course->rs >= $course->zrs) {
+						return '<div class="text-danger">人数已满</div>';
+					} else {
+						return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
+					}
+				});
+
+			for ($i = 1; $i <= 7; ++$i) {
+				$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
+					$info = '';
+
+					foreach (array_keys(explode(',', $course->zcs), $i) as $pos) {
+						$ksz  = array_get(explode(',', $course->kszs), $pos);
+						$jsz  = array_get(explode(',', $course->jszs), $pos);
+						$ksj  = array_get(explode(',', $course->ksjs), $pos);
+						$jsj  = array_get(explode(',', $course->jsjs), $pos);
+						$jsxm = array_get(explode(',', $course->jsxms), $pos);
+
+						$info .= '<p><div>第 ';
+						$info .= ($ksz === $jsz) ? $ksz : $ksz . ' ~ ' . $jsz;
+						$info .= ' 周</div><div class="text-danger">第 ';
+						$info .= ($ksj === $jsj) ? $ksj : $ksj . ' ~ ' . $jsj;
+						$info .= ' 节</div><div class="text-info">';
+						$info .= empty($jsxm) ? '未知老师' : $jsxm;
+						$info .= '</div></p>';
+					}
+
+					return $info;
+				});
+			}
+
+			return $datatable->make(true);
+		}
 	}
 
 	/**

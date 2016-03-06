@@ -4,7 +4,7 @@
 <section class="row">
     <div class="col-sm-8 col-sm-offset-2">
         <form id="searchForm" name="searchForm" method="post" action="{{ url('selcourse/search') }}" role="form">
-            {!! csrf_token() !!}
+            {!! csrf_field() !!}
             <div class="input-group">
                 <div class="form-group">
                     <label class="sr-only" for="keyword">课程检索</label>
@@ -16,8 +16,8 @@
             </div>
             <div class="voffset-top">
                 <div class="col-sm-3">
-                    <label for="grade">年度</label>
-                    <select name="grade" id="grade" class="form-control">
+                    <label for="nj">年度</label>
+                    <select name="nj" id="nj" class="form-control">
                         <option value="*">==全部==</option>
                         @foreach ($grades as $grade)
                             <option value="{{ $grade->nj }}">{{ $grade->nj }}</option>
@@ -25,8 +25,8 @@
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <label for="college">学院</label>
-                    <select name="college" id="college" class="form-control">
+                    <label for="xy">学院</label>
+                    <select name="xy" id="xy" class="form-control">
                         <option value="*">==全部==</option>
                         @foreach ($colleges as $college)
                             <option value="{{ $college->dw }}">{{ $college->mc }}</option>
@@ -34,8 +34,8 @@
                     </select>
                 </div>
                 <div class="col-sm-5">
-                    <label for="speciality">专业</label>
-                    <select name="speciality" id="speciality" class="form-control">
+                    <label for="zy">专业</label>
+                    <select name="zy" id="zy" class="form-control">
                         <option value="*" class='*'>==全部==</option>
                         @foreach ($majors as $major)
                             <option value="{{ $major->zy }}" class="{{ $major->xy }}">{{ $major->mc }}</option>
