@@ -33,6 +33,16 @@ return [
 	],
 
 	/**
+	 * 单位类型代码
+	 */
+	'department'  => [
+		'college'   => '1', // 教学
+		'manager'   => '2', // 管理
+		'assistant' => '3', //教辅
+		'other'     => '4', // 其他
+	],
+
+	/**
 	 * 成绩状态代码
 	 */
 	'score'       => [

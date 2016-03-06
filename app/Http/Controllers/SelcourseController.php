@@ -220,7 +220,16 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
 	public function showSearchForm() {
-		return view('selcourse.search')->withTitle('课程检索')->withInfo('请输入课程序号或课程中文名称进行检索');
+		$grades = Mjcourse::whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereNj('nj', '<>', '')
+			->orderBy('nj')
+			->get();
+
+		return view('selcourse.search')
+			->withTitle('课程检索')
+			->withInfo('请输入课程序号或课程中文名称进行检索')
+			->withGrades($grades);
 	}
 
 	/**

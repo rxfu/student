@@ -43,4 +43,17 @@ class Department extends Model {
 		return $this->hasOne('App\Models\Campuspivot', 'xy', 'dw');
 	}
 
+	/**
+	 * 扩展查询，用于获取学院
+	 * @author FuRongxin
+	 * @date    2016-03-06
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeColleges($query) {
+		return $query->whereLx('1')
+			->whereZt('constants.status.enable');
+	}
+
 }

@@ -3,7 +3,8 @@
 @section('content')
 <section class="row">
     <div class="col-sm-8 col-sm-offset-2">
-        <form method="post" action="{{ url('selcourse/search') }}" role="form">
+        <form id="searchForm" name="searchForm" method="post" action="{{ url('selcourse/search') }}" role="form">
+            {!! csrf_token() !!}
             <div class="input-group">
                 <div class="form-group">
                     <label class="sr-only" for="keyword">课程检索</label>
@@ -18,27 +19,27 @@
                     <label for="grade">年度</label>
                     <select name="grade" id="grade" class="form-control">
                         <option value="*">==全部==</option>
-                        <?php foreach ($grades as $grade): ?>
-                            <option value="<?php echo $grade['nj'] ?>"><?php echo $grade['nj'] ?></option>
-                        <?php endforeach;?>
+                        @foreach ($grades as $grade)
+                            <option value="{{ $grade->nj }}">{{ $grade->nj }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-4">
                     <label for="college">学院</label>
                     <select name="college" id="college" class="form-control">
                         <option value="*">==全部==</option>
-                        <?php foreach ($colleges as $college): ?>
-                            <option value="<?php echo $college['dw'] ?>"><?php echo $college['mc'] ?></option>
-                        <?php endforeach;?>
+                        @foreach ($colleges as $college)
+                            <option value="{{ $college->dw }}">{{ $college->mc }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-5">
                     <label for="speciality">专业</label>
                     <select name="speciality" id="speciality" class="form-control">
                         <option value="*" class='*'>==全部==</option>
-                        <?php foreach ($specialities as $speciality): ?>
-                            <option value="<?php echo $speciality['zy'] ?>" class="<?php echo $speciality['xy'] ?>"><?php echo $speciality['mc'] ?></option>
-                        <?php endforeach;?>
+                        @foreach ($majors as $major)
+                            <option value="{{ $major->zy }}" class="{{ $major->xy }}">{{ $major->mc }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -46,87 +47,105 @@
     </div>
 </section>
 
-<?php if (!isEmpty($courses)): ?>
-    <section class="row">
-        <div class="col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div role="tabpanel">
-                        <ul id="campus-tab" class="nav nav-tabs" role="tablist">
-                            <?php foreach (array_keys($courses) as $cid): ?>
-                                <?php $campusId = 'campus-' . $cid?>
-                                <li role="presentation"><a href="#<?php echo $campusId ?>" aria-controls="<?php echo $campusId ?>" role="tab" data-toggle="tab"><?php echo Dictionary::get('xqh', $cid) ?></a></li>
-                            <?php endforeach?>
-                        </ul>
-                        <div class="tab-content">
-                            <?php foreach (array_keys($courses) as $cid): ?>
-                                <div id="campus-<?php echo $cid ?>" class="tab-pane fade<?php echo $cid == $session['campus'] ? ' in active' : '' ?>" role="tabpanel">
-                                    <div class="table-responsive tab-table">
-                                        <table class="table table-bordered table-striped table-hover course-table">
-                                            <thead>
-                                                <tr>
-                                                    <th rowspan="2" class="active">操作</th>
-                                                    <th rowspan="2" class="active">课程序号</th>
-                                                    <th rowspan="2" class="active">课程名称</th>
-                                                    <th rowspan="2" class="active">学分</th>
-                                                    <th rowspan="2" class="active">开课学院</th>
-                                                    <th rowspan="2" class="active">专业</th>
-                                                    <th rowspan="2" class="active">年级</th>
-                                                    <th colspan="3" class="active text-center">上课时间</th>
-                                                    <th rowspan="2" class="active">所在校区</th>
-                                                    <th rowspan="2" class="active">主要任课老师</th>
-                                                </tr>
-                                                <tr>
-                                                    <th class="active">起始周次</th>
-                                                    <th class="active">星期</th>
-                                                    <th class="active">起始节数</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($courses[$cid] as $course): ?>
-                                                    <tr data-row="<?php echo $course[0]['kcxh'] ?>">
-                                                        <?php $rowspan = count($course)?>
-                                                        <td rowspan="<?php echo $rowspan ?>" class="text-center" id="<?php echo $course[0]['kcxh'] ?>">
-                                                            <a class="btn btn-primary" href="<?php echo Route::to('course.apply', $type, $course[0]['kcxh']) ?>" title="申请修读" role="button">申请修读</a>
-                                                        </td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo $course[0]['kcxh'] ?></td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo $course[0]['kcmc'] ?></td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo $course[0]['xf'] ?></td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo Dictionary::get('department', $course[0]['kkxy'], 'xt', 'dw') ?></td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo Dictionary::get('zy', $course[0]['zy'], 'jx', 'zy') ?></td>
-                                                        <td rowspan="<?php echo $rowspan ?>"><?php echo $course[0]['nj'] ?></td>
-                                                        <td><?php echo $course[0]['ksz'] ?>~<?php echo $course[0]['jsz'] ?></td>
-                                                        <td><?php echo $course[0]['zc'] ?></td>
-                                                        <td><?php echo $course[0]['ksj'] ?><?php echo $course[0]['jsj'] <= $course[0]['ksj'] ? '' : '~' . $course[0]['jsj'] ?></td>
-                                                        <td><?php echo Dictionary::get('xqh', $course[0]['xqh']) ?></td>
-                                                        <td><?php echo $course[0]['jsxm'] ?></td>
-                                                    </tr>
-                                                    <?php for ($i = 1; $i < $rowspan; ++$i): ?>
-                                                        <tr data-name="<?php echo $course[0]['kcxh'] ?>">
-                                                            <?php for ($j = 0; $j < 5; ++$j): ?>
-                                                                <td style="display: none"></td>
-                                                            <?php endfor;?>
-                                                            <td><?php echo $course[$i]['ksz'] ?>~<?php echo $course[$i]['jsz'] ?></td>
-                                                            <td><?php echo $course[$i]['zc'] ?></td>
-                                                            <td><?php echo $course[$i]['ksj'] ?><?php echo $course[$i]['jsj'] <= $course[$i]['ksj'] ? '' : '~' . $course[$i]['jsj'] ?></td>
-                                                            <td><?php echo Dictionary::get('xqh', $course[$i]['xqh']) ?></td>
-                                                            <td><?php echo $course[$i]['jsxm'] ?></td>
-                                                            <?php for ($j = 0; $j < 2; ++$j): ?>
-                                                                <td style="display: none"></td>
-                                                            <?php endfor;?>
-                                                        </tr>
-                                                    <?php endfor;?>
-                                                <?php endforeach;?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+<section class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div role="tabpanel">
+                    <ul id="campus-tab" class="nav nav-tabs" role="tablist">
+                        @foreach ($campuses as $campus)
+                            <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab">{{ $campus->mc }}</a></li>
+                        @endforeach
+                    </ul>
+                    <div class="tab-content">
+                        @foreach ($campuses as $campus)
+                            <div id="campus-{{ $campus->dm }}" class="tab-pane fade{{ session('campus') == $campus->dm ? ' in active' : '' }}" role="tabpanel">
+                                <div class="table-responsive tab-table">
+                                    <table id="selcourses-table-{{ $campus->dm }}" class="table table-bordered table-striped table-hover" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="active">操作</th>
+                                                <th class="active">课程序号</th>
+                                                <th class="active">课程名称</th>
+                                                <th class="active">学分</th>
+                                                <th class="active">周一</th>
+                                                <th class="active">周二</th>
+                                                <th class="active">周三</th>
+                                                <th class="active">周四</th>
+                                                <th class="active">周五</th>
+                                                <th class="active">周六</th>
+                                                <th class="active">周日</th>
+                                                <th class="active">考核方式</th>
+                                                <th class="active">上课人数</th>
+                                                <th class="active">已选人数</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>操作</th>
+                                                <th>课程序号</th>
+                                                <th>课程名称</th>
+                                                <th>学分</th>
+                                                <th>周一</th>
+                                                <th>周二</th>
+                                                <th>周三</th>
+                                                <th>周四</th>
+                                                <th>周五</th>
+                                                <th>周六</th>
+                                                <th>周日</th>
+                                                <th>考核方式</th>
+                                                <th>上课人数</th>
+                                                <th>已选人数</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
-                            <?php endforeach?>
-                        </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-<?php endif;?>
+    </div>
+</section>
 @stop
+
+@push('scripts')
+<script>
+$(function() {
+    @foreach ($campuses as $campus)
+    $('#selcourses-table-{{ $campus->dm }}').dataTable({
+        'ajax': '{!! url('selcourse/listing', [$type, $campus->dm]) !!}',
+        'columns': [
+            { data: 'action', name: 'action'},
+            { data: 'kcxh', name: 'kcxh' },
+            { data: 'kcmc', name: 'kcmc' },
+            { data: 'zxf', name: 'zxf' },
+            { data: 'Monday', name: 'Monday'},
+            { data: 'Tuesday', name: 'Tuesday'},
+            { data: 'Wednesday', name: 'Wednesday'},
+            { data: 'Thursday', name: 'Thursday'},
+            { data: 'Friday', name: 'Friday'},
+            { data: 'Saturday', name: 'Saturday'},
+            { data: 'Sunday', name: 'Sunday'},
+            { data: 'kh', name: 'kh' },
+            { data: 'zrs', name: 'zrs' },
+            { data: 'rs', name: 'rs' }
+        ],
+        'drawCallback': function (settings) {
+            @for ($i = 5; $i <= 11; $i++)
+                $('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
+            @endfor
+        }
+    });
+    @endforeach
+
+    $('#campus-tab a').click(function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
+    $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
+});
+</script>
+@endpush

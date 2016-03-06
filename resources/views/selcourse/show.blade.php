@@ -102,11 +102,6 @@ $(function() {
     });
     @endforeach
 
-    $('form[name="createForm"]').on('submit',function(e){
-    	alert('info');
-    	return false;
-    });
-
 	$('#campus-tab a').click(function(e) {
 		e.preventDefault();
 		$(this).tab('show');
