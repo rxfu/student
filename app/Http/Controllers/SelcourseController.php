@@ -233,11 +233,17 @@ class SelcourseController extends Controller {
 			->orderBy('dw')
 			->get();
 
+		$majors = Major::whereZt(config('constants.status.enable'))
+			->select('zy', 'mc', 'xy')
+			->orderBy('zy')
+			->get();
+
 		return view('selcourse.search')
 			->withTitle('课程检索')
 			->withInfo('请输入课程序号或课程中文名称进行检索')
 			->withGrades($grades)
-			->withColleges($colleges);
+			->withColleges($colleges)
+			->withMajor($majors);
 	}
 
 	/**
