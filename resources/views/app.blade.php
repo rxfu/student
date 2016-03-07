@@ -146,7 +146,7 @@
                                             </li>
                                         @endif
                                         <li>
-                                            <a href="{{ url('selcourse/search') }}">课程检索</a>
+                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
                                         </li>
                                         <li>
                                             <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>

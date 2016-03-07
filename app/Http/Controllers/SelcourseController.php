@@ -219,9 +219,23 @@ class SelcourseController extends Controller {
 	 * @author FuRongxin
 	 * @date    2016-02-23
 	 * @version 2.0
+	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
-	public function showSearchForm() {
+	public function showSearchForm(Request $request) {
+		$inputs  = $request->all();
+		$search  = isset($inputs['searched']) ? $inputs['searched'] : false;
+		$grade   = isset($inputs['nj']) ? $inputs['nj'] : 'all';
+		$college = isset($inputs['xy']) ? $inputs['xy'] : 'all';
+		$major   = isset($inputs['zy']) ? $inputs['zy'] : 'all';
+
+		$campuses = Campus::all()->each(function ($course) {
+			if (empty($course->dm)) {
+				$course->dm = 'unknown';
+				$course->mc = '未知';
+			}
+		});
+
 		$grades = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereNj('nj', '<>', '')
@@ -243,9 +257,14 @@ class SelcourseController extends Controller {
 		return view('selcourse.search')
 			->withTitle('课程检索')
 			->withInfo('请输入课程序号或课程中文名称进行检索')
+			->withCampuses($campuses)
 			->withGrades($grades)
 			->withColleges($colleges)
-			->withMajors($majors);
+			->withMajors($majors)
+			->withSearch($search)
+			->withGrade($grade)
+			->withCollege($college)
+			->withMajor($major);
 	}
 
 	/**
@@ -258,61 +277,45 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 检索结果
 	 */
 	public function search(Request $request, $campus) {
-		if ($request->isMethod('post')) {
-			$this->validate($request, [
-				'nj' => 'required|numeric',
-				'xy' => 'required',
-				'zy' => 'required',
-			]);
+		$this->validate($request, [
+			'nj' => 'required',
+			'xy' => 'required',
+			'zy' => 'required',
+		]);
 
-			$courses = Mjcourse::selectable($campus)
-				->get();
+		$courses = Mjcourse::selectable($campus)
+			->get();
 
-			$datatable = Datatables::of($courses)
-				->addColumn('action', function ($course) use ($type) {
-					$exists = Selcourse::whereXh(Auth::user()->xh)
-						->whereNd(session('year'))
-						->whereXq(session('term'))
-						->whereKcxh($course->kcxh)
-						->exists();
+		$datatable = Datatables::of($courses)
+			->addColumn('action', function ($course) use ($type) {
+				return '<a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请修读" class"btn btn-primary">申请修读</a><a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';
+			});
 
-					if ($exists) {
-						return '<form name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-					} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
-						return '<div class="text-danger">前修课未修读</div>';
-					} elseif ($course->rs >= $course->zrs) {
-						return '<div class="text-danger">人数已满</div>';
-					} else {
-						return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
-					}
-				});
+		for ($i = 1; $i <= 7; ++$i) {
+			$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
+				$info = '';
 
-			for ($i = 1; $i <= 7; ++$i) {
-				$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
-					$info = '';
+				foreach (array_keys(explode(',', $course->zcs), $i) as $pos) {
+					$ksz  = array_get(explode(',', $course->kszs), $pos);
+					$jsz  = array_get(explode(',', $course->jszs), $pos);
+					$ksj  = array_get(explode(',', $course->ksjs), $pos);
+					$jsj  = array_get(explode(',', $course->jsjs), $pos);
+					$jsxm = array_get(explode(',', $course->jsxms), $pos);
 
-					foreach (array_keys(explode(',', $course->zcs), $i) as $pos) {
-						$ksz  = array_get(explode(',', $course->kszs), $pos);
-						$jsz  = array_get(explode(',', $course->jszs), $pos);
-						$ksj  = array_get(explode(',', $course->ksjs), $pos);
-						$jsj  = array_get(explode(',', $course->jsjs), $pos);
-						$jsxm = array_get(explode(',', $course->jsxms), $pos);
+					$info .= '<p><div>第 ';
+					$info .= ($ksz === $jsz) ? $ksz : $ksz . ' ~ ' . $jsz;
+					$info .= ' 周</div><div class="text-danger">第 ';
+					$info .= ($ksj === $jsj) ? $ksj : $ksj . ' ~ ' . $jsj;
+					$info .= ' 节</div><div class="text-info">';
+					$info .= empty($jsxm) ? '未知老师' : $jsxm;
+					$info .= '</div></p>';
+				}
 
-						$info .= '<p><div>第 ';
-						$info .= ($ksz === $jsz) ? $ksz : $ksz . ' ~ ' . $jsz;
-						$info .= ' 周</div><div class="text-danger">第 ';
-						$info .= ($ksj === $jsj) ? $ksj : $ksj . ' ~ ' . $jsj;
-						$info .= ' 节</div><div class="text-info">';
-						$info .= empty($jsxm) ? '未知老师' : $jsxm;
-						$info .= '</div></p>';
-					}
-
-					return $info;
-				});
-			}
-
-			return $datatable->make(true);
+				return $info;
+			});
 		}
+
+		return $datatable->make(true);
 	}
 
 	/**
@@ -633,7 +636,7 @@ class SelcourseController extends Controller {
 					->exists();
 
 				if ($exists) {
-					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course['kcxh']) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
 					return '<div class="text-danger">前修课未修读</div>';
 				} elseif ($course->rs >= $course->zrs) {

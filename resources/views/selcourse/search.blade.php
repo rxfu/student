@@ -3,8 +3,9 @@
 @section('content')
 <section class="row">
     <div class="col-sm-8 col-sm-offset-2">
-        <form id="searchForm" name="searchForm" method="post" action="{{ url('selcourse/search') }}" role="form">
+        <form id="searchForm" name="searchForm" method="get" action="{{ url('selcourse/search') }}" role="form">
             {!! csrf_field() !!}
+            <input type="hidden" name="searched" value="true">
             <div class="input-group">
                 <div class="form-group">
                     <label class="sr-only" for="keyword">课程检索</label>
@@ -18,7 +19,7 @@
                 <div class="col-sm-3">
                     <label for="nj">年度</label>
                     <select name="nj" id="nj" class="form-control">
-                        <option value="*">==全部==</option>
+                        <option value="all">==全部==</option>
                         @foreach ($grades as $grade)
                             <option value="{{ $grade->nj }}">{{ $grade->nj }}</option>
                         @endforeach
@@ -27,7 +28,7 @@
                 <div class="col-sm-4">
                     <label for="xy">学院</label>
                     <select name="xy" id="xy" class="form-control">
-                        <option value="*">==全部==</option>
+                        <option value="all">==全部==</option>
                         @foreach ($colleges as $college)
                             <option value="{{ $college->dw }}">{{ $college->mc }}</option>
                         @endforeach
@@ -36,7 +37,7 @@
                 <div class="col-sm-5">
                     <label for="zy">专业</label>
                     <select name="zy" id="zy" class="form-control">
-                        <option value="*" class='*'>==全部==</option>
+                        <option value="all" class='all'>==全部==</option>
                         @foreach ($majors as $major)
                             <option value="{{ $major->zy }}" class="{{ $major->xy }}">{{ $major->mc }}</option>
                         @endforeach
@@ -47,7 +48,7 @@
     </div>
 </section>
 
-@if (isset($courses))
+@if ($search)
     <section class="row">
         <div class="col-sm-12">
             <div class="panel panel-default">
@@ -113,12 +114,20 @@
 @stop
 
 @push('scripts')
-@if (isset($campuses))
+@if ($search)
     <script>
     $(function() {
         $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
             $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
-                'ajax': '{!! url('selcourse/listing', [$type]) !!}/' + $(e.target).attr('id'),
+                'ajax': {
+                    'ur': '{!! url('selcourse/search') !!}/' + $(e.target).attr('id'),
+                    'data': {
+                        'searched': {{ $search }},
+                        'nj': {{ $grade }},
+                        'xy': {{ $college }},
+                        'zy': {{ $major }}
+                    }
+                },
                 'columns': [
                     { data: 'action', name: 'action'},
                     { data: 'kcxh', name: 'kcxh' },
@@ -150,6 +159,8 @@
         });
 
         $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
+
+        $('#zy').chained('#xy');
     });
 @endif
 @endpush

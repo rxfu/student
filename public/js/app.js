@@ -334,9 +334,6 @@ $(document).ready(function() {
 		$(this).data('form').submit();
 	});
 
-	$('#speciality').chained('#college');
-	$('#course').chained('#department');
-
 	$('.modal').modal({
 		show: false,
 		backdrop: 'static',
