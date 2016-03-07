@@ -95,6 +95,24 @@ class Mjcourse extends Model {
 		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
+	public function scopeOfGrade($query, $grade) {
+		if ('all' !== $grade) {
+			return $query->whereNj($grade);
+		}
+	}
+
+	public function scopeOfCollege($query, $college) {
+		if ('all' !== $college) {
+			return $query->whereKkxy($college);
+		}
+	}
+
+	public function scopeOfMajor($query, $major) {
+		if ('all' !== $major) {
+			return $query->whereZy($major);
+		}
+	}
+
 	/**
 	 * 扩展查询：用于获取课程类型相应课程的课程列表
 	 * @author FuRongxin

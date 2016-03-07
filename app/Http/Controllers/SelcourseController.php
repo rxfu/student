@@ -262,9 +262,9 @@ class SelcourseController extends Controller {
 			->withColleges($colleges)
 			->withMajors($majors)
 			->withSearch($search)
-			->withGrade($grade)
-			->withCollege($college)
-			->withMajor($major);
+			->withSgrade($grade)
+			->withScollege($college)
+			->withSmajor($major);
 	}
 
 	/**
@@ -283,9 +283,12 @@ class SelcourseController extends Controller {
 			'zy' => 'required',
 		]);
 
-		$courses = Mjcourse::selectable($campus)
+		$courses = Mjcourse::ofGrade($inputs['nj'])
+			->ofCollege($inputs['xy'])
+			->ofMajor($inputs['zy'])
+			->selectable($campus)
 			->get();
-
+		dd($courses);
 		$datatable = Datatables::of($courses)
 			->addColumn('action', function ($course) use ($type) {
 				return '<a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请修读" class"btn btn-primary">申请修读</a><a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';

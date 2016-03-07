@@ -4,7 +4,6 @@
 <section class="row">
     <div class="col-sm-8 col-sm-offset-2">
         <form id="searchForm" name="searchForm" method="get" action="{{ url('selcourse/search') }}" role="form">
-            {!! csrf_field() !!}
             <input type="hidden" name="searched" value="true">
             <div class="input-group">
                 <div class="form-group">
@@ -120,12 +119,12 @@
         $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
             $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
                 'ajax': {
-                    'ur': '{!! url('selcourse/search') !!}/' + $(e.target).attr('id'),
+                    'url': '{!! url('selcourse/search') !!}/' + $(e.target).attr('id'),
                     'data': {
-                        'searched': {{ $search }},
-                        'nj': {{ $grade }},
-                        'xy': {{ $college }},
-                        'zy': {{ $major }}
+                        'searched': '{{ $search }}',
+                        'nj': '{{ $sgrade }}',
+                        'xy': '{{ $scollege }}',
+                        'zy': '{{ $smajor }}'
                     }
                 },
                 'columns': [
@@ -160,7 +159,7 @@
 
         $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
 
-        $('#zy').chained('#xy');
     });
+    </script>
 @endif
 @endpush
