@@ -140,16 +140,11 @@
                                                 <!-- /.nav-third-level -->
                                             </li>
                                         @endif
-                                        @if ($allowed_others)
-                                            <li>
-                                                <a href="#">其他课程</a>
-                                            </li>
-                                        @endif
-                                        <li>
-                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
-                                        </li>
                                         <li>
                                             <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
                                         </li>
                                     @endif
                                     <li>

@@ -55,7 +55,7 @@
                     <div role="tabpanel">
                         <ul id="campus-tab" class="nav nav-tabs" role="tablist">
                             @foreach ($campuses as $campus)
-                                <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab">{{ $campus->mc }}</a></li>
+                                <li role="presentation"><a href="#campus-{{ $campus->dm }}" aria-controls="{{ $campus->dm }}" role="tab" data-toggle="tab" id="{{ $campus->dm }}">{{ $campus->mc }}</a></li>
                             @endforeach
                         </ul>
                         <div class="tab-content">
@@ -65,7 +65,7 @@
                                         <table id="selcourses-table-{{ $campus->dm }}" class="table table-bordered table-striped table-hover" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th class="active">操作</th>
+                                                    <th class="active text-nowrap">操作</th>
                                                     <th class="active">课程序号</th>
                                                     <th class="active">课程名称</th>
                                                     <th class="active">学分</th>
@@ -159,6 +159,7 @@
 
         $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
 
+        $('#zy').chained('#xy');
     });
     </script>
 @endif

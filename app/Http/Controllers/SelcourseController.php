@@ -238,18 +238,20 @@ class SelcourseController extends Controller {
 
 		$grades = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
-			->whereNj('nj', '<>', '')
+			->where('nj', '<>', '')
 			->select('nj')
 			->distinct()
 			->orderBy('nj')
 			->get();
 
 		$colleges = Department::colleges()
+			->where('mc', '<>', '')
 			->select('dw', 'mc')
 			->orderBy('dw')
 			->get();
 
 		$majors = Major::whereZt(config('constants.status.enable'))
+			->where('mc', '<>', '')
 			->select('zy', 'mc', 'xy')
 			->orderBy('zy')
 			->get();
@@ -283,15 +285,17 @@ class SelcourseController extends Controller {
 			'zy' => 'required',
 		]);
 
+		$inputs = $request->all();
+
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
 			->get();
-		dd($courses);
+
 		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) use ($type) {
-				return '<a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请修读" class"btn btn-primary">申请修读</a><a href="' . route('application.create', [$type, $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';
+			->addColumn('action', function ($course) {
+				return '<a href="' . route('application.create', ['other', $course->kcxh]) . '" title="申请修读" class="btn btn-primary">申请修读</a><a href="' . route('application.create', ['retake', $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {

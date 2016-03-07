@@ -95,18 +95,45 @@ class Mjcourse extends Model {
 		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
+	/**
+	 * 扩展查询，用于获取对应年级课程信息
+	 * @author FuRongxin
+	 * @date    2016-03-07
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $grade 年级
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
 	public function scopeOfGrade($query, $grade) {
 		if ('all' !== $grade) {
 			return $query->whereNj($grade);
 		}
 	}
 
+	/**
+	 * 扩展查询，用于获取对应学院课程信息
+	 * @author FuRongxin
+	 * @date    2016-03-07
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $college 学院
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
 	public function scopeOfCollege($query, $college) {
 		if ('all' !== $college) {
 			return $query->whereKkxy($college);
 		}
 	}
 
+	/**
+	 * 扩展查询，用于获取对应专业课程信息
+	 * @author FuRongxin
+	 * @date    2016-03-07
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $major 专业
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
 	public function scopeOfMajor($query, $major) {
 		if ('all' !== $major) {
 			return $query->whereZy($major);
@@ -114,7 +141,7 @@ class Mjcourse extends Model {
 	}
 
 	/**
-	 * 扩展查询：用于获取课程类型相应课程的课程列表
+	 * 扩展查询，用于获取课程类型相应课程的课程列表
 	 * @author FuRongxin
 	 * @date    2016-03-01
 	 * @version 2.0
