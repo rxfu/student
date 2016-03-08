@@ -6,9 +6,13 @@
         <form id="searchForm" name="searchForm" method="get" action="{{ url('selcourse/search') }}" role="form">
             <input type="hidden" name="searched" value="true">
             <div class="input-group">
+                <select name="type" class="form-control">
+                    <option value="kcxh">课程序号</option>
+                    <option value="kcmc">课程名称</option>
+                </select>
                 <div class="form-group">
                     <label class="sr-only" for="keyword">课程检索</label>
-                    <input type="search" class="form-control" id="keyword" name="keyword" placeholder="请输入课程序号或课程名称...">
+                    <input type="search" class="form-control" id="keyword" name="keyword" placeholder="请输入课程序号或课程名称..." value="{{ $keyword }}">
                 </div>
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">Go!</button>
@@ -20,7 +24,7 @@
                     <select name="nj" id="nj" class="form-control">
                         <option value="all">==全部==</option>
                         @foreach ($grades as $grade)
-                            <option value="{{ $grade->nj }}">{{ $grade->nj }}</option>
+                            <option value="{{ $grade->nj }}"{{ $grade->nj == $sgrade ? ' selected' : '' }}>{{ $grade->nj }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -29,7 +33,7 @@
                     <select name="xy" id="xy" class="form-control">
                         <option value="all">==全部==</option>
                         @foreach ($colleges as $college)
-                            <option value="{{ $college->dw }}">{{ $college->mc }}</option>
+                            <option value="{{ $college->dw }}"{{ $college->dw == $scollege ? ' selected' : '' }}>{{ $college->mc }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -38,7 +42,7 @@
                     <select name="zy" id="zy" class="form-control">
                         <option value="all" class='all'>==全部==</option>
                         @foreach ($majors as $major)
-                            <option value="{{ $major->zy }}" class="{{ $major->xy }}">{{ $major->mc }}</option>
+                            <option value="{{ $major->zy }}" class="{{ $major->xy }}"{{ $major->zy == $smajor ? ' selected' : '' }}>{{ $major->mc }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -65,7 +69,8 @@
                                         <table id="selcourses-table-{{ $campus->dm }}" class="table table-bordered table-striped table-hover" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th class="active text-nowrap">操作</th>
+                                                    <th class="active">重修申请</th>
+                                                    <th class="active">其他申请</th>
                                                     <th class="active">课程序号</th>
                                                     <th class="active">课程名称</th>
                                                     <th class="active">学分</th>
@@ -83,7 +88,8 @@
                                             </thead>
                                             <tfoot>
                                                 <tr>
-                                                    <th>操作</th>
+                                                    <th>重修申请</th>
+                                                    <th>其他申请</th>
                                                     <th>课程序号</th>
                                                     <th>课程名称</th>
                                                     <th>学分</th>
@@ -124,11 +130,13 @@
                         'searched': '{{ $search }}',
                         'nj': '{{ $sgrade }}',
                         'xy': '{{ $scollege }}',
-                        'zy': '{{ $smajor }}'
+                        'zy': '{{ $smajor }}',
+                        'keyword': '{{ $keyword }}'
                     }
                 },
                 'columns': [
-                    { data: 'action', name: 'action'},
+                    { data: 'retake', name: 'retake'},
+                    { data: 'other', name: 'other'},
                     { data: 'kcxh', name: 'kcxh' },
                     { data: 'kcmc', name: 'kcmc' },
                     { data: 'zxf', name: 'zxf' },

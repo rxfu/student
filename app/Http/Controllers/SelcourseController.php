@@ -228,6 +228,7 @@ class SelcourseController extends Controller {
 		$grade   = isset($inputs['nj']) ? $inputs['nj'] : 'all';
 		$college = isset($inputs['xy']) ? $inputs['xy'] : 'all';
 		$major   = isset($inputs['zy']) ? $inputs['zy'] : 'all';
+		$keyword = isset($inputs['keyword']) ? $inputs['keyword'] : '';
 
 		$campuses = Campus::all()->each(function ($course) {
 			if (empty($course->dm)) {
@@ -266,7 +267,8 @@ class SelcourseController extends Controller {
 			->withSearch($search)
 			->withSgrade($grade)
 			->withScollege($college)
-			->withSmajor($major);
+			->withSmajor($major)
+			->withKeyword($keyword);
 	}
 
 	/**
@@ -290,13 +292,34 @@ class SelcourseController extends Controller {
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
-			->selectable($campus)
-			->get();
+			->selectable($campus);
+
+		if (!empty(trim($inputs['keyword']))) {
+			switch ($inputs['type']) {
+			case 'kcxh':
+				$courses = $courses->where('pk_kczy.kcxh', '=', $inputs['keyword']);
+				break;
+
+			case 'kcmc':
+				$courses = $courses->where('jx_kc.kcmc', '=', $inputs['keyword']);
+				break;
+
+			default:
+				$courses = $courses->where('pk_kczy.kcxh', '=', $inputs['keyword']);
+				break;
+			}
+		}
+
+		$courses->get();
 
 		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) {
-				return '<a href="' . route('application.create', ['other', $course->kcxh]) . '" title="申请修读" class="btn btn-primary">申请修读</a><a href="' . route('application.create', ['retake', $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';
+			->addColumn('retake', function ($course) {
+				return '<a href="' . route('application.create', ['type' => 'retake', 'kcxh' => $course->kcxh]) . '" title="申请重修" class="btn btn-warning">申请重修</a>';
 			});
+
+		$datatable = $datatable->addColumn('other', function ($course) {
+			return '<a href="' . route('application.create', ['type' => 'other', 'kcxh' => $course->kcxh]) . '" title="申请修读" class="btn btn-primary">申请修读</a>';
+		});
 
 		for ($i = 1; $i <= 7; ++$i) {
 			$datatable = $datatable->addColumn($this->_weeks[$i], function ($course) use ($i) {
