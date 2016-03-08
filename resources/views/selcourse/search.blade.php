@@ -6,7 +6,7 @@
         <form id="searchForm" name="searchForm" method="get" action="{{ url('selcourse/search') }}" role="form">
             <input type="hidden" name="searched" value="true">
             <div class="input-group">
-                <select name="type" class="form-control">
+                <select name="type" class="selectpicker form-control">
                     <option value="kcxh">课程序号</option>
                     <option value="kcmc">课程名称</option>
                 </select>
