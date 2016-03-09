@@ -59,6 +59,7 @@ class ApplicationController extends Controller {
 	public function store(Request $request) {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
+				'type' => 'require',
 				'kcxh' => 'require|size:12',
 			]);
 
@@ -80,10 +81,21 @@ class ApplicationController extends Controller {
 			$application->pt   = $course->pt;
 			$application->xz   = $course->xz;
 			$application->xf   = $course->plan->xf;
-			$application->xklx = '0';
 			$application->sf   = '0';
 			$application->sh   = '0';
 			$application->xksj = Carbon::now();
+
+			switch ($inputs['type']) {
+			case 'other':
+				$application->xklx = '0';
+				break;
+			case 'retake':
+				$application->xklx = '1';
+				break;
+			default:
+				$application->xklx = '0';
+				break;
+			}
 
 			if ($application->save()) {
 				return redirect('application')->withStatus('课程申请成功');
