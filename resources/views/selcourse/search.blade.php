@@ -6,13 +6,15 @@
         <form id="searchForm" name="searchForm" method="get" action="{{ url('selcourse/search') }}" role="form">
             <input type="hidden" name="searched" value="true">
             <div class="input-group">
-                <select name="type" class="selectpicker form-control">
-                    <option value="kcxh">课程序号</option>
-                    <option value="kcmc">课程名称</option>
-                </select>
+                <span class="input-group-btn">
+                    <select name="type" class="selectpicker" data-style="btn-primary" data-width="100px">
+                        <option value="kcxh"{{ 'kcxh' == $type ? ' selected' : '' }}>课程序号</option>
+                        <option value="kcmc"{{ 'kcmc' == $type ? ' selected' : '' }}>课程名称</option>
+                    </select>
+                </span>
                 <div class="form-group">
                     <label class="sr-only" for="keyword">课程检索</label>
-                    <input type="search" class="form-control" id="keyword" name="keyword" placeholder="请输入课程序号或课程名称..." value="{{ $keyword }}">
+                    <input type="search" class="form-control" id="keyword" name="keyword" placeholder="请输入关键词进行检索..." value="{{ $keyword }}">
                 </div>
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">Go!</button>
@@ -131,7 +133,8 @@
                         'nj': '{{ $sgrade }}',
                         'xy': '{{ $scollege }}',
                         'zy': '{{ $smajor }}',
-                        'keyword': '{{ $keyword }}'
+                        'keyword': '{{ $keyword }}',
+                        'type': '{{ $type }}'
                     }
                 },
                 'columns': [

@@ -11,7 +11,7 @@
         <!--link rel="shortcut icon" href="favicon.ico"-->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/formValidation.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap-select.in.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
         <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}">

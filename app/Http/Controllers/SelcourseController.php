@@ -229,6 +229,7 @@ class SelcourseController extends Controller {
 		$college = isset($inputs['xy']) ? $inputs['xy'] : 'all';
 		$major   = isset($inputs['zy']) ? $inputs['zy'] : 'all';
 		$keyword = isset($inputs['keyword']) ? $inputs['keyword'] : '';
+		$type    = isset($inputs['type']) ? $inputs['type'] : '';
 
 		$campuses = Campus::all()->each(function ($course) {
 			if (empty($course->dm)) {
@@ -268,7 +269,8 @@ class SelcourseController extends Controller {
 			->withSgrade($grade)
 			->withScollege($college)
 			->withSmajor($major)
-			->withKeyword($keyword);
+			->withKeyword($keyword)
+			->withType($type);
 	}
 
 	/**
@@ -297,15 +299,15 @@ class SelcourseController extends Controller {
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
 			case 'kcxh':
-				$courses = $courses->where('pk_kczy.kcxh', '=', $inputs['keyword']);
+				$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
 				break;
 
 			case 'kcmc':
-				$courses = $courses->where('jx_kc.kcmc', '=', $inputs['keyword']);
+				$courses = $courses->where('jx_kc.kcmc', 'like', '%' . $inputs['keyword'] . '%');
 				break;
 
 			default:
-				$courses = $courses->where('pk_kczy.kcxh', '=', $inputs['keyword']);
+				$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
 				break;
 			}
 		}

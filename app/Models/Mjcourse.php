@@ -106,7 +106,7 @@ class Mjcourse extends Model {
 	 */
 	public function scopeOfGrade($query, $grade) {
 		if ('all' !== $grade) {
-			return $query->whereNj($grade);
+			return $query->where('pk_kczy.nj', '=', $grade);
 		}
 	}
 
@@ -121,7 +121,7 @@ class Mjcourse extends Model {
 	 */
 	public function scopeOfCollege($query, $college) {
 		if ('all' !== $college) {
-			return $query->whereKkxy($college);
+			return $query->where('pk_kczy.kkxy', '=', $college);
 		}
 	}
 
@@ -136,7 +136,7 @@ class Mjcourse extends Model {
 	 */
 	public function scopeOfMajor($query, $major) {
 		if ('all' !== $major) {
-			return $query->whereZy($major);
+			return $query->where('pk_kczy.zy', '=', $major);
 		}
 	}
 
