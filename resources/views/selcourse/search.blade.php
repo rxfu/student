@@ -155,7 +155,7 @@
                     { data: 'rs', name: 'rs' }
                 ],
                 'drawCallback': function (settings) {
-                    @for ($i = 5; $i <= 11; $i++)
+                    @for ($i = 6; $i <= 12; $i++)
                         $('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
                     @endfor
                 },

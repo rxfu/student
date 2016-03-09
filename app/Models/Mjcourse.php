@@ -192,6 +192,31 @@ class Mjcourse extends Model {
 	}
 
 	/**
+	 * 扩展查询，获取排除通识素质课的课程数据
+	 * @author FuRongxin
+	 * @date    2016-03-09
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeExceptGeneral($query) {
+		return $query->whereNotExists(function ($query) {
+			$query->from('pk_kczy')
+				->whereNd('pk_kczy.nd')
+				->whereXq('pk_kczy.xq')
+				->whereZsjj('pk_kczy.zsjj')
+				->whereKcxh('pk_kczy.kcxh')
+				->wherePt('T')
+				->where(function ($query) {
+					$query->whereXz('W')
+						->orWhere('xz', '=', 'I')
+						->orWhere('xz', '=', 'Y')
+						->orWhere('xz', '=', 'Q');
+				});
+		});
+	}
+
+	/**
 	 * 扩展查询：用于获取可选课程列表
 	 * @author FuRongxin
 	 * @date    2016-03-01

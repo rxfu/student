@@ -294,7 +294,8 @@ class SelcourseController extends Controller {
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
-			->selectable($campus);
+			->selectable($campus)
+			->exceptGeneral();
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
