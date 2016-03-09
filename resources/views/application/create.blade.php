@@ -11,7 +11,7 @@
                     <div class="form-group">
                         <label for="kcxh" class="col-sm-2 control-label">课程序号</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="kcxh" name="kcxh" value="{{ $kcxh }}" disabled>
+                            <input type="text" class="form-control" id="kcxh" name="kcxh" value="{{ $kcxh }}" readonly>
                         </div>
                     </div>
                     @if ('retake' == $type)

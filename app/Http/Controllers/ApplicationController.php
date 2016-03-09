@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Application;
+use App\Models\Mjcourse;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -59,12 +60,14 @@ class ApplicationController extends Controller {
 	public function store(Request $request) {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
-				'type' => 'require',
-				'kcxh' => 'require|size:12',
+				'type' => 'required',
+				'kcxh' => 'required|size:12',
 			]);
 
+			$inputs = $request->all();
+
 			$course = Mjcourse::whereNd(session('year'))
-				->whereXq(sesion('term'))
+				->whereXq(session('term'))
 				->whereKcxh($inputs['kcxh'])
 				->whereZsjj(session('season'))
 				->whereNj(session('grade'))
