@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use Illuminate\Support\Str;
+
 /**
  * 辅助函数类
  *
@@ -32,5 +34,17 @@ class Helper {
 	 */
 	public static function getCet4() {
 		return array_slice(config('constants.exam.type'), 3);
+	}
+
+	/**
+	 * 12位课程序号转换为8位课程号
+	 * @author FuRongxin
+	 * @date    2016-03-09
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  string 8位课程号
+	 */
+	public static function getCno($kcxh) {
+		return Str::substr($kcxh, 2, 8);
 	}
 }
