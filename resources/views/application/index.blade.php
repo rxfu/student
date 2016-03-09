@@ -33,7 +33,6 @@
                                 			{!! method_field('delete') !!}
                                 			{!! csrf_field() !!}
                                 			<button type="submit" class="btn btn-danger">撤销申请</button>
-                                			}
                                 		</form>
                                 	@endif
                                 </td>

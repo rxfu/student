@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel as Model;
 
 /**
  * 选课申请表
@@ -21,6 +21,9 @@ class Application extends Model {
 
 	public $timestamps = false;
 
+	// 修复删除操作
+	protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh'];
+
 	public static function boot() {
 		parent::boot();
 
@@ -28,6 +31,7 @@ class Application extends Model {
 			$log = new Slog;
 
 			$log->ip   = request()->ip();
+			$log->kcxh = $course->kcxh;
 			$log->czlx = 'apply';
 
 			$log->save();
@@ -37,6 +41,7 @@ class Application extends Model {
 			$log = new Slog;
 
 			$log->ip   = request()->ip();
+			$log->kcxh = $course->kcxh;
 			$log->czlx = 'revoke';
 
 			$log->save();

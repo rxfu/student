@@ -70,8 +70,6 @@ class ApplicationController extends Controller {
 				->whereXq(session('term'))
 				->whereKcxh($inputs['kcxh'])
 				->whereZsjj(session('season'))
-				->whereNj(session('grade'))
-				->whereZy(session('major'))
 				->firstOrFail();
 
 			$application       = new Application;
@@ -83,7 +81,8 @@ class ApplicationController extends Controller {
 			$application->kch  = Helper::getCno($course->kcxh);
 			$application->pt   = $course->pt;
 			$application->xz   = $course->xz;
-			$application->xf   = $course->plan->xf;
+			$application->kkxy = $course->kkxy;
+			$application->xf   = $course->plan->zxf;
 			$application->sf   = '0';
 			$application->sh   = '0';
 			$application->xksj = Carbon::now();
