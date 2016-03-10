@@ -201,11 +201,8 @@ class Mjcourse extends Model {
 	 */
 	public function scopeExceptGeneral($query) {
 		return $query->whereNotExists(function ($query) {
-			$query->from('pk_kczy')
-				->whereNd('pk_kczy.nd')
-				->whereXq('pk_kczy.xq')
-				->whereZsjj('pk_kczy.zsjj')
-				->whereKcxh('pk_kczy.kcxh')
+			$query->from('pk_kczy AS a')
+				->whereRaw('t_a.nd = t_pk_kczy.nd AND t_a.xq = t_pk_kczy.xq AND t_a.zsjj = t_pk_kczy.zsjj AND t_a.kcxh = t_pk_kczy.kcxh')
 				->wherePt('T')
 				->where(function ($query) {
 					$query->whereXz('W')

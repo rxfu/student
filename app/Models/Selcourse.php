@@ -207,11 +207,10 @@ class Selcourse extends Model {
 	public function scopeStudied($query, $user) {
 		return $query->whereXh($user->xh)
 			->whereNotExists(function ($query) {
-				$query->from('xk_xkxx')
+				$query->from('xk_xkxx AS a')
 					->whereNd(session('year'))
 					->whereXq(session('term'))
-					->whereXh('xk_xkxx.xh')
-					->whereKcxh('xk_xkxx.kcxh');
+					->whereRaw('t_a.xh = t_xk_xkxx.xh AND t_a.kcxh = t_xk_xkxx.kcxh');
 			});
 	}
 }
