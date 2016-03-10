@@ -58,7 +58,8 @@ class ApplicationController extends Controller {
 			->withKcxh($inputs['kcxh']);
 
 		if ('retake' == $inputs['type']) {
-			$view = $view->withCourses($courses);
+			$view = $view->withTitle('重修课程选课申请表')
+				->withCourses($courses);
 		}
 
 		return $view;
@@ -104,9 +105,15 @@ class ApplicationController extends Controller {
 			case 'other':
 				$application->xklx = '0';
 				break;
+
 			case 'retake':
-				$application->xklx = '1';
+				$application->xklx  = '1';
+				$application->ynd   = $inputs['ynd'];
+				$application->yxq   = $inputs['yxq'];
+				$application->ykcxh = $inputs['ykcxh'];
+				$application->yxf   = $inputs['yxf'];
 				break;
+
 			default:
 				$application->xklx = '0';
 				break;

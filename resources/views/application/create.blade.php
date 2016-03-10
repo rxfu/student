@@ -20,22 +20,29 @@
                             <div class="col-sm-4">
                                 <select name="ykcxh" id="ykcxh" class="form-control">
                                     @foreach ($courses as $course)
-                                        <option value="{{ $course->kcxh }}" data-ynd="{{ $course->nd }}" data-yxq="{{ $course->term->mc }}" data-yxf="{{ $course->xf }}">{{ $course->kcxh }} - {{ $course->course->kcmc }}</option>
+                                        <option value="{{ $course->kcxh }}" data-ynd="{{ $course->nd }}" data-yxq="{{ $course->xq }}" data-yxqmc="{{ $course->term->mc }}" data-yxf="{{ $course->xf }}">{{ $course->kcxh }} - {{ $course->course->kcmc }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="ynd" class="col-sm-2 control-label">原年度</label>
-                            <div class="col-sm-4 form-control-static"><span id="ynd"></span></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="ynd" name="ynd" readonly>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="yxq" class="col-sm-2 control-label">原学期</label>
-                            <div class="col-sm-4 form-control-static"><span id="yxq"></span></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="yxqmc" name="yxqmc" readonly>
+                                <input type="hidden" id="yxq" name="yxq" readonly>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="yxq" class="col-sm-2 control-label">原学分</label>
-                            <div class="col-sm-4 form-control-static"><span id="yxf"></span></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="yxf" name="yxf" readonly>
+                            </div>
                         </div>
                     @endif
                     <div class="form-group">
@@ -53,10 +60,16 @@
 @push('scripts')
 <script>
 $(function() {
+    $('#ynd').val($('#ykcxh option:selected').attr('data-ynd'));
+    $('#yxq').val($('#ykcxh option:selected').attr('data-yxq'));
+    $('#yxqmc').val($('#ykcxh option:selected').attr('data-yxqmc'));
+    $('#yxf').val($('#ykcxh option:selected').attr('data-yxf'));
+
     $('#ykcxh').change(function() {
-        $('#ynd').text($('#ykcxh option:selected').attr('data-ynd') + ' 年度');
-        $('#yxq').text($('#ykcxh option:selected').attr('data-yxq') + ' 学期');
-        $('#yxf').text($('#ykcxh option:selected').attr('data-yxf') + ' 学分');
+        $('#ynd').val($('#ykcxh option:selected').attr('data-ynd'));
+        $('#yxq').val($('#ykcxh option:selected').attr('data-yxq'));
+        $('#yxqmc').val($('#ykcxh option:selected').attr('data-yxqmc'));
+        $('#yxf').val($('#ykcxh option:selected').attr('data-yxf'));
     });
 });
 </script>
