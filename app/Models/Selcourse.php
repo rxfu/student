@@ -55,6 +55,17 @@ class Selcourse extends Model {
 	}
 
 	/**
+	 * 学期
+	 * @author FuRongxin
+	 * @date    2016-03-10
+	 * @version 2.0
+	 * @return  object 所属对象
+	 */
+	public function term() {
+		return $this->belongsTo('App\Models\Term', 'xq', 'dm');
+	}
+
+	/**
 	 * 课程
 	 * @author FuRongxin
 	 * @date    2016-02-15
@@ -182,5 +193,25 @@ class Selcourse extends Model {
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * 扩展查询，获取已修读课程列表
+	 * @author FuRongxin
+	 * @date    2016-03-10
+	 * @version 2.0
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeStudied($query, $user) {
+		return $query->whereXh($user->xh)
+			->whereNotExists(function ($query) {
+				$query->from('xk_xkxx')
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereXh('xk_xkxx.xh')
+					->whereKcxh('xk_xkxx.kcxh');
+			});
 	}
 }

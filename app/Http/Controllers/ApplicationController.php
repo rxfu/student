@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Application;
 use App\Models\Mjcourse;
+use App\Models\Selcourse;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,10 +46,22 @@ class ApplicationController extends Controller {
 	public function create(Request $request) {
 		$inputs = $request->all();
 
-		return view('application.create')
-			->withTitle('选课申请表')
+		if ('retake' == $inputs['type']) {
+			$courses = Selcourse::studied(Auth::user())
+				->orderBy('kcxh')
+				->get();
+		}
+
+		$view = view('application.create')
+			->withTitle('其他课程选课申请表')
 			->withType($inputs['type'])
 			->withKcxh($inputs['kcxh']);
+
+		if ('retake' == $inputs['type']) {
+			$view = $view->withCourses($courses);
+		}
+
+		return $view;
 	}
 
 	/**
