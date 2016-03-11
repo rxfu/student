@@ -238,7 +238,8 @@ class Mjcourse extends Model {
 			})
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
 			->join('xk_tj', function ($join) {
-				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh');
+				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh')
+					->on('pk_kczy.zy', '=', 'xk_tj.zy');
 			})
 			->where('pk_kb.xqh', '=', $campus)
 			->whereRaw('t_jx_jxjh.kch = substring(t_pk_kczy.kcxh, 3, 8)')
