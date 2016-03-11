@@ -100,10 +100,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function filtering()
     {
-        $eagerLoads = $this->getEagerLoads();
-
         $this->query->where(
-            function ($query) use ($eagerLoads) {
+            function ($query) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
@@ -120,6 +118,7 @@ class QueryBuilderEngine extends BaseEngine
                         );
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
+                            $eagerLoads     = $this->getEagerLoads();
                             $parts          = explode('.', $columnName);
                             $relationColumn = array_pop($parts);
                             $relation       = implode('.', $parts);
@@ -142,20 +141,6 @@ class QueryBuilderEngine extends BaseEngine
                 }
             }
         );
-    }
-
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    private function getEagerLoads()
-    {
-        if ($this->query_type == 'eloquent') {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
     }
 
     /**
@@ -201,6 +186,20 @@ class QueryBuilderEngine extends BaseEngine
         $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
 
         return $parameters;
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        if ($this->query_type == 'eloquent') {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
     }
 
     /**
@@ -371,12 +370,54 @@ class QueryBuilderEngine extends BaseEngine
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
                 $this->compileColumnQuery(
-                    $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
+                    $this->getQueryBuilder(),
+                    $method,
+                    $parameters,
+                    $column,
+                    $orderable['direction']
                 );
             } else {
+                if (count(explode('.', $column)) > 1) {
+                    $eagerLoads     = $this->getEagerLoads();
+                    $parts          = explode('.', $column);
+                    $relationColumn = array_pop($parts);
+                    $relation       = implode('.', $parts);
+
+                    if (in_array($relation, $eagerLoads)) {
+                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                    }
+                }
+
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
+    }
+
+    /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $table   = $this->query->getRelation($relation)->getRelated()->getTable();
+        $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
+        $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
+        $column  = $table . '.' . $relationColumn;
+
+        $joins = [];
+        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        if (! in_array($table, $joins)) {
+            $this->getQueryBuilder()
+                 ->leftJoin($table, $foreign, '=', $other);
+        }
+
+        return $column;
     }
 
     /**

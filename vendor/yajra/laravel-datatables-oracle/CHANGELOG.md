@@ -8,6 +8,23 @@
 
 ##Change Log
 
+###v6.7.3 - 2016-03-02
+    - Fix eager load multiple column sorting where other columns are being ignored when join statement already exists.
+    - Refactor redundant else order by statement.
+    - Call eager loads only when required when filtering and ordering.
+    - Extract eager loaded column join statement handler.
+
+###v6.7.2 - 2016-02-28
+    - Fix collection engine sorting and sorting function.
+    - Fix #413 and #415. 
+
+###v6.7.1 - 2016-02-26
+    - Fix multiple column sorting when using eager loaded models. Fix #410 
+
+###v6.7.0 - 2016-02-26
+    - Add support for sorting on eager loaded models. 
+    - PR #409 - Credits to @ikerasLT.
+
 ###v6.6.1 - 2016-02-20
     - Fix eager loading search (SQLSTATE[21000]: Cardinality violation:). Issue #403.
 
