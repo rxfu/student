@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
  * 辅助函数类
  *
  * @author FuRongxin
- * @date 2016-01-30
+ * @date 2016-01-31
  * @version 2.0
  */
 class Helper {
