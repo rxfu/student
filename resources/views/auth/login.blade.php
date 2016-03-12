@@ -32,7 +32,8 @@
 				            </div>
 				            <!-- /.panel-heading -->
 
-				            <div class="panel-body">@if (session('status'))
+				            <div class="panel-body">
+				            	@if (session('status'))
 				                <!-- Status -->
 				                <section class="row">
 				                    <div class="col-sm-12">
