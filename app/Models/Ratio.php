@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 成绩比你
+ * 成绩比例
  *
  * @author FuRongxin
  * @date 2016-01-26
