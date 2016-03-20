@@ -231,10 +231,10 @@ class SelcourseController extends Controller {
 		$keyword = isset($inputs['keyword']) ? $inputs['keyword'] : '';
 		$type    = isset($inputs['type']) ? $inputs['type'] : '';
 
-		$campuses = Campus::all()->each(function ($course) {
-			if (empty($course->dm)) {
-				$course->dm = 'unknown';
-				$course->mc = '未知';
+		$campuses = Campus::all()->each(function ($campus) {
+			if (empty($campus->dm)) {
+				$campus->dm = 'unknown';
+				$campus->mc = '未知';
 			}
 		});
 
