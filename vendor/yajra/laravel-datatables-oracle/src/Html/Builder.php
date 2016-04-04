@@ -11,9 +11,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * Class Builder
+ * Class Builder.
  *
  * @package Yajra\Datatables\Html
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Builder
 {
@@ -306,17 +307,21 @@ class Builder
     public function columns(array $columns)
     {
         foreach ($columns as $key => $value) {
-            if (is_array($value)) {
-                $attributes = array_merge(['name' => $key, 'data' => $key], $this->setTitle($key, $value));
-            } else {
-                $attributes = [
-                    'name'  => $value,
-                    'data'  => $value,
-                    'title' => $this->getQualifiedTitle($value),
-                ];
-            }
+            if (! is_a($value, Column::class)) {
+                if (is_array($value)) {
+                    $attributes = array_merge(['name' => $key, 'data' => $key], $this->setTitle($key, $value));
+                } else {
+                    $attributes = [
+                        'name'  => $value,
+                        'data'  => $value,
+                        'title' => $this->getQualifiedTitle($value),
+                    ];
+                }
 
-            $this->collection->push(new Column($attributes));
+                $this->collection->push(new Column($attributes));
+            } else {
+                $this->collection->push($value);
+            }
         }
 
         return $this;

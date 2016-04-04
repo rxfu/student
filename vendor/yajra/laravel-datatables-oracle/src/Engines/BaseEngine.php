@@ -2,14 +2,6 @@
 
 namespace Yajra\Datatables\Engines;
 
-/*
- * Laravel Datatables Base Engine
- *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
- */
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -20,6 +12,12 @@ use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
 
+/**
+ * Class BaseEngine.
+ *
+ * @package Yajra\Datatables\Engines
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 abstract class BaseEngine implements DataTableEngineContract
 {
     /**
@@ -63,12 +61,14 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     protected $columnDef = [
-        'append' => [],
-        'edit'   => [],
-        'excess' => ['rn', 'row_num'],
-        'filter' => [],
-        'order'  => [],
-        'escape' => [],
+        'append'    => [],
+        'edit'      => [],
+        'excess'    => ['rn', 'row_num'],
+        'filter'    => [],
+        'order'     => [],
+        'escape'    => [],
+        'blacklist' => ['password', 'remember_token'],
+        'whitelist' => '*',
     ];
 
     /**
@@ -189,14 +189,28 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function setupKeyword($value)
     {
-        $keyword = '%' . $value . '%';
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($value);
-        }
-        // remove escaping slash added on js script request
-        $keyword = str_replace('\\', '%', $keyword);
+        if ($this->isSmartSearch()) {
+            $keyword = '%' . $value . '%';
+            if ($this->isWildcard()) {
+                $keyword = $this->wildcardLikeString($value);
+            }
+            // remove escaping slash added on js script request
+            $keyword = str_replace('\\', '%', $keyword);
 
-        return $keyword;
+            return $keyword;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Check if DataTables uses smart search.
+     *
+     * @return bool
+     */
+    protected function isSmartSearch()
+    {
+        return Config::get('datatables.search.smart', true);
     }
 
     /**
@@ -472,7 +486,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Override default column filter search.
      *
      * @param string $column
-     * @param string $method
+     * @param string|Closure $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      * @internal string $1 Special variable that returns the requested search keyword.
@@ -744,6 +758,64 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  array $blacklist
+     * @return $this
+     */
+    public function blacklist(array $blacklist)
+    {
+        $this->columnDef['blacklist'] = $blacklist;
+
+        return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  string|array $whitelist
+     * @return $this
+     */
+    public function whitelist($whitelist = '*')
+    {
+        $this->columnDef['whitelist'] = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Set smart search config at runtime.
+     *
+     * @param bool $bool
+     * @return $this
+     */
+    public function smart($bool = true)
+    {
+        Config::set('datatables.search.smart', $bool);
+
+        return $this;
+    }
+
+    /**
+     * Check if column is blacklisted.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function isBlacklisted($column)
+    {
+        if (in_array($column, $this->columnDef['blacklist'])) {
+            return true;
+        }
+
+        if ($this->columnDef['whitelist'] === '*' || in_array($column, $this->columnDef['whitelist'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Get column name to be use for filtering and sorting.
      *
      * @param integer $index
@@ -827,5 +899,15 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return $str;
+    }
+
+    /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    protected function isOracleSql()
+    {
+        return in_array($this->database, ['oracle', 'oci8']);
     }
 }

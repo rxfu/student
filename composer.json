@@ -8,7 +8,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "yajra/laravel-datatables-oracle": "^6.3",
-        "intervention/image": "dev-master"
+        "intervention/image": "dev-master",
+        "laracasts/presenter": "0.2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -23,7 +24,8 @@
             "database"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Student\\": "app/student/"
         },
         "files": [
             "app/Http/helper.php"

@@ -8,6 +8,42 @@
 
 ##Change Log
 
+###v6.10.1 - 2016-03-22
+    - Fix eager loading column search. PR #469.
+    - Fix issue #443.
+
+###v6.10.0 - 2016-03-19
+    - Add feature to enable/disable smart search via config or during runtime. Fix #423
+    - See PR #452 for details.
+
+###v6.9.4 - 2016-03-18
+    - Use full namespace in app() helper.
+    - PR #465, credits to @ligne13.
+
+###v6.9.3 - 2016-03-17
+    - Adds an option to pass parameters to column render.
+    - Allows passing instance of Column into Builder columns.
+    - Fix security issue as reported in #460.
+    - Credits to @vladkucherov for this changes.
+
+###v6.9.2 - 2016-03-16
+    - Pull-up isOracleSQL and fix condition using oci8.
+    
+###v6.9.1 - 2016-03-11
+    - Add default array value when getting columns. Fix #448
+    
+###v6.9.0 - 2016-03-11
+    - Re-implement facade.
+    - Add blacklist and whitelist feature.
+    - Fix string casting for object values.
+    - Add missing doc block for getSearchKeyword.
+    - Fix eloquent engine missing parent constructor.
+    - Add/Update class doc blocks.
+    
+###v6.8.0 - 2016-03-11
+    - Added Closure support for filterColumn method.
+    - PR #440. Credits to @codewizz.
+
 ###v6.7.3 - 2016-03-02
     - Fix eager load multiple column sorting where other columns are being ignored when join statement already exists.
     - Refactor redundant else order by statement.

@@ -11,6 +11,12 @@ use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Transformers\DataTransformer;
 
+/**
+ * Class DataTable.
+ *
+ * @package Yajra\Datatables\Services
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
     /**
@@ -84,7 +90,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             return $this->ajax();
         }
 
-        if ($action = $this->request()->get('action')) {
+        if ($action = $this->request()->get('action') AND in_array($action, ['print', 'csv', 'excel', 'pdf'])) {
             if ($action == 'print') {
                 return $this->printPreview();
             }
