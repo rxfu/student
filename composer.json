@@ -25,7 +25,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Student\\": "app/student/"
+            "Sis\\": "app/Sis/"
         },
         "files": [
             "app/Http/helper.php"
