@@ -59,4 +59,15 @@ class CourseController extends Controller {
 
 		return Datatables::of($courses)->make(true);
 	}
+
+	/**
+	 * 列出选课情况交叉比较信息
+	 * @author FuRongxin
+	 * @date    2016-05-13
+	 * @version 2.1
+	 * @return  \Illuminate\Http\Response 选课交叉比较信息
+	 */
+	public function match() {
+
+	}
 }

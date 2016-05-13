@@ -102,7 +102,7 @@
                                         <a href="{{ url('course/major') }}">本学期专业课程表</a>
                                     </li>
                                     <li>
-                                        <a href="#">选课情况表</a>
+                                        <a href="{{ route('course/match') }}">选课交叉对比表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
