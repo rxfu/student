@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Mjcourse;
 use App\Models\Plan;
+use App\Models\Score;
 use App\Models\Selcourse;
 use Auth;
 use Yajra\Datatables\Datatables;
@@ -86,7 +87,7 @@ class CourseController extends Controller {
 			->get();
 
 		foreach ($plans as $plan) {
-			$credits[] = [
+			$credits[$plan->kch] = [
 				'kch'             => $plan->kch,
 				'kcmc'            => $plan->course->kcmc,
 				'plan_credit'     => $plan->zxf,
@@ -106,10 +107,10 @@ class CourseController extends Controller {
 			->get();
 
 		foreach ($selects as $select) {
-			if (in_array($select->kch, array_pluck($credits, 'kch'))) {
+			if (array_key_exists($select->kch, $credits)) {
 				$credits[$select->kch]['selected_credit'] = $select->xf;
 			} else {
-				$credits[] = [
+				$credits[$select->kch] = [
 					'kch'             => $select->kch,
 					'kcmc'            => $select->course->kcmc,
 					'plan_credit'     => 0,
@@ -120,8 +121,33 @@ class CourseController extends Controller {
 
 			$selected_total += $select->xf;
 		}
+
+		// 获取成绩学分
+		$scores = Score::with(['course' => function ($query) {
+			$query->select('kch', 'kcmc', 'kcywmc');
+		}])
+			->whereXh(Auth::user()->xh)
+			->orderBy('kch', 'asc')
+			->get();
+
+		foreach ($scores as $score) {
+			if (array_key_exists($score->kch, $credits)) {
+				$credits[$score->kch]['score_credit'] = $score->xf;
+			} else {
+				$credits[$select->kch] = [
+					'kch'             => $score->kch,
+					'kcmc'            => $score->course->kcmc,
+					'plan_credit'     => 0,
+					'selected_credit' => 0,
+					'score_credit'    => $score->xf,
+				];
+			}
+
+			$score_total += $score->xf;
+		}
+
 		$title = '选课学分交叉对比表';
 
-		return view('course.match', compact('title', 'credits', 'plan_total', 'selected_total'));
+		return view('course.match', compact('title', 'credits', 'plan_total', 'selected_total', 'score_total'));
 	}
 }

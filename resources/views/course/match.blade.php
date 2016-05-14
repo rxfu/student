@@ -13,7 +13,7 @@
                                 <th class="active">课程名称</th>
                                 <th class="warning active">计划学分</th>
                                 <th class="info active">选课学分</th>
-                                <th class="active">成绩学分</th>
+                                <th class="success active">成绩学分</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -23,7 +23,7 @@
                                     <td>{{ $credit['kcmc'] }}</td>
                                     <td class="warning">{{ $credit['plan_credit'] }}</td>
                                     <td class="info">{{ $credit['selected_credit'] }}</td>
-                                    <td>{{ $credit['score_credit'] }}</td>
+                                    <td class="success">{{ $credit['score_credit'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -32,6 +32,7 @@
                                 <th colspan="2">学分合计</th>
                                 <th class="warning">{{ $plan_total }}</th>
                                 <th class="info">{{ $selected_total }}</th>
+                                <th class="success">{{ $score_total }}</th>
                             </tr>
                         </tfoot>
                     </table>
