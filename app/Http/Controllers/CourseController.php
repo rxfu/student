@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Mjcourse;
 use App\Models\Plan;
+use App\Models\Selcourse;
 use Auth;
 use Yajra\Datatables\Datatables;
 
@@ -74,6 +75,7 @@ class CourseController extends Controller {
 		$selected_total = 0;
 		$score_total    = 0;
 
+		// 获取教学计划学分
 		$plans = Plan::with(['course' => function ($query) {
 			$query->select('kch', 'kcmc', 'kcywmc');
 		}])
@@ -94,8 +96,32 @@ class CourseController extends Controller {
 
 			$plan_total += $plan->zxf;
 		}
+
+		// 获取选课学分
+		$selects = Selcourse::with(['course' => function ($query) {
+			$query->select('kch', 'kcmc', 'kcywmc');
+		}])
+			->whereXh(Auth::user()->xh)
+			->orderBy('kch', 'asc')
+			->get();
+
+		foreach ($selects as $select) {
+			if (in_array($select->kch, array_pluck($credits, 'kch'))) {
+				$credits[$select->kch]['selected_credit'] = $select->xf;
+			} else {
+				$credits[] = [
+					'kch'             => $select->kch,
+					'kcmc'            => $select->course->kcmc,
+					'plan_credit'     => 0,
+					'selected_credit' => $select->xf,
+					'score_credit'    => 0,
+				];
+			}
+
+			$selected_total += $select->xf;
+		}
 		$title = '选课学分交叉对比表';
 
-		return view('course.match', compact('title', 'credits', 'plan_total'));
+		return view('course.match', compact('title', 'credits', 'plan_total', 'selected_total'));
 	}
 }
