@@ -9,6 +9,7 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th class="active">序号</th>
                                 <th class="active">课程号</th>
                                 <th class="active">课程名称</th>
                                 <th class="warning active">计划学分</th>
@@ -17,8 +18,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $i = 0?>
                             @foreach ($credits as $credit)
                                 <tr>
+                                    <td><i>#{{ ++$i }}</i></td>
                                     <td>{{ $credit['kch'] }}</td>
                                     <td>{{ $credit['kcmc'] }}</td>
                                     <td class="warning">{{ $credit['plan_credit'] }}</td>
