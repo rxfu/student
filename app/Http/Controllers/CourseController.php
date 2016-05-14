@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Mjcourse;
+use App\Models\Plan;
 use Auth;
 use Yajra\Datatables\Datatables;
 
@@ -68,6 +69,33 @@ class CourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 选课交叉比较信息
 	 */
 	public function match() {
+		$credits        = [];
+		$plan_total     = 0;
+		$selected_total = 0;
+		$score_total    = 0;
 
+		$plans = Plan::with(['course' => function ($query) {
+			$query->select('kch', 'kcmc', 'kcywmc');
+		}])
+			->whereNj(Auth::user()->profile->nj)
+			->whereZy(Auth::user()->profile->zy)
+			->whereZsjj(Auth::user()->profile->zsjj)
+			->orderBy('kch', 'asc')
+			->get();
+
+		foreach ($plans as $plan) {
+			$credits[] = [
+				'kch'             => $plan->kch,
+				'kcmc'            => $plan->course->kcmc,
+				'plan_credit'     => $plan->zxf,
+				'selected_credit' => 0,
+				'score_credit'    => 0,
+			];
+
+			$plan_total += $plan->zxf;
+		}
+		$title = '选课学分交叉对比表';
+
+		return view('course.match', compact('title', 'credits', 'plan_total'));
 	}
 }
