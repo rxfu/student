@@ -190,6 +190,13 @@ class Selcourse extends Model {
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Q');
 
+		case 'pubsport':
+			return $query->where('pk_kczy.pt', '=', 'T')
+				->where('pk_kczy.xz', '=', 'B')
+				->where('pk_kczy.nj', '=', session('grade'))
+				->where('pk_kczy.zy', '=', session('major'))
+				->where('pk_kczy.kcxh', 'like', 'TB14%');
+
 		default:
 			break;
 		}

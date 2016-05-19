@@ -102,7 +102,7 @@
                                         <a href="{{ url('course/major') }}">本学期专业课程表</a>
                                     </li>
                                     <li>
-                                        <a href="#">选课情况表</a>
+                                        <a href="{{ url('course/match') }}">学分交叉对比表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
@@ -112,7 +112,7 @@
                                 <ul class="nav nav-second-level">
                                     @if ($allowed_select)
                                         <li>
-                                            <a href="{{ route('selcourse.show','public') }}">公共课程</a>
+                                            <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('selcourse.show','require') }}">必修课程</a>
