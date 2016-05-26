@@ -664,6 +664,13 @@ class SelcourseController extends Controller {
 
 		$datatable = Datatables::of($courses)
 			->addColumn('action', function ($course) use ($type) {
+				$same = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKch($course->kch)
+					->where('kcxh', '<>', $course->kcxh)
+					->exists();
+
 				$exists = Selcourse::whereXh(Auth::user()->xh)
 					->whereNd(session('year'))
 					->whereXq(session('term'))
@@ -672,7 +679,9 @@ class SelcourseController extends Controller {
 
 				if ($exists) {
 					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-				} elseif (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
+				} elseif ($same) {
+					return '<div class="text-danger">已选同号课程</div>';
+				} elseif (Prior::failed($course->kch, Auth::user())->exists()) {
 					return '<div class="text-danger">前修课未修读</div>';
 				} elseif ($course->rs >= $course->zrs) {
 					return '<div class="text-danger">人数已满</div>';
