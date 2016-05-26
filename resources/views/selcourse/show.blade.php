@@ -62,6 +62,23 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="processing" data-backdrop="static" data-keyboard="false">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+			<div class="modal-header">
+	        	<h1 class="modal-title">保存中……</h1>
+	    	</div>
+	      	<div class="modal-body">
+	        	<div class="progress">
+	        		<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+	        			<span class="sr-only">保存中……</span>
+	        		</div>
+	        	</div>
+	      	</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @stop
 
 @push('scripts')
@@ -75,6 +92,9 @@
 @endif
 
 $(function() {
+	$('form').on('submit', function(e) {
+		$('#processing').modal();
+	});
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
 	        'ajax': '{!! url('selcourse/listing', [$type]) !!}/' + $(e.target).attr('id'),
