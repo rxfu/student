@@ -11,6 +11,7 @@ use App\Models\Major;
 use App\Models\Mjcourse;
 use App\Models\Prior;
 use App\Models\Profile;
+use App\Models\Pubsport;
 use App\Models\Selcourse;
 use App\Models\Setting;
 use App\Models\Timetable;
@@ -648,9 +649,10 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 按校区列出可选课程
+	 * 2016-05-12：应教务处要求，添加公体选课类别名称
 	 * @author FuRongxin
-	 * @date    2016-03-01
-	 * @version 2.0
+	 * @date    2016-05-12
+	 * @version 2.1
 	 * @param   string $type 课程类型
 	 * @param   string $campus 校区号
 	 * @return  JSON 可选课程列表
@@ -677,6 +679,22 @@ class SelcourseController extends Controller {
 				} else {
 					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
 				}
+			})
+			->editColumn('kcmc', function ($course) use ($type) {
+
+				// 列出公体项目名称
+				if ('pubsport' == $type) {
+					$sport = Pubsport::whereNd(session('year'))
+						->whereXq(session('term'))
+						->whereKcxh($course->kcxh)
+						->first();
+
+					if (is_object($sport)) {
+						return $course->kcmc . '-' . $sport->xm;
+					}
+				}
+
+				return $course->kcmc;
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
