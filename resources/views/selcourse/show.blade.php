@@ -92,7 +92,7 @@
 @endif
 
 $(function() {
-	$('form').on('submit', function(e) {
+	$('table').on('submit', 'form', function(e) {
 		$('#processing').modal();
 	});
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
