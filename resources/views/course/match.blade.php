@@ -32,7 +32,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="2">学分合计</th>
+                                <th colspan="3">学分合计</th>
                                 <th class="warning">{{ $plan_total }}</th>
                                 <th class="info">{{ $selected_total }}</th>
                                 <th class="success">{{ $score_total }}</th>

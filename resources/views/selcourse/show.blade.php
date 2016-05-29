@@ -93,6 +93,16 @@
 
 $(function() {
 	$('table').on('submit', 'form', function(e) {
+		if ($(this).attr('name') == 'deleteForm') {
+			if (! confirm('你确定要退选“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？')) {
+				return false;
+			}
+		} else if ($(this).attr('name') == 'createForm') {
+			if (! confirm('你确定要选上“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？')) {
+				return false;
+			}
+		}
+
 		$('#processing').modal();
 	});
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {

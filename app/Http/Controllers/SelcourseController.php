@@ -678,7 +678,7 @@ class SelcourseController extends Controller {
 					->exists();
 
 				if ($exists) {
-					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif ($same) {
 					return '<div class="text-danger">已选同号课程</div>';
 				} elseif (Prior::failed($course->kch, Auth::user())->exists()) {
@@ -686,7 +686,7 @@ class SelcourseController extends Controller {
 				} elseif ($course->rs >= $course->zrs) {
 					return '<div class="text-danger">人数已满</div>';
 				} else {
-					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
+					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
 				}
 			})
 			->editColumn('kcmc', function ($course) use ($type) {
