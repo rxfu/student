@@ -92,19 +92,6 @@
 @endif
 
 $(function() {
-	$('table').on('submit', 'form', function(e) {
-		if ($(this).attr('name') == 'deleteForm') {
-			if (! confirm('你确定要退选“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？')) {
-				return false;
-			}
-		} else if ($(this).attr('name') == 'createForm') {
-			if (! confirm('你确定要选上“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？')) {
-				return false;
-			}
-		}
-
-		$('#processing').modal();
-	});
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
 	        'ajax': '{!! url('selcourse/listing', [$type]) !!}/' + $(e.target).attr('id'),
@@ -139,6 +126,38 @@ $(function() {
 	});
 
 	$('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
+
+	$('table').on('submit', 'form', function(e) {
+		var bSave = false;
+
+		if ($(this).attr('name') == 'deleteForm') {
+			bSave = confirm('你确定要退选“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？') ? true : false;
+		} else if ($(this).attr('name') == 'createForm') {
+			bSave = confirm('你确定要选上“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？') ? true : false;
+
+			if (bSave){
+				$.ajax({
+					'async': false,
+					'url': '{!! url('selcourse/checktime') !!}/' + $(this).attr('data-id'),
+					'success': function(data) {
+						if (0 != data.length) {
+							if (confirm('这门课程与已选课程' + data + '上课时间有冲突，确定选课吗？')) {
+								bSave = true;
+							} else {
+								bSave = false;
+							}
+						}
+					}
+				});
+			}
+		}
+
+		if (bSave) {
+			$('#processing').modal();
+		}
+
+		return bSave;
+	});
 });
 </script>
 @endpush

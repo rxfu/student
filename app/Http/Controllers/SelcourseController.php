@@ -452,13 +452,13 @@ class SelcourseController extends Controller {
 				$request->session()->flash('forbidden', '前修课未修读');
 				return back()->withInput();
 			}
-
-			$conflict = $this->checktime($course->kcxh);
-			if (count($conflict)) {
-				$request->session()->flash('confirm', '课程与已选课程上课时间有冲突，确定选课吗？');
-				return redirect()->route('selcourse.show', $inputs['type'])->withInput()->withConfirm('课程与已选课程上课时间有冲突，确定选课吗？');
-			}
-
+/*
+$conflict = $this->checktime($course->kcxh);
+if (count($conflict)) {
+$request->session()->flash('confirm', '课程与已选课程上课时间有冲突，确定选课吗？');
+return redirect()->route('selcourse.show', $inputs['type'])->withInput()->withConfirm('课程与已选课程上课时间有冲突，确定选课吗？');
+}
+ */
 			$selcourse        = new Selcourse;
 			$selcourse->xh    = Auth::user()->xh;
 			$selcourse->xm    = Auth::user()->profile->xm;
@@ -522,7 +522,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		$conflicts = isset($conflicts) ? $conflicts : [];
+		$conflicts = isset($conflicts) ? array_unique($conflicts) : [];
 
 		return request()->ajax() ? response()->json($conflicts) : $conflicts;
 	}
