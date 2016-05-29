@@ -87,10 +87,6 @@
 	alert('{{ session('forbidden') }}');
 @endif
 
-@if (session('confirm'))
-	confirm('{{ session('confirm') }}');
-@endif
-
 $(function() {
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({

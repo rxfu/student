@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Campus;
 use App\Models\Count;
 use App\Models\Department;
+use App\Models\Lmtgeneral;
 use App\Models\Lmttime;
 use App\Models\Major;
 use App\Models\Mjcourse;
@@ -408,7 +409,7 @@ class SelcourseController extends Controller {
 					$profile = Profile::whereXh(Auth::user()->xh)
 						->select('nj', 'xz')
 						->first();
-					$limit = Lmttime::whereNj($profile->nj)
+					$limit = Lmtgeneral::whereNj($profile->nj)
 						->whereXz($profile->xz)
 						->first();
 
@@ -424,7 +425,7 @@ class SelcourseController extends Controller {
 					}
 				}
 			} else {
-				$limit_ratio = 100;
+				$limit_ratio = 1;
 			}
 
 			$course = Mjcourse::ofType($inputs['type'])
@@ -448,7 +449,7 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			if (Prior::failed(Str::substr($course->kcxh, 2, 8), Auth::user())->exists()) {
+			if (Prior::failed(Helper::getCno($course->kcxh), Auth::user())->exists()) {
 				$request->session()->flash('forbidden', '前修课未修读');
 				return back()->withInput();
 			}
@@ -459,7 +460,7 @@ class SelcourseController extends Controller {
 			$selcourse->nd    = $course->nd;
 			$selcourse->xq    = $course->xq;
 			$selcourse->kcxh  = $inputs['kcxh'];
-			$selcourse->kch   = Str::substr($inputs['kcxh'], 2, 8);
+			$selcourse->kch   = Helper::getCno($inputs['kcxh']);
 			$selcourse->pt    = $course->pt;
 			$selcourse->xz    = $course->xz;
 			$selcourse->xl    = $course->xl;
@@ -541,7 +542,7 @@ class SelcourseController extends Controller {
 			if (-1 < $ms) {
 				$count = Selcourse::ofType($type)
 					->whereNd(session('year'))
-					->whereXq(sessiion('term'))
+					->whereXq(session('term'))
 					->whereXh(Auth::user()->xh)
 					->count();
 
@@ -565,7 +566,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return request()->ajax() ? $response()->json($limits) : $limits;
+		return request()->ajax() ? response()->json($limits) : $limits;
 	}
 
 	/**
@@ -611,7 +612,7 @@ class SelcourseController extends Controller {
 				$profile = Profile::whereXh(Auth::user()->xh)
 					->select('nj', 'xz')
 					->first();
-				$limit = Lmttime::whereNj($profile->nj)
+				$limit = Lmtgeneral::whereNj($profile->nj)
 					->whereXz($profile->xz)
 					->first();
 
