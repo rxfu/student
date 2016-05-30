@@ -30,6 +30,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
+		$exams = [];
 		$types = Extype::whereZt(config('constants.status.enable'))->get();
 
 		foreach ($types as $type) {
