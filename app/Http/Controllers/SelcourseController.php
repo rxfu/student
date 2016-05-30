@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Campus;
 use App\Models\Count;
 use App\Models\Department;
@@ -379,17 +380,18 @@ class SelcourseController extends Controller {
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
 			$profile = Profile::whereXh(Auth::user()->xh)
 				->select('nj', 'xz')
-				->first();
-			$limit = Lmttime::whereNj($profile->nj)
+				->firstOrFail();
+
+			// 未在时间限制表中配置，默认不允许选课
+			$now    = Carbon::now();
+			$exists = Lmttime::whereNj($profile->nj)
 				->whereXz($profile->xz)
-				->first();
+				->where('kssj', '<', $now)
+				->where('jssj', '>', $now)
+				->exists();
 
-			if (!empty($limit)) {
-				$now = Carbon::now();
-
-				if ($now < $limit->kssj || $now > $limit->jssj) {
-					abort(403, '现在未到选课时间，不允许选课');
-				}
+			if (!$exists) {
+				abort(403, '现在未到选课时间，不允许选课');
 			}
 		}
 
@@ -408,21 +410,23 @@ class SelcourseController extends Controller {
 				if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
 					$profile = Profile::whereXh(Auth::user()->xh)
 						->select('nj', 'xz')
-						->first();
+						->firstOrFail();
+
+					// 未在时间限制表中配置，默认不允许选通识素质课
+					$now   = Carbon::now();
 					$limit = Lmtgeneral::whereNj($profile->nj)
 						->whereXz($profile->xz)
+						->where('kssj', '<', $now)
+						->where('jssj', '>', $now)
+						->orderBy('kssj', 'desc')
 						->first();
 
-					if (!empty($limit)) {
-						$now = Carbon::now();
-
-						if ($now < $limit->kssj || $now > $limit->jssj) {
-							abort(403, '现在未到通识素质课选课时间，不允许选课');
-						} else {
-							$limit_course = $limit->ms;
-							$limit_ratio  = $limit->bl / 100;
-						}
+					if (!$limit) {
+						abort(403, '现在未到通识素质课选课时间，不允许选课');
 					}
+
+					$limit_course = $limit->ms;
+					$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
 				}
 			} else {
 				$limit_ratio = 1;
@@ -440,7 +444,7 @@ class SelcourseController extends Controller {
 			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
 
 			if ($limits['ms']) {
-				$request->session()->flash('forbidden', '通识素质课选课门数已达门数限制，请选其他课程');
+				$request->session()->flash('forbidden', '通识素质课选课门数已达上限' . $ms . '门，请选其他课程');
 				return back()->withInput();
 			}
 
@@ -589,17 +593,18 @@ class SelcourseController extends Controller {
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
 			$profile = Profile::whereXh(Auth::user()->xh)
 				->select('nj', 'xz')
-				->first();
-			$limit = Lmttime::whereNj($profile->nj)
+				->firstOrFail();
+
+			// 未在时间限制表中配置，默认不允许选课
+			$now    = Carbon::now();
+			$exists = Lmttime::whereNj($profile->nj)
 				->whereXz($profile->xz)
-				->first();
+				->where('kssj', '<', $now)
+				->where('jssj', '>', $now)
+				->exists();
 
-			if (!empty($limit)) {
-				$now = Carbon::now();
-
-				if ($now < $limit->kssj || $now > $limit->jssj) {
-					abort(403, '现在未到选课时间，不允许选课');
-				}
+			if (!$exists) {
+				abort(403, '现在未到选课时间，不允许选课');
 			}
 		}
 
@@ -611,20 +616,18 @@ class SelcourseController extends Controller {
 			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
 				$profile = Profile::whereXh(Auth::user()->xh)
 					->select('nj', 'xz')
-					->first();
-				$limit = Lmtgeneral::whereNj($profile->nj)
+					->firstOrFail();
+
+				// 未在时间限制表中配置，默认不允许选通识素质课
+				$now    = Carbon::now();
+				$exists = Lmtgeneral::whereNj($profile->nj)
 					->whereXz($profile->xz)
-					->first();
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->exists();
 
-				if (!empty($limit)) {
-					$now = Carbon::now();
-
-					if ($now < $limit->kssj || $now > $limit->jssj) {
-						abort(403, '现在未到通识素质课选课时间，不允许选课');
-					} else {
-						$limit_course = $limit->ms;
-						$limit_ratio  = $limit->bl / 100;
-					}
+				if (!$exists) {
+					abort(403, '现在未到通识素质课选课时间，不允许选课');
 				}
 			}
 
