@@ -440,7 +440,7 @@ class SelcourseController extends Controller {
 			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
 
 			if ($limits['ms']) {
-				$request->session()->flash('forbidden', '通识素质课课选课已达门数限制，请选其他课程');
+				$request->session()->flash('forbidden', '通识素质课选课门数已达门数限制，请选其他课程');
 				return back()->withInput();
 			}
 

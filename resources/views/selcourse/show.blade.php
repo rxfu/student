@@ -132,6 +132,8 @@ $(function() {
 			bSave = confirm('你确定要选上“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？') ? true : false;
 
 			if (bSave){
+				$('#processing').modal();
+
 				$.ajax({
 					'async': false,
 					'url': '{!! url('selcourse/checktime') !!}/' + $(this).attr('data-id'),
@@ -150,6 +152,8 @@ $(function() {
 
 		if (bSave) {
 			$('#processing').modal();
+		} else {
+			$('#processing').modal('hide');
 		}
 
 		return bSave;
