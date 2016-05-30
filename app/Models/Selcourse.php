@@ -169,20 +169,11 @@ class Selcourse extends Model {
 			return $query->where('xk_xkxx.xz', '=', 'X');
 
 		case 'human':
-			return $query->where('xk_xkxx.pt', '=', 'T')
-				->where('xk_xkxx.xz', '=', 'W');
-
 		case 'nature':
-			return $query->where('xk_xkxx.pt', '=', 'T')
-				->where('xk_xkxx.xz', '=', 'I');
-
 		case 'art':
-			return $query->where('xk_xkxx.pt', '=', 'T')
-				->where('xk_xkxx.xz', '=', 'Y');
-
 		case 'other':
 			return $query->where('xk_xkxx.pt', '=', 'T')
-				->where('xk_xkxx.xz', '=', 'Q');
+				->whereIn('xk_xkxx.xz', ['W', 'I', 'Y', 'Q']);
 
 		case 'pubsport':
 			return $query->where('xk_xkxx.pt', '=', 'T')
