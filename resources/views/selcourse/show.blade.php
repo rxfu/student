@@ -62,16 +62,29 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="processing" data-backdrop="static" data-keyboard="false">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+			<div class="modal-header">
+	        	<h1 class="modal-title">保存中……</h1>
+	    	</div>
+	      	<div class="modal-body">
+	        	<div class="progress">
+	        		<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+	        			<span class="sr-only">保存中……</span>
+	        		</div>
+	        	</div>
+	      	</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @stop
 
 @push('scripts')
 <script>
 @if (session('forbidden'))
 	alert('{{ session('forbidden') }}');
-@endif
-
-@if (session('confirm'))
-	confirm('{{ session('confirm') }}');
 @endif
 
 $(function() {
@@ -109,6 +122,42 @@ $(function() {
 	});
 
 	$('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
+
+	$('table').on('submit', 'form', function(e) {
+		var bSave = false;
+
+		if ($(this).attr('name') == 'deleteForm') {
+			bSave = confirm('你确定要退选“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？') ? true : false;
+		} else if ($(this).attr('name') == 'createForm') {
+			bSave = confirm('你确定要选上“' + $(this).attr('data-id') + '-' + $(this).attr('data-name') + '”这门课程吗？') ? true : false;
+
+			if (bSave){
+				$('#processing').modal();
+
+				$.ajax({
+					'async': false,
+					'url': '{!! url('selcourse/checktime') !!}/' + $(this).attr('data-id'),
+					'success': function(data) {
+						if (0 != data.length) {
+							if (confirm('这门课程与已选课程' + data + '上课时间有冲突，确定选课吗？')) {
+								bSave = true;
+							} else {
+								bSave = false;
+							}
+						}
+					}
+				});
+			}
+		}
+
+		if (bSave) {
+			$('#processing').modal();
+		} else {
+			$('#processing').modal('hide');
+		}
+
+		return bSave;
+	});
 });
 </script>
 @endpush

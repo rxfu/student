@@ -156,46 +156,29 @@ class Selcourse extends Model {
 	public function scopeOfType($query, $type) {
 		switch ($type) {
 		case 'public':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->where('xk_xkxx.xz', '=', 'B');
 
 		case 'require':
 			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
 			unset($platforms[array_search('T', $platforms)]);
-			return $query->whereIn('pk_kczy.pt', $platforms)
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->whereIn('xk_xkxx.pt', $platforms)
+				->where('xk_xkxx.xz', '=', 'B');
 
 		case 'elect':
-			return $query->where('pk_kczy.xz', '=', 'X')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->where('xk_xkxx.xz', '=', 'X');
 
 		case 'human':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'W');
-
 		case 'nature':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'I');
-
 		case 'art':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Y');
-
 		case 'other':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Q');
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->whereIn('xk_xkxx.xz', ['W', 'I', 'Y', 'Q']);
 
 		case 'pubsport':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'))
-				->where('pk_kczy.kcxh', 'like', 'TB14%');
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->where('xk_xkxx.xz', '=', 'B')
+				->where('xk_xkxx.kcxh', 'like', 'TB14%');
 
 		default:
 			break;

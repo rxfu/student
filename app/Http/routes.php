@@ -64,8 +64,9 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
 		Route::get('selcourse/search', 'SelcourseController@showSearchForm');
 		Route::get('selcourse/search/{campus}', 'SelcourseController@search');
-		Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing');
-		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'show', 'store', 'destroy']]);
+		Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|require|elect|human|nature|art|other');
+		Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|require|elect|human|nature|art|other');
+		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store', 'destroy']]);
 
 		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
 
