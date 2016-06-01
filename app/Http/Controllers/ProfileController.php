@@ -119,7 +119,7 @@ class ProfileController extends Controller {
 	 * @return  \Illuminate\Http\Response 学历照片
 	 */
 	public function photo() {
-		$filename = config('constants.file.path.photo') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext');
+		$filename = config('constants.file.path.photo') . Auth::user()->xh . '.' . config('constants.file.image.ext');
 
 		if (Storage::exists($filename)) {
 			$file = Storage::get($filename);
