@@ -55,6 +55,28 @@ class Selcourse extends Model {
 	}
 
 	/**
+	 * 课程平台
+	 * @author FuRongxin
+	 * @date    2016-06-02
+	 * @version 2.1
+	 * @return  object 所属对象
+	 */
+	public function platform() {
+		return $this->belongsTo('App\Models\Platform', 'pt', 'dm');
+	}
+
+	/**
+	 * 课程性质
+	 * @author FuRongxin
+	 * @date    2016-06-02
+	 * @version 2.1
+	 * @return  object 所属对象
+	 */
+	public function property() {
+		return $this->belongsTo('App\Models\Property', 'xz', 'dm');
+	}
+
+	/**
 	 * 学期
 	 * @author FuRongxin
 	 * @date    2016-03-10
