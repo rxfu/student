@@ -110,12 +110,12 @@
                             <li>
                                 <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
+                                    @if ($allowed_pubsport)
+                                        <li>
+                                            <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
+                                        </li>
+                                    @endif
                                     @if ($allowed_select)
-                                        @if ($allowed_pubsport)
-                                            <li>
-                                                <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
-                                            </li>
-                                        @endif
                                         <li>
                                             <a href="{{ route('selcourse.show','require') }}">必修课程</a>
                                         </li>
