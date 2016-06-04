@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider {
 				$user = Profile::find(Auth::user()->xh);
 			}
 
+			// 是否新入校未足一年的学生
+			$is_newer = Profile::isFresh(Auth::user())->exists();
+
 			// 是否允许选课
 			$allowed_select = Setting::find('XK_KG')->value;
 
