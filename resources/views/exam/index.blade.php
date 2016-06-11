@@ -22,12 +22,14 @@
                             	<td>
                             		<a href="{{ route('exam.register', $exam->kslx) }}" title="报名" class="btn btn-primary">报名</a>
                                 </td>
-                                <td>                                    
-                                    <form id="registerForm" name="registerForm" method="post" action="{{ route('exam.destroy', $exam->kslx) }}" role="form">
-                                        {!! method_field('delete') !!}
-                                        {!! csrf_field() !!}
-                                        <button type="submit" class="btn btn-danger">取消报名</button>
-                                    </form>
+                                <td>
+                                    @if ($exam->is_registered)
+                                        <form id="registerForm" name="registerForm" method="post" action="{{ route('exam.destroy', $exam->kslx) }}" role="form">
+                                            {!! method_field('delete') !!}
+                                            {!! csrf_field() !!}
+                                            <button type="submit" class="btn btn-danger">取消报名</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

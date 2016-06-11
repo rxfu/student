@@ -42,14 +42,15 @@ class ExamController extends Controller {
 				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
 
 					// 不允许新生报考CET4
-					if (Profile::isFresh(Auth::user())->exists()) {continue;
+					if (Profile::isFresh(Auth::user())->exists()) {
+						continue;
 					}
 
 				}
 			}
 
 			// 检测是否CET6
-			if (config('constants.exam.type.cet6')==$type->kslx) {
+			if (config('constants.exam.type.cet6') == $type->kslx) {
 
 				// 检测是否允许新生报考CET6
 				if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
@@ -65,6 +66,13 @@ class ExamController extends Controller {
 					continue;
 				}
 			}
+
+			$type = $type->toArray();
+			$type['is_registered'] = Exregister::whereNd($type['nd'])
+				->whereXh(Auth::user()->xh)
+				->whereKslx($type['kslx'])
+				->exists();
+			$type = (object) $type;
 
 			$exams[] = $type;
 		}
@@ -97,7 +105,7 @@ class ExamController extends Controller {
 	 */
 	public function register($kslx) {
 		$profile = Profile::find(Auth::user()->xh);
-		$exam    = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -118,7 +126,7 @@ class ExamController extends Controller {
 			return redirect('profile/upfile');
 		}
 
-		$exam       = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -139,7 +147,7 @@ class ExamController extends Controller {
 		}
 
 		$profile = Profile::find(Auth::user()->xh);
-		$exam    = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -159,7 +167,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 报名列表
 	 */
 	public function update(Request $request, $kslx) {
-		$exam       = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -215,15 +223,15 @@ class ExamController extends Controller {
 			}
 		}
 
-		$register       = new Exregister();
-		$register->xh   = Auth::user()->xh;
-		$register->xq   = Auth::user()->profile->college->pivot->xq;
+		$register = new Exregister();
+		$register->xh = Auth::user()->xh;
+		$register->xq = Auth::user()->profile->college->pivot->xq;
 		$register->kslx = $kslx;
 		$register->bklb = '00';
 		$register->kssj = $exam->sj;
 		$register->clbz = config('constants.exam.status.register');
 		$register->bmsj = date('Y-m-d H:i:s');
-		$register->nd   = $exam->nd;
+		$register->nd = $exam->nd;
 		$register->save();
 
 		return redirect('exam')->withStatus('考试报名成功，请交费！');
