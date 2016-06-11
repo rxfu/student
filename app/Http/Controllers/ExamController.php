@@ -42,15 +42,14 @@ class ExamController extends Controller {
 				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
 
 					// 不允许新生报考CET4
-					if (Profile::isFresh(Auth::user())->exists()) {
-						continue;
+					if (Profile::isFresh(Auth::user())->exists()) {continue;
 					}
 
 				}
 			}
 
 			// 检测是否CET6
-			if (config('constants.exam.type.cet6') == $type->kslx) {
+			if (config('constants.exam.type.cet6')==$type->kslx) {
 
 				// 检测是否允许新生报考CET6
 				if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
