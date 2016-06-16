@@ -244,7 +244,7 @@ class Mjcourse extends Model {
 					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
 			})
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
-			->join('xk_tj', function ($join) {
+			->leftJoin('xk_tj', function ($join) {
 				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh')
 					->on('pk_kczy.zy', '=', 'xk_tj.zy');
 			})

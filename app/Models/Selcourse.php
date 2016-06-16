@@ -30,8 +30,19 @@ class Selcourse extends Model {
 		parent::boot();
 
 		static::created(function ($course) {
-			$count = Count::find($course->kcxh);
-			$count->rs += 1;
+			$count = Count::whereKcxh($course->kcxh)
+				->whereZy($course->zy)
+				->first();
+
+			if (count($count)) {
+				$count->rs += 1;
+			} else {
+				$count       = new Count;
+				$count->kcxh = $course->kcxh;
+				$count->zy   = $course->zy;
+				$count->rs   = 1;
+			}
+
 			$count->save();
 
 			$log       = new Slog;
@@ -42,8 +53,19 @@ class Selcourse extends Model {
 		});
 
 		static::deleted(function ($course) {
-			$count = Count::find($course->kcxh);
-			$count->rs -= 1;
+			$count = Count::whereKcxh($course->kcxh)
+				->whereZy($course->zy)
+				->first();
+
+			if (count($count)) {
+				$count->rs -= 1;
+			} else {
+				$count       = new Count;
+				$count->kcxh = $course->kcxh;
+				$count->zy   = $course->zy;
+				$count->rs   = 0;
+			}
+
 			$count->save();
 
 			$log       = new Slog;

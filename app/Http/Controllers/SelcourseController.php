@@ -365,6 +365,9 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 保存所选课程
+	 * @author FuRongxin
+	 * @date 2016-06-16
+	 * @version 2.1
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
@@ -447,7 +450,7 @@ class SelcourseController extends Controller {
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
 			$rs     = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
-			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
+			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $course->zy, $ms, $rs);
 
 			if ($limits['ms']) {
 				$request->session()->flash('forbidden', '通识素质课选课门数已达上限' . $ms . '门，请选其他课程');
@@ -485,6 +488,7 @@ class SelcourseController extends Controller {
 			$selcourse->qz    = 0;
 			$selcourse->tdkch = '';
 			$selcourse->tdyy  = '';
+			$selcourse->zy    = $course->zy;
 
 			if ($selcourse->save()) {
 				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
@@ -534,16 +538,18 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 选课门数和人数限制检测
+	 * 2016-06-16：添加专业号检测
 	 * @author FuRongxin
-	 * @date    2016-03-03
-	 * @version 2.0
+	 * @date    2016-06-16
+	 * @version 2.1
 	 * @param   string $type 课程类型
 	 * @param   string $kcxh 12位课程序号
+	 * @param   string $zy 专业号
 	 * @param   integer $ms 课程门数限制，-1为无限制
 	 * @param   integer $rs 选课人数限制，-1为无限制
 	 * @return  array 课程门数和人数限制标志数组，true为超限，false为未超限
 	 */
-	public function checkcourse($type, $kcxh, $ms = -1, $rs = -1) {
+	public function checkcourse($type, $kcxh, $zy, $ms = -1, $rs = -1) {
 		$limits = [
 			'ms' => false,
 			'rs' => false,
@@ -562,14 +568,16 @@ class SelcourseController extends Controller {
 			}
 
 			if (-1 < $rs) {
-				$count = Count::whereKcxh($kcxh)->first()->rs;
+				$course = Count::whereKcxh($kcxh)->first();
+				$count  = isset($course) ? $course->rs : 0;
 
 				if ($count >= $rs) {
 					$limits['rs'] = true;
 				}
 			}
 		} else {
-			$count = Count::whereKcxh($kcxh)->first()->rs;
+			$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			$count  = isset($course) ? $course->rs : 0;
 
 			if ($count >= $rs) {
 				$limits['rs'] = true;

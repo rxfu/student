@@ -17,6 +17,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot() {
 		view()->composer('app', function ($view) {
+
 			// 是否新生
 			if ($is_fresh = Fresh::whereXh(Auth::user()->xh)->exists()) {
 				$user = Fresh::find(Auth::user()->xh);

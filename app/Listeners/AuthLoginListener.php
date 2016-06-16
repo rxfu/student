@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Models\Fresh;
+use App\Models\Profile;
 use App\Models\Setting;
 use App\Models\Slog;
 use Auth;
@@ -33,6 +35,13 @@ class AuthLoginListener {
 	 * @return void
 	 */
 	public function handle(Login $event) {
+		if (!Fresh::whereXh(Auth::user()->xh)->exists()) {
+			if (!Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
+				Auth::logout();
+				return back()->withInput()->withStatus('不是在校生，请不要登录系统');
+			}
+		}
+
 		session([
 			'year'   => Setting::find('XK_ND')->value,
 			'term'   => Setting::find('XK_XQ')->value,
