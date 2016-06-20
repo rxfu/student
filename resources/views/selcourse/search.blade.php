@@ -31,7 +31,7 @@
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <label for="xy">学院</label>
+                    <label for="xy">开课学院</label>
                     <select name="xy" id="xy" class="form-control">
                         <option value="all">==全部==</option>
                         @foreach ($colleges as $college)
@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="col-sm-5">
-                    <label for="zy">专业</label>
+                    <label for="zy">开课专业</label>
                     <select name="zy" id="zy" class="form-control">
                         <option value="all" class='all'>==全部==</option>
                         @foreach ($majors as $major)
@@ -121,57 +121,55 @@
 @stop
 
 @push('scripts')
-@if ($search)
-    <script>
-    $(function() {
-        $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-            $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
-                'ajax': {
-                    'url': '{!! url('selcourse/search') !!}/' + $(e.target).attr('id'),
-                    'data': {
-                        'searched': '{{ $search }}',
-                        'nj': '{{ $sgrade }}',
-                        'xy': '{{ $scollege }}',
-                        'zy': '{{ $smajor }}',
-                        'keyword': '{{ $keyword }}',
-                        'type': '{{ $type }}'
-                    }
-                },
-                'columns': [
-                    { data: 'retake', name: 'retake'},
-                    { data: 'other', name: 'other'},
-                    { data: 'kcxh', name: 'kcxh' },
-                    { data: 'kcmc', name: 'kcmc' },
-                    { data: 'zxf', name: 'zxf' },
-                    { data: 'Monday', name: 'Monday'},
-                    { data: 'Tuesday', name: 'Tuesday'},
-                    { data: 'Wednesday', name: 'Wednesday'},
-                    { data: 'Thursday', name: 'Thursday'},
-                    { data: 'Friday', name: 'Friday'},
-                    { data: 'Saturday', name: 'Saturday'},
-                    { data: 'Sunday', name: 'Sunday'},
-                    { data: 'kh', name: 'kh' },
-                    { data: 'zrs', name: 'zrs' },
-                    { data: 'rs', name: 'rs' }
-                ],
-                'drawCallback': function (settings) {
-                    @for ($i = 6; $i <= 12; $i++)
-                        $('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
-                    @endfor
-                },
-                'destroy': true
+    @if ($search)
+        <script>
+            $(function() {
+                $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
+                        'ajax': {
+                            'url': '{!! url('selcourse/search') !!}/' + $(e.target).attr('id'),
+                            'data': {
+                                'searched': '{{ $search }}',
+                                'nj': '{{ $sgrade }}',
+                                'xy': '{{ $scollege }}',
+                                'zy': '{{ $smajor }}',
+                                'keyword': '{{ $keyword }}',
+                                'type': '{{ $type }}'
+                            }
+                        },
+                        'columns': [
+                            { data: 'retake', name: 'retake'},
+                            { data: 'other', name: 'other'},
+                            { data: 'kcxh', name: 'kcxh' },
+                            { data: 'kcmc', name: 'kcmc' },
+                            { data: 'zxf', name: 'zxf' },
+                            { data: 'Monday', name: 'Monday'},
+                            { data: 'Tuesday', name: 'Tuesday'},
+                            { data: 'Wednesday', name: 'Wednesday'},
+                            { data: 'Thursday', name: 'Thursday'},
+                            { data: 'Friday', name: 'Friday'},
+                            { data: 'Saturday', name: 'Saturday'},
+                            { data: 'Sunday', name: 'Sunday'},
+                            { data: 'kh', name: 'kh' },
+                            { data: 'zrs', name: 'zrs' },
+                            { data: 'rs', name: 'rs' }
+                        ],
+                        'drawCallback': function (settings) {
+                            @for ($i = 6; $i <= 12; $i++)
+                                $('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
+                            @endfor
+                        },
+                        'destroy': true
+                    });
+                });
+
+                $('#campus-tab a').click(function(e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+
+                $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
             });
-        });
-
-        $('#campus-tab a').click(function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-        $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
-
-        $('#zy').chained('#xy');
-    });
-    </script>
-@endif
+        </script>
+    @endif
 @endpush
