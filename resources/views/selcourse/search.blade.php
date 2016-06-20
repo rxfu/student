@@ -22,7 +22,7 @@
             </div>
             <div class="voffset-top">
                 <div class="col-sm-3">
-                    <label for="nj">年度</label>
+                    <label for="nj">开课年级</label>
                     <select name="nj" id="nj" class="form-control">
                         <option value="all">==全部==</option>
                         @foreach ($grades as $grade)
