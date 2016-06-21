@@ -113,7 +113,7 @@
                                 <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     @if ($allowed_pubsport)
-                                        @unless(!$allow_select && !$is_newer)
+                                        @unless(!$allowed_select && !$is_newer)
                                             <li>
                                                 <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
                                             </li>
