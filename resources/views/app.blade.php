@@ -121,6 +121,9 @@
                                     @endif
                                     @if ($allowed_select)
                                         <li>
+                                            <a href="{{ route('selcourse.show','public') }}">公共课程</a>
+                                        </li>
+                                        <li>
                                             <a href="{{ route('selcourse.show','require') }}">必修课程</a>
                                         </li>
                                         <li>
