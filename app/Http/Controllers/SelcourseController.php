@@ -75,7 +75,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
@@ -166,7 +166,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
@@ -209,7 +209,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
