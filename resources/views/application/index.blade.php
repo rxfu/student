@@ -14,10 +14,12 @@
                                 <th class="active">年度</th>
                                 <th class="active">学期</th>
                                 <th class="active">课程序号</th>
+                                <th class="active">课程名称</th>
                                 <th class="active">学分</th>
                                 <th class="active">原年度</th>
                                 <th class="active">原学期</th>
                                 <th class="active">原课程序号</th>
+                                <th class="active">原课程名称</th>
                                 <th class="active">原学分</th>
                                 <th class="active">申请类型</th>
                                 <th class="active">审核意见</th>
@@ -40,10 +42,12 @@
                                 <td>{{ $app->nd }}</td>
                                 <td>{{ $app->term->mc }}</td>
                                 <td>{{ $app->kcxh }}</td>
+                                <td>{{ App\Models\Course::find(App\Http\Helper::getCno($app->kcxh))->kcmc }}</td>
                                 <td>{{ $app->xf }}</td>
                                 <td>{{ $app->ynd }}</td>
                                 <td>{{ count($app->oterm) ? $app->oterm->mc : '' }}</td>
                                 <td>{{ $app->ykcxh }}</td>
+                                <td>{{ App\Models\Course::find(App\Http\Helper::getCno($app->ykcxh))->kcmc }}</td>
                                 <td>{{ $app->yxf }}</td>
                                 <td>{{ config('constants.application.type.' . $app->xklx) }}</td>
                                 <td>{{ $app->shyj }}</td>

@@ -28,7 +28,8 @@ class ApplicationController extends Controller {
 	 * @return  \Illuminate\Http\Response 选课申请进度列表
 	 */
 	public function index() {
-		$apps = Application::whereXh(Auth::user()->xh)
+		$apps = Application::with('term')
+			->whereXh(Auth::user()->xh)
 			->orderBy('xksj', 'desc')
 			->get();
 
