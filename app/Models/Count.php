@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel as Model;
 
 /**
  * 选课人数统计
@@ -20,6 +20,9 @@ class Count extends Model {
 	public $incrementing = false;
 
 	public $timestamps = false;
+
+	// 修复保存操作
+	protected $secondaryKey = ['kcxh', 'zy'];
 
 	/**
 	 * 课程表
