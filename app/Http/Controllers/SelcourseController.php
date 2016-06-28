@@ -75,7 +75,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
@@ -166,7 +166,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
@@ -209,7 +209,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => $timetable->teacher->position->mc,
+					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
 				];
 			}
 		}
@@ -365,11 +365,18 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 保存所选课程
+	 * @author FuRongxin
+	 * @date 2016-06-16
+	 * @version 2.1
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
 	public function store(Request $request) {
-		if (config('constants.status.disable') == Setting::find('XK_KG')->value) {
+		if ('pubsport' == $request->input('type')) {
+			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
+				abort(403, '现在未开放公体选课，不允许公体选课');
+			}
+		} elseif (config('constants.status.disable') == Setting::find('XK_KG')->value) {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
@@ -377,21 +384,23 @@ class SelcourseController extends Controller {
 			abort(403, '请交清费用再进行选课');
 		}
 
-		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
-			$profile = Profile::whereXh(Auth::user()->xh)
-				->select('nj', 'xz')
-				->firstOrFail();
+		if ('pubsport' != $request->input('type')) {
+			if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
 
-			// 未在时间限制表中配置，默认不允许选课
-			$now    = Carbon::now();
-			$exists = Lmttime::whereNj($profile->nj)
-				->whereXz($profile->xz)
-				->where('kssj', '<', $now)
-				->where('jssj', '>', $now)
-				->exists();
+				// 未在时间限制表中配置，默认不允许选课
+				$now    = Carbon::now();
+				$exists = Lmttime::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->exists();
 
-			if (!$exists) {
-				abort(403, '现在未到选课时间，不允许选课');
+				if (!$exists) {
+					abort(403, '现在未到选课时间，不允许选课');
+				}
 			}
 		}
 
@@ -441,7 +450,7 @@ class SelcourseController extends Controller {
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
 			$rs     = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
-			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $ms, $rs);
+			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $course->zy, $ms, $rs);
 
 			if ($limits['ms']) {
 				$request->session()->flash('forbidden', '通识素质课选课门数已达上限' . $ms . '门，请选其他课程');
@@ -479,6 +488,7 @@ class SelcourseController extends Controller {
 			$selcourse->qz    = 0;
 			$selcourse->tdkch = '';
 			$selcourse->tdyy  = '';
+			$selcourse->zy    = $course->zy;
 
 			if ($selcourse->save()) {
 				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
@@ -528,16 +538,18 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 选课门数和人数限制检测
+	 * 2016-06-16：添加专业号检测
 	 * @author FuRongxin
-	 * @date    2016-03-03
-	 * @version 2.0
+	 * @date    2016-06-16
+	 * @version 2.1
 	 * @param   string $type 课程类型
 	 * @param   string $kcxh 12位课程序号
+	 * @param   string $zy 专业号
 	 * @param   integer $ms 课程门数限制，-1为无限制
 	 * @param   integer $rs 选课人数限制，-1为无限制
 	 * @return  array 课程门数和人数限制标志数组，true为超限，false为未超限
 	 */
-	public function checkcourse($type, $kcxh, $ms = -1, $rs = -1) {
+	public function checkcourse($type, $kcxh, $zy, $ms = -1, $rs = -1) {
 		$limits = [
 			'ms' => false,
 			'rs' => false,
@@ -556,14 +568,16 @@ class SelcourseController extends Controller {
 			}
 
 			if (-1 < $rs) {
-				$count = Count::whereKcxh($kcxh)->first()->rs;
+				$course = Count::whereKcxh($kcxh)->first();
+				$count  = isset($course) ? $course->rs : 0;
 
 				if ($count >= $rs) {
 					$limits['rs'] = true;
 				}
 			}
 		} else {
-			$count = Count::whereKcxh($kcxh)->first()->rs;
+			$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			$count  = isset($course) ? $course->rs : 0;
 
 			if ($count >= $rs) {
 				$limits['rs'] = true;
@@ -582,7 +596,11 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 可选课程列表
 	 */
 	public function show($type) {
-		if (config('constants.status.disable') == Setting::find('XK_KG')->value) {
+		if ('pubsport' == $type) {
+			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
+				abort(403, '现在未开放公体选课，不允许公体选课');
+			}
+		} elseif (config('constants.status.disable') == Setting::find('XK_KG')->value) {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
@@ -590,21 +608,23 @@ class SelcourseController extends Controller {
 			abort(403, '请交清费用再进行选课');
 		}
 
-		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
-			$profile = Profile::whereXh(Auth::user()->xh)
-				->select('nj', 'xz')
-				->firstOrFail();
+		if ('pubsport' != $type) {
+			if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
 
-			// 未在时间限制表中配置，默认不允许选课
-			$now    = Carbon::now();
-			$exists = Lmttime::whereNj($profile->nj)
-				->whereXz($profile->xz)
-				->where('kssj', '<', $now)
-				->where('jssj', '>', $now)
-				->exists();
+				// 未在时间限制表中配置，默认不允许选课
+				$now    = Carbon::now();
+				$exists = Lmttime::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->exists();
 
-			if (!$exists) {
-				abort(403, '现在未到选课时间，不允许选课');
+				if (!$exists) {
+					abort(403, '现在未到选课时间，不允许选课');
+				}
 			}
 		}
 

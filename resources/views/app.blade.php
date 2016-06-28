@@ -64,7 +64,9 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="{{ url('profile') }}"><i class="fa fa-user fa-fw"></i> 个人资料</a></li>
+                            @if ($is_student)
+                                <li><a href="{{ url('profile') }}"><i class="fa fa-user fa-fw"></i> 个人资料</a></li>
+                            @endif
                             <li><a href="{{ url('password/change') }}"><i class="fa fa-unlock fa-fw"></i> 修改密码</a></li>
                             <li class="divider"></li>
                             <li><a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
@@ -110,12 +112,17 @@
                             <li>
                                 <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
-                                    @if ($allowed_select)
-                                        @if ($allowed_pubsport)
+                                    @if ($allowed_pubsport)
+                                        @unless(!$allowed_select && !$is_newer)
                                             <li>
                                                 <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
                                             </li>
-                                        @endif
+                                        @endunless
+                                    @endif
+                                    @if ($allowed_select)
+                                        <li>
+                                            <a href="{{ route('selcourse.show','public') }}">公共课程</a>
+                                        </li>
                                         <li>
                                             <a href="{{ route('selcourse.show','require') }}">必修课程</a>
                                         </li>

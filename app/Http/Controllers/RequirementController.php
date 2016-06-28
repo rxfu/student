@@ -25,33 +25,49 @@ class RequirementController extends Controller {
 	 * @return  \Illuminate\Http\Response 毕业要求列表
 	 */
 	public function index() {
-		$types = ['TB', 'KB', 'JB', 'SB', 'ZB', 'TW', 'TI', 'TY', 'TQ', 'KX', 'JX', 'ZX'];
 
 		// 获取毕业要求学分
-		$credits    = Requirement::credits(Auth::user())->get();
-		$graduation = array_fill_keys($types, 0);
-		foreach ($credits as $credit) {
-			$graduation[$credit->pt . $credit->xz] = $credit->xf;
-		}
+		$graduation = Requirement::credits(Auth::user())->get();
 
 		// 获取已选课程学分
-		$credits  = Selcourse::selectedCredits(Auth::user())->get();
-		$selected = array_fill_keys($types, 0);
-		foreach ($credits as $credit) {
-			$selected[$credit->pt . $credit->xz] = $credit->xf;
-		}
+		$selected = Selcourse::selectedCredits(Auth::user())->get();
 
 		// 获取已修读学分
-		$credits = Score::studiedCredits(Auth::user())->get();
-		$studied = array_fill_keys($types, 0);
-		foreach ($credits as $credit) {
-			$studied[$credit->pt . $credit->xz] = $credit->xf;
+		$studied = Score::studiedCredits(Auth::user())->get();
+
+		$credits = [];
+		foreach ($graduation as $item) {
+			if ('B' == $item->xz) {
+				$credits['B'][$item->pt . $item->xz] = [
+					'title'      => $item->platform->mc . $item->property->mc,
+					'graduation' => $item->xf,
+				];
+			} else {
+				$credits['X'][$item->pt . $item->xz] = [
+					'title'      => $item->platform->mc . $item->property->mc,
+					'graduation' => $item->xf,
+				];
+			}
 		}
 
-		return view('requirement.index')
-			->withTitle('毕业要求')
-			->withGraduation($graduation)
-			->withSelected($selected)
-			->withStudied($studied);
+		foreach ($selected as $item) {
+			if ('B' == $item->xz) {
+				$credits['B'][$item->pt . $item->xz]['selected'] = $item->xf;
+			} else {
+				$credits['X'][$item->pt . $item->xz]['selected'] = $item->xf;
+			}
+		}
+
+		foreach ($studied as $item) {
+			if ('B' == $item->kcxz) {
+				$credits['B'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+			} else {
+				$credits['X'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+			}
+		}
+
+		$title = '毕业要求';
+
+		return view('requirement.index', compact('title', 'credits'));
 	}
 }

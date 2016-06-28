@@ -17,6 +17,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot() {
 		view()->composer('app', function ($view) {
+
 			// 是否新生
 			if ($is_fresh = Fresh::whereXh(Auth::user()->xh)->exists()) {
 				$user = Fresh::find(Auth::user()->xh);
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider {
 			if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
 				$user = Profile::find(Auth::user()->xh);
 			}
+
+			// 是否新入校未足一年的学生
+			$is_newer = Profile::isFresh(Auth::user())->exists();
 
 			// 是否允许选课
 			$allowed_select = Setting::find('XK_KG')->value;

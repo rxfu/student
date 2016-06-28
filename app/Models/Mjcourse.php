@@ -143,8 +143,8 @@ class Mjcourse extends Model {
 	/**
 	 * 扩展查询，用于获取课程类型相应课程的课程列表
 	 * @author FuRongxin
-	 * @date    2016-03-01
-	 * @version 2.0
+	 * @date    2016-06-21
+	 * @version 2.1
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @param   string $type 课程类型
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
@@ -152,10 +152,12 @@ class Mjcourse extends Model {
 	public function scopeOfType($query, $type) {
 		switch ($type) {
 		case 'public':
+			// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'B')
 				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+				->where('pk_kczy.zy', '=', session('major'))
+				->where('pk_kczy.kcxh', 'like', 'TB15%');
 
 		case 'require':
 			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
@@ -244,7 +246,7 @@ class Mjcourse extends Model {
 					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
 			})
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
-			->join('xk_tj', function ($join) {
+			->leftJoin('xk_tj', function ($join) {
 				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh')
 					->on('pk_kczy.zy', '=', 'xk_tj.zy');
 			})
