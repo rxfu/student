@@ -30,6 +30,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
+		$exams = [];
 		$types = Extype::whereZt(config('constants.status.enable'))->get();
 
 		foreach ($types as $type) {
@@ -66,6 +67,13 @@ class ExamController extends Controller {
 				}
 			}
 
+			$type = $type->toArray();
+			$type['is_registered'] = Exregister::whereNd($type['nd'])
+				->whereXh(Auth::user()->xh)
+				->whereKslx($type['kslx'])
+				->exists();
+			$type = (object) $type;
+
 			$exams[] = $type;
 		}
 
@@ -97,7 +105,7 @@ class ExamController extends Controller {
 	 */
 	public function register($kslx) {
 		$profile = Profile::find(Auth::user()->xh);
-		$exam    = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -118,7 +126,7 @@ class ExamController extends Controller {
 			return redirect('profile/upfile');
 		}
 
-		$exam       = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -139,7 +147,7 @@ class ExamController extends Controller {
 		}
 
 		$profile = Profile::find(Auth::user()->xh);
-		$exam    = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -159,7 +167,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 报名列表
 	 */
 	public function update(Request $request, $kslx) {
-		$exam       = Extype::find($kslx);
+		$exam = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -215,15 +223,15 @@ class ExamController extends Controller {
 			}
 		}
 
-		$register       = new Exregister();
-		$register->xh   = Auth::user()->xh;
-		$register->xq   = Auth::user()->profile->college->pivot->xq;
+		$register = new Exregister();
+		$register->xh = Auth::user()->xh;
+		$register->xq = Auth::user()->profile->college->pivot->xq;
 		$register->kslx = $kslx;
 		$register->bklb = '00';
 		$register->kssj = $exam->sj;
 		$register->clbz = config('constants.exam.status.register');
 		$register->bmsj = date('Y-m-d H:i:s');
-		$register->nd   = $exam->nd;
+		$register->nd = $exam->nd;
 		$register->save();
 
 		return redirect('exam')->withStatus('考试报名成功，请交费！');

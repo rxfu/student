@@ -21,7 +21,7 @@ class TrimRequest {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next) {
-		$request->merge(array_map('App\http\Helper::trimString', $request->all()));
+		$request->merge(array_map('App\Http\Helper::trimString', $request->all()));
 		return $next($request);
 	}
 }

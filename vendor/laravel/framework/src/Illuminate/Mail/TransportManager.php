@@ -46,6 +46,10 @@ class TransportManager extends Manager
             $transport->setPassword($config['password']);
         }
 
+        if (isset($config['stream'])) {
+            $transport->setStreamOptions($config['stream']);
+        }
+
         return $transport;
     }
 
@@ -101,7 +105,7 @@ class TransportManager extends Manager
         $config = $this->app['config']->get('services.mailgun', []);
 
         return new MailgunTransport(
-            new HttpClient(Arr::get($config, 'guzzle', [])),
+            $this->getHttpClient($config),
             $config['secret'], $config['domain']
         );
     }
@@ -116,7 +120,7 @@ class TransportManager extends Manager
         $config = $this->app['config']->get('services.mandrill', []);
 
         return new MandrillTransport(
-            new HttpClient(Arr::get($config, 'guzzle', [])), $config['secret']
+            $this->getHttpClient($config), $config['secret']
         );
     }
 
@@ -130,7 +134,7 @@ class TransportManager extends Manager
         $config = $this->app['config']->get('services.sparkpost', []);
 
         return new SparkPostTransport(
-            new HttpClient(Arr::get($config, 'guzzle', [])), $config['secret']
+            $this->getHttpClient($config), $config['secret']
         );
     }
 
@@ -142,6 +146,19 @@ class TransportManager extends Manager
     protected function createLogDriver()
     {
         return new LogTransport($this->app->make('Psr\Log\LoggerInterface'));
+    }
+
+    /**
+     * Get a fresh Guzzle HTTP client instance.
+     *
+     * @param  array  $config
+     * @return HttpClient
+     */
+    protected function getHttpClient($config)
+    {
+        $guzzleConfig = Arr::get($config, 'guzzle', []);
+
+        return new HttpClient(Arr::add($guzzleConfig, 'connect_timeout', 60));
     }
 
     /**

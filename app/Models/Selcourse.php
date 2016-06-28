@@ -30,8 +30,19 @@ class Selcourse extends Model {
 		parent::boot();
 
 		static::created(function ($course) {
-			$count = Count::find($course->kcxh);
-			$count->rs += 1;
+			$count = Count::whereKcxh($course->kcxh)
+				->whereZy($course->zy)
+				->first();
+
+			if (count($count)) {
+				$count->rs += 1;
+			} else {
+				$count       = new Count;
+				$count->kcxh = $course->kcxh;
+				$count->zy   = $course->zy;
+				$count->rs   = 1;
+			}
+
 			$count->save();
 
 			$log       = new Slog;
@@ -42,8 +53,19 @@ class Selcourse extends Model {
 		});
 
 		static::deleted(function ($course) {
-			$count = Count::find($course->kcxh);
-			$count->rs -= 1;
+			$count = Count::whereKcxh($course->kcxh)
+				->whereZy($course->zy)
+				->first();
+
+			if (count($count)) {
+				$count->rs -= 1;
+			} else {
+				$count       = new Count;
+				$count->kcxh = $course->kcxh;
+				$count->zy   = $course->zy;
+				$count->rs   = 0;
+			}
+
 			$count->save();
 
 			$log       = new Slog;
@@ -52,6 +74,28 @@ class Selcourse extends Model {
 			$log->czlx = 'delete';
 			$log->save();
 		});
+	}
+
+	/**
+	 * 课程平台
+	 * @author FuRongxin
+	 * @date    2016-06-02
+	 * @version 2.1
+	 * @return  object 所属对象
+	 */
+	public function platform() {
+		return $this->belongsTo('App\Models\Platform', 'pt', 'dm');
+	}
+
+	/**
+	 * 课程性质
+	 * @author FuRongxin
+	 * @date    2016-06-02
+	 * @version 2.1
+	 * @return  object 所属对象
+	 */
+	public function property() {
+		return $this->belongsTo('App\Models\Property', 'xz', 'dm');
 	}
 
 	/**
@@ -156,39 +200,29 @@ class Selcourse extends Model {
 	public function scopeOfType($query, $type) {
 		switch ($type) {
 		case 'public':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->where('xk_xkxx.xz', '=', 'B');
 
 		case 'require':
 			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
 			unset($platforms[array_search('T', $platforms)]);
-			return $query->whereIn('pk_kczy.pt', $platforms)
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->whereIn('xk_xkxx.pt', $platforms)
+				->where('xk_xkxx.xz', '=', 'B');
 
 		case 'elect':
-			return $query->where('pk_kczy.xz', '=', 'X')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			return $query->where('xk_xkxx.xz', '=', 'X');
 
 		case 'human':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'W');
-
 		case 'nature':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'I');
-
 		case 'art':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Y');
-
 		case 'other':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Q');
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->whereIn('xk_xkxx.xz', ['W', 'I', 'Y', 'Q']);
+
+		case 'pubsport':
+			return $query->where('xk_xkxx.pt', '=', 'T')
+				->where('xk_xkxx.xz', '=', 'B')
+				->where('xk_xkxx.kcxh', 'like', 'TB14%');
 
 		default:
 			break;

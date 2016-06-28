@@ -174,19 +174,19 @@ return [
 	 * 课程代码
 	 */
 	'course'      => [
-		'public'  => [
+		'public'   => [
 			'type' => 'TB',
 			'name' => '公共课程',
 		],
-		'require' => [
+		'require'  => [
 			'type' => 'B',
 			'name' => '必修课程',
 		],
-		'elect'   => [
+		'elect'    => [
 			'type' => 'X',
 			'name' => '选修课程',
 		],
-		'general' => [
+		'general'  => [
 			'human'  => [
 				'type' => 'TW',
 				'name' => '人文社科通识素质课程',
@@ -204,13 +204,24 @@ return [
 				'name' => '其他专项通识素质课程',
 			],
 		],
-		'others'  => [
+		'others'   => [
 			'type' => 'OTHERS',
 			'name' => '其他课程',
 		],
-		'retake'  => [
+		'retake'   => [
 			'type' => 'RETAKE',
 			'name' => '重修课程',
+		],
+
+		/**
+		 * 应教务处要求单独增加公体选课
+		 * @author FuRongxin
+		 * @date 2016-05-15
+		 * @version 2.1
+		 */
+		'pubsport' => [
+			'type' => 'TB14',
+			'name' => '公共体育课程',
 		],
 	],
 ];
