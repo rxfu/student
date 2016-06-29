@@ -477,7 +477,7 @@ class SelcourseController extends Controller {
 			$selcourse->pt    = $course->pt;
 			$selcourse->xz    = $course->xz;
 			$selcourse->xl    = $course->xl;
-			$selcourse->jsgh  = $course->timetables()->first()->jsgh;
+			$selcourse->jsgh  = $course->task->jsgh;
 			$selcourse->xf    = $course->plan->zxf;
 			$selcourse->sf    = config('constants.status.enable');
 			$selcourse->zg    = $course->bz;

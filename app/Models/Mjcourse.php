@@ -55,7 +55,8 @@ class Mjcourse extends Model {
 	public function task() {
 		return $this->belongsTo('App\Models\Task', 'kcxh', 'kcxh')
 			->whereNd($this->nd)
-			->whereXq($this->xq);
+			->whereXq($this->xq)
+			->whereId(1);
 	}
 
 	/**
