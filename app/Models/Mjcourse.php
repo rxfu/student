@@ -75,12 +75,14 @@ class Mjcourse extends Model {
 	/**
 	 * 课程表
 	 * @author FuRongxin
-	 * @date    2016-02-24
-	 * @version 2.0
+	 * @date    2016-06-29
+	 * @version 2.1.1
 	 * @return  object 所属对象
 	 */
 	public function timetables() {
 		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->whereNd(session('year'))
+			->whereXq(session('term'))
 			->orderBy('zc');
 	}
 
