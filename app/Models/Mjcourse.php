@@ -48,8 +48,8 @@ class Mjcourse extends Model {
 	/**
 	 * 教学任务书
 	 * @author FuRongxin
-	 * @date    2016-01-29
-	 * @version 2.0
+	 * @date    2016-06-29
+	 * @version 2.1.1
 	 * @return  object 所属对象
 	 */
 	public function task() {

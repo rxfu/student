@@ -366,8 +366,8 @@ class SelcourseController extends Controller {
 	/**
 	 * 保存所选课程
 	 * @author FuRongxin
-	 * @date 2016-06-16
-	 * @version 2.1
+	 * @date 2016-06-29
+	 * @version 2.1.1
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
