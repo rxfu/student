@@ -366,8 +366,8 @@ class SelcourseController extends Controller {
 	/**
 	 * 保存所选课程
 	 * @author FuRongxin
-	 * @date 2016-06-16
-	 * @version 2.1
+	 * @date 2016-06-29
+	 * @version 2.1.1
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
@@ -477,7 +477,7 @@ class SelcourseController extends Controller {
 			$selcourse->pt    = $course->pt;
 			$selcourse->xz    = $course->xz;
 			$selcourse->xl    = $course->xl;
-			$selcourse->jsgh  = $course->timetables()->first()->jsgh;
+			$selcourse->jsgh  = $course->task->jsgh;
 			$selcourse->xf    = $course->plan->zxf;
 			$selcourse->sf    = config('constants.status.enable');
 			$selcourse->zg    = $course->bz;
