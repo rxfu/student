@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Helper;
 use App\Models\BaseModel as Model;
 use App\Models\Count;
 use App\Models\Slog;
@@ -10,8 +11,8 @@ use App\Models\Slog;
  * 选课信息
  *
  * @author FuRongxin
- * @date 2016-01-21
- * @version 2.0
+ * @date 2016-09-01
+ * @version 2.1.2
  */
 class Selcourse extends Model {
 
@@ -30,16 +31,22 @@ class Selcourse extends Model {
 		parent::boot();
 
 		static::created(function ($course) {
-			$count = Count::whereKcxh($course->kcxh)
-				->whereZy($course->zy)
-				->first();
+
+			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
+				$count = Count::whereKcxh($course->kcxh)->first();
+			} else {
+				$count = Count::whereKcxh($course->kcxh)
+					->whereZy($course->zy)
+					->first();
+			}
 
 			if (count($count)) {
 				$count->rs += 1;
 			} else {
 				$count       = new Count;
 				$count->kcxh = $course->kcxh;
-				$count->zy   = $course->zy;
+				$count->zy   = $isPubSport ? '' : $course->zy;
 				$count->rs   = 1;
 			}
 
@@ -53,16 +60,22 @@ class Selcourse extends Model {
 		});
 
 		static::deleted(function ($course) {
-			$count = Count::whereKcxh($course->kcxh)
-				->whereZy($course->zy)
-				->first();
+
+			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
+				$count = Count::whereKcxh($course->kcxh)->first();
+			} else {
+				$count = Count::whereKcxh($course->kcxh)
+					->whereZy($course->zy)
+					->first();
+			}
 
 			if (count($count)) {
 				$count->rs -= 1;
 			} else {
 				$count       = new Count;
 				$count->kcxh = $course->kcxh;
-				$count->zy   = $course->zy;
+				$count->zy   = $isPubSport ? '' : $course->zy;
 				$count->rs   = 0;
 			}
 

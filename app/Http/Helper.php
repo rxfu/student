@@ -47,4 +47,17 @@ class Helper {
 	public static function getCno($kcxh) {
 		return Str::substr($kcxh, 2, 8);
 	}
+
+	/**
+	 * 判断12位课程序号的课程类型是否与输入的一致，如公体，社科……
+	 * @author FuRongxin
+	 * @date    2016-09-01
+	 * @version 2.1.2
+	 * @param   string $kcxh 12位课程序号
+	 * @param   string $type 4位课程类型
+	 * @return  boolean 一致返回true，不一致返回false
+	 */
+	public static function isCourseType($kcxh, $type) {
+		return str_is($type . '*', $kcxh);
+	}
 }
