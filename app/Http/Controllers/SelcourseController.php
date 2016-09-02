@@ -576,8 +576,15 @@ class SelcourseController extends Controller {
 				}
 			}
 		} else {
-			$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
-			$count  = isset($course) ? $course->rs : 0;
+
+			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			if (Helper::isCourseType($kcxh, config('constants.course.pubsport.type'))) {
+				$course = Count::whereKcxh($kcxh)->first();
+			} else {
+				$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			}
+
+			$count = isset($course) ? $course->rs : 0;
 
 			if ($count >= $rs) {
 				$limits['rs'] = true;
