@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
  * 辅助函数类
  *
  * @author FuRongxin
- * @date 2016-01-31
- * @version 2.0
+ * @date 2016-09-01
+ * @version 2.1.2
  */
 class Helper {
 

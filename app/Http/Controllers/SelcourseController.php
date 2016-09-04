@@ -539,9 +539,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 选课门数和人数限制检测
 	 * 2016-06-16：添加专业号检测
+	 * 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
 	 * @author FuRongxin
-	 * @date    2016-06-16
-	 * @version 2.1
+	 * @date    2016-09-01
+	 * @version 2.1.2
 	 * @param   string $type 课程类型
 	 * @param   string $kcxh 12位课程序号
 	 * @param   string $zy 专业号
@@ -577,7 +578,7 @@ class SelcourseController extends Controller {
 			}
 		} else {
 
-			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
 			if (Helper::isCourseType($kcxh, config('constants.course.pubsport.type'))) {
 				$course = Count::whereKcxh($kcxh)->first();
 			} else {
@@ -676,9 +677,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 按校区列出可选课程
 	 * 2016-05-12：应教务处要求，添加公体选课类别名称
+	 * 2016-09-01：应教务处要求，添加公体选课人数
 	 * @author FuRongxin
-	 * @date    2016-05-12
-	 * @version 2.1
+	 * @date    2016-09-01
+	 * @version 2.1.2
 	 * @param   string $type 课程类型
 	 * @param   string $campus 校区号
 	 * @return  JSON 可选课程列表

@@ -32,7 +32,7 @@ class Selcourse extends Model {
 
 		static::created(function ($course) {
 
-			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
 			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
 				$count = Count::whereKcxh($course->kcxh)->first();
 			} else {
@@ -61,7 +61,7 @@ class Selcourse extends Model {
 
 		static::deleted(function ($course) {
 
-			// 2016年9月1日：应教务处要求添加公体选课统计，修改选课统计方式
+			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
 			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
 				$count = Count::whereKcxh($course->kcxh)->first();
 			} else {
