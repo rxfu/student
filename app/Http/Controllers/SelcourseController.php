@@ -730,6 +730,19 @@ class SelcourseController extends Controller {
 				}
 
 				return $course->kcmc;
+			})
+			->editColumn('rs', function ($course) use ($type) {
+
+				// 显示公体已选人数
+				if ('pubsport' == $type) {
+					$count = Count::whereKcxh($course->kcxh)->first();
+
+					if (is_object($count)) {
+						return $count->rs;
+					}
+				}
+
+				return $course->rs;
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
