@@ -569,7 +569,7 @@ class SelcourseController extends Controller {
 			}
 
 			if (-1 < $rs) {
-				$course = Count::whereKcxh($kcxh)->first();
+				$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
 				$count  = isset($course) ? $course->rs : 0;
 
 				if ($count >= $rs) {

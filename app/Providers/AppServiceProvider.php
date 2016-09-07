@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider {
 			$view->withIsFresh($is_fresh)
 				->withIsStudent($is_student)
 				->withUser($user)
+				->withIsNewer($is_newer)
 				->withAllowedSelect($allowed_select)
 				->withAllowedGeneral($allowed_general)
 				->withAllowedOthers($allowed_others)
