@@ -242,7 +242,7 @@ class Profile extends Model {
 	public function scopeIsFresh($query, $user) {
 		return $query->whereXh($user->xh)
 			->whereXjzt(config('constants.school.student'))
-			->whereRaw('age(rxrq) < \'1 year\'')
+			->whereRaw('age(CURRENT_DATE, date_trunc(\'month\', rxrq)) < \'1 year\'')
 			->where('xz', '<>', '2');
 	}
 
