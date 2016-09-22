@@ -79,11 +79,13 @@
                 <aside class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul id="side-menu" class="nav">
+                            <!--
                             @if ($is_fresh)
                                 <li>
                                     <a href="{{ route('fresh.edit', $user->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>
                             @endif
+                            -->
                             @if ($is_student)
                             <li>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>
@@ -113,11 +115,9 @@
                                 <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     @if ($allowed_pubsport)
-                                        @unless(!$allowed_select && !$is_newer)
-                                            <li>
-                                                <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
-                                            </li>
-                                        @endunless
+                                        <li>
+                                            <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
+                                        </li>
                                     @endif
                                     @if ($allowed_select)
                                         <li>
