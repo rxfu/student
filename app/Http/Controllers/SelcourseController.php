@@ -539,9 +539,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 选课门数和人数限制检测
 	 * 2016-06-16：添加专业号检测
+	 * 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
 	 * @author FuRongxin
-	 * @date    2016-06-16
-	 * @version 2.1
+	 * @date    2016-09-01
+	 * @version 2.1.2
 	 * @param   string $type 课程类型
 	 * @param   string $kcxh 12位课程序号
 	 * @param   string $zy 专业号
@@ -568,7 +569,7 @@ class SelcourseController extends Controller {
 			}
 
 			if (-1 < $rs) {
-				$course = Count::whereKcxh($kcxh)->first();
+				$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
 				$count  = isset($course) ? $course->rs : 0;
 
 				if ($count >= $rs) {
@@ -576,8 +577,15 @@ class SelcourseController extends Controller {
 				}
 			}
 		} else {
-			$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
-			$count  = isset($course) ? $course->rs : 0;
+
+			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
+			if (Helper::isCourseType($kcxh, config('constants.course.pubsport.type'))) {
+				$course = Count::whereKcxh($kcxh)->first();
+			} else {
+				$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			}
+
+			$count = isset($course) ? $course->rs : 0;
 
 			if ($count >= $rs) {
 				$limits['rs'] = true;
@@ -669,9 +677,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 按校区列出可选课程
 	 * 2016-05-12：应教务处要求，添加公体选课类别名称
+	 * 2016-09-01：应教务处要求，添加公体选课人数
 	 * @author FuRongxin
-	 * @date    2016-05-12
-	 * @version 2.1
+	 * @date    2016-09-01
+	 * @version 2.1.2
 	 * @param   string $type 课程类型
 	 * @param   string $campus 校区号
 	 * @return  JSON 可选课程列表
@@ -723,6 +732,19 @@ class SelcourseController extends Controller {
 				}
 
 				return $course->kcmc;
+			})
+			->editColumn('rs', function ($course) use ($type) {
+
+				// 显示公体已选人数
+				if ('pubsport' == $type) {
+					$count = Count::whereKcxh($course->kcxh)->first();
+
+					if (is_object($count)) {
+						return $count->rs;
+					}
+				}
+
+				return $course->rs;
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
