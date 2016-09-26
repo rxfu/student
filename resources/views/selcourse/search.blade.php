@@ -8,8 +8,8 @@
             <div class="input-group">
                 <span class="input-group-btn">
                     <select name="type" class="selectpicker" data-style="btn-primary" data-width="100px">
-                        <option value="kcxh"{{ 'kcxh' == $type ? ' selected' : '' }}>课程序号</option>
                         <option value="kcmc"{{ 'kcmc' == $type ? ' selected' : '' }}>课程名称</option>
+                        <option value="kcxh"{{ 'kcxh' == $type ? ' selected' : '' }}>课程序号</option>
                     </select>
                 </span>
                 <div class="form-group">
