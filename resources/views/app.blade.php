@@ -152,16 +152,24 @@
                                         <li>
                                             <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
                                         </li>
-                                        <li>
-                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
-                                        </li>
                                     @endif
-                                    <li>
-                                        <a href="{{ url('application') }}">课程申请进度</a>
-                                    </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
+                            @if ($allowed_apply)
+                                <li>
+                                    <a href="#"><i class="fa fa-file-o fa-fw"></i> 课程管理<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url('application') }}">课程申请进度</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                            @endif
                             <li>
                                 <a href="#"><i class="fa fa-calendar fa-fw"></i> 课表管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
