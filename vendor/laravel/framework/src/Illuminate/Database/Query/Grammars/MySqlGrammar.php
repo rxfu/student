@@ -158,6 +158,28 @@ class MySqlGrammar extends Grammar
     }
 
     /**
+     * Prepare the bindings for an update statement.
+     *
+     * @param  array  $bindings
+     * @param  array  $values
+     * @return array
+     */
+    public function prepareBindingsForUpdate(array $bindings, array $values)
+    {
+        $index = 0;
+
+        foreach ($values as $column => $value) {
+            if ($this->isJsonSelector($column) && is_bool($value)) {
+                unset($bindings[$index]);
+            }
+
+            $index++;
+        }
+
+        return $bindings;
+    }
+
+    /**
      * Compile a delete statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -175,14 +197,14 @@ class MySqlGrammar extends Grammar
             $sql = trim("delete $table from {$table}{$joins} $where");
         } else {
             $sql = trim("delete from $table $where");
-        }
 
-        if (isset($query->orders)) {
-            $sql .= ' '.$this->compileOrders($query, $query->orders);
-        }
+            if (isset($query->orders)) {
+                $sql .= ' '.$this->compileOrders($query, $query->orders);
+            }
 
-        if (isset($query->limit)) {
-            $sql .= ' '.$this->compileLimit($query, $query->limit);
+            if (isset($query->limit)) {
+                $sql .= ' '.$this->compileLimit($query, $query->limit);
+            }
         }
 
         return $sql;

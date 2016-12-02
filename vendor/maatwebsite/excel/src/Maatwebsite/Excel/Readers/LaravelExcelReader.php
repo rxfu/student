@@ -1,7 +1,7 @@
 <?php namespace Maatwebsite\Excel\Readers;
 
-use Cache;
-use Config;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Facades\Queue;
 use Maatwebsite\Excel\Classes\PHPExcel;
@@ -249,10 +249,14 @@ class LaravelExcelReader
      *
      * @return LaravelExcelReader
      */
-    public function load($file, $encoding = false, $noBasePath = false)
+    public function load($file, $encoding = false, $noBasePath = false, $callbackConfigReader = null)
     {
         // init the loading
         $this->_init($file, $encoding, $noBasePath);
+
+        if (is_callable($callbackConfigReader)) {
+            call_user_func($callbackConfigReader, $this);
+        }
 
         // Only fetch selected sheets if necessary
         if ($this->sheetsSelected()) {
@@ -542,9 +546,9 @@ class LaravelExcelReader
     /**
      * Parse the file in chunks and queues the processing of each chunk
      *
-     * @param int      $size
-     * @param callable $callback
-     * @param bool     $shouldQueue
+     * @param int           $size
+     * @param callable      $callback
+     * @param bool|string   $shouldQueue
      */
     public function chunk($size = 10, callable $callback, $shouldQueue = true)
     {
@@ -570,6 +574,10 @@ class LaravelExcelReader
             );
 
             if ($shouldQueue) {
+                // If a string is passed (which also evaluates to true if not empty), assign to that named queue
+                if(is_string($shouldQueue)) {
+                    $job->onQueue($shouldQueue);
+                }
                 $this->dispatcher->dispatch($job);
             } else {
                 $break = $job->handle();
