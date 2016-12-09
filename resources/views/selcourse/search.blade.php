@@ -17,7 +17,7 @@
                     <input type="search" class="form-control" id="keyword" name="keyword" placeholder="请输入关键词进行检索..." value="{{ $keyword }}">
                 </div>
                 <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit">Go!</button>
+                    <button class="btn btn-primary" type="submit">查询</button>
                 </span>
             </div>
             <div class="voffset-top">
