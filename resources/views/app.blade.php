@@ -158,7 +158,7 @@
                             </li>
                             @if ($allowed_apply)
                                 <li>
-                                    <a href="#"><i class="fa fa-file-o fa-fw"></i> 课程管理<span class="fa arrow"></span></a>
+                                    <a href="#"><i class="fa fa-file-o fa-fw"></i> 课程申请<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
                                             <a href="{{ url('selcourse/search') }}">课程申请</a>
