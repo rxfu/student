@@ -30,7 +30,7 @@
                             @foreach ($apps as $app)
                             <tr>
                                 <td>
-                                	@if (!$app->sh)
+                                	@if (1 != $app->sh)
                                 		<form id="deleteForm" name="deleteForm" action="{{ route('application.destroy', $app->kcxh) }}" method="post" role="form">
                                 			{!! method_field('delete') !!}
                                 			{!! csrf_field() !!}

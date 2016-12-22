@@ -76,6 +76,9 @@
                                                     <th class="active">课程序号</th>
                                                     <th class="active">课程名称</th>
                                                     <th class="active">学分</th>
+                                                    <th class="active">年级</th>
+                                                    <th class="active">专业</th>
+                                                    <th class="active">学院</th>
                                                     <th class="active">周一</th>
                                                     <th class="active">周二</th>
                                                     <th class="active">周三</th>
@@ -95,6 +98,9 @@
                                                     <th>课程序号</th>
                                                     <th>课程名称</th>
                                                     <th>学分</th>
+                                                    <th>年级</th>
+                                                    <th>专业</th>
+                                                    <th>学院</th>
                                                     <th>周一</th>
                                                     <th>周二</th>
                                                     <th>周三</th>
@@ -143,6 +149,9 @@
                             { data: 'kcxh', name: 'kcxh' },
                             { data: 'kcmc', name: 'kcmc' },
                             { data: 'zxf', name: 'zxf' },
+                            { data: 'nj', name: 'nj' },
+                            { data: 'zymc', name: 'zymc' },
+                            { data: 'xymc', name: 'xymc' },
                             { data: 'Monday', name: 'Monday'},
                             { data: 'Tuesday', name: 'Tuesday'},
                             { data: 'Wednesday', name: 'Wednesday'},
@@ -155,7 +164,7 @@
                             { data: 'rs', name: 'rs' }
                         ],
                         'drawCallback': function (settings) {
-                            @for ($i = 6; $i <= 12; $i++)
+                            @for ($i = 9; $i <= 15; $i++)
                                 $('tr td:nth-child({{ $i }}):not(:empty)').addClass('warning');
                             @endfor
                         },
