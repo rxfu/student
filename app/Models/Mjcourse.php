@@ -156,11 +156,13 @@ class Mjcourse extends Model {
 		switch ($type) {
 		case 'public':
 			// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
+			// 2016-12-26：应教务处要求修改为不显示大学英语类课程（TB13开头）和公体类课程（TB14开头）
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'B')
 				->where('pk_kczy.nj', '=', session('grade'))
 				->where('pk_kczy.zy', '=', session('major'))
-				->where('pk_kczy.kcxh', 'like', 'TB15%');
+				->where('pk_kczy.kcxh', 'not like', 'TB13%')
+				->where('pk_kczy.kcxh', 'not like', 'TB14%');
 
 		case 'require':
 			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
