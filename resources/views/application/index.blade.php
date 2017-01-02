@@ -34,6 +34,8 @@
                                 		<form id="deleteForm" name="deleteForm" action="{{ route('application.destroy', $app->kcxh) }}" method="post" role="form">
                                 			{!! method_field('delete') !!}
                                 			{!! csrf_field() !!}
+                                            <input type="hidden" name="xklx" value="{{ $app->xklx }}">
+                                            <input type="hidden" name="sh" value="{{ $app->sh }}">
                                 			<button type="submit" class="btn btn-danger">撤销申请</button>
                                 		</form>
                                 	@endif

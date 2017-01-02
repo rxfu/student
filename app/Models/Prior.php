@@ -32,10 +32,10 @@ class Prior extends Model {
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
 	public function scopeFailed($query, $course, $user) {
-		return $query->join('cj_zxscj', 'cj_zxscj.kch', '=', 'jx_kc_qxgx.kch')
+		return $query->join('cj_zxscj', 'cj_zxscj.kch', '=', 'jx_kc_qxgx.kch2')
 			->where('cj_zxscj.xh', '=', $user->xh)
 			->where('cj_zxscj.xf', '<=', 0)
-			->where('kch2', '=', $course)
+			->where('kch', '=', $course)
 			->where('gx', '=', '>');
 	}
 }
