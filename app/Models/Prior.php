@@ -24,15 +24,15 @@ class Prior extends Model {
 	/**
 	 * 扩展查询，获取不及格的前修课程
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2017-01-03
+	 * @version 2.1.3
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @param   string $course 8位课程号
 	 * @param   object $user 用户对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
 	public function scopeFailed($query, $course, $user) {
-		return $query->join('cj_zxscj', 'cj_zxscj.kch', '=', 'jx_kc_qxgx.kch')
+		return $query->join('cj_zxscj', 'cj_zxscj.kch', '=', 'jx_kc_qxgx.kch2')
 			->where('cj_zxscj.xh', '=', $user->xh)
 			->where('cj_zxscj.xf', '<=', 0)
 			->where('kch2', '=', $course)

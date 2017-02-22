@@ -38,14 +38,26 @@ class ApplicationController extends Controller {
 
 	/**
 	 * 显示学生选课申请表单
+	 * 2017-01-02：英教务处要求，添加同课程号课程申请检测
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2017-01-02
+	 * @version 2.1.3
 	 * @param  \Illuminate\Http\Request  $request 申请请求
 	 * @return  \Illuminate\Http\Response 选课申请表单
 	 */
 	public function create(Request $request) {
 		$inputs = $request->all();
+
+		// 2017-01-02：应教务处要求添加同课程号课程申请检测
+		$exists = Application::whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereXh(Auth::user()->xh)
+			->where('kcxh', 'like', '%' . Helper::getCno($inputs['kcxh']) . '%')
+			->exists();
+
+		if ($exists) {
+			return back()->withInput()->withStatus('已选同号课程，请重新申请');
+		}
 
 		if ('retake' == $inputs['type']) {
 			$courses = Selcourse::studied(Auth::user())
@@ -67,10 +79,12 @@ class ApplicationController extends Controller {
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
+	 * 保存学生选课申请信息
+	 * @author FuRongxin
+	 * @date    2017-01-02
+	 * @version 2.1.3
+	 * @param  \Illuminate\Http\Request  $request 申请请求
+	 * @return \Illuminate\Http\Response 选课申请列表
 	 */
 	public function store(Request $request) {
 		if ($request->isMethod('post')) {
@@ -129,47 +143,11 @@ class ApplicationController extends Controller {
 	}
 
 	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id) {
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id) {
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id) {
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	/**
 	 * 撤销选课申请
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2017-01-02
+	 * @version 2.1.3
+	 * @param  \Illuminate\Http\Request  $request 撤销请求
 	 * @param   string $kcxh 12位课程序号
 	 * @return  \Illuminate\Http\Response 选课申请列表
 	 */
@@ -178,6 +156,8 @@ class ApplicationController extends Controller {
 			->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereKcxh($kcxh)
+			->whereXklx(request('xklx'))
+			->whereSh(request('sh'))
 			->firstOrFail();
 
 		$app->delete();

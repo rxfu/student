@@ -22,7 +22,7 @@ class Application extends Model {
 	public $timestamps = false;
 
 	// 修复删除操作
-	protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh'];
+	protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh', 'xklx', 'sh'];
 
 	public static function boot() {
 		parent::boot();
