@@ -156,11 +156,13 @@ class Mjcourse extends Model {
 		switch ($type) {
 		case 'public':
 			// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
+			// 2016-12-26：应教务处要求修改为不显示大学英语类课程（TB13开头）和公体类课程（TB14开头）
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'B')
 				->where('pk_kczy.nj', '=', session('grade'))
 				->where('pk_kczy.zy', '=', session('major'))
-				->where('pk_kczy.kcxh', 'like', 'TB15%');
+				->where('pk_kczy.kcxh', 'not like', 'TB13%')
+				->where('pk_kczy.kcxh', 'not like', 'TB14%');
 
 		case 'require':
 			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
@@ -249,6 +251,8 @@ class Mjcourse extends Model {
 					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
 			})
 			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
+			->join('jx_zy', 'pk_kczy.zy', '=', 'jx_zy.zy')
+			->join('xt_department', 'jx_zy.xy', '=', 'xt_department.dw')
 			->leftJoin('xk_tj', function ($join) {
 				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh')
 					->on('pk_kczy.zy', '=', 'xk_tj.zy');
@@ -258,8 +262,8 @@ class Mjcourse extends Model {
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
-			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc')
-			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh')
+			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'jx_zy.mc', 'xt_department.mc')
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'jx_zy.mc AS zymc', 'xt_department.mc AS xymc')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksz), \',\') AS kszs'))
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsz), \',\') AS jszs'))

@@ -12,6 +12,8 @@
                                 <th class="active">序号</th>
                                 <th class="active">课程号</th>
                                 <th class="active">课程名称</th>
+                                <th class="active">课程平台</th>
+                                <th class="active">课程性质</th>
                                 <th class="warning active">计划学分</th>
                                 <th class="info active">选课学分</th>
                                 <th class="success active">成绩学分</th>
@@ -24,6 +26,8 @@
                                     <td><i>#{{ ++$i }}</i></td>
                                     <td>{{ $credit['kch'] }}</td>
                                     <td>{{ $credit['kcmc'] }}</td>
+                                    <td>{{ $credit['pt'] }}</td>
+                                    <td>{{ $credit['xz'] }}</td>
                                     <td class="warning">{{ $credit['plan_credit'] }}</td>
                                     <td class="info">{{ $credit['selected_credit'] }}</td>
                                     <td class="success">{{ $credit['score_credit'] }}</td>
@@ -32,7 +36,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">学分合计</th>
+                                <th colspan="5">学分合计</th>
                                 <th class="warning">{{ $plan_total }}</th>
                                 <th class="info">{{ $selected_total }}</th>
                                 <th class="success">{{ $score_total }}</th>

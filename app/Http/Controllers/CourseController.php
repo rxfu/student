@@ -90,6 +90,8 @@ class CourseController extends Controller {
 			$credits[$plan->kch] = [
 				'kch'             => $plan->kch,
 				'kcmc'            => $plan->course->kcmc,
+				'pt'              => $plan->platform->mc,
+				'xz'              => $plan->property->mc,
 				'plan_credit'     => $plan->zxf,
 				'selected_credit' => 0,
 				'score_credit'    => 0,
@@ -113,6 +115,8 @@ class CourseController extends Controller {
 				$credits[$select->kch] = [
 					'kch'             => $select->kch,
 					'kcmc'            => $select->course->kcmc,
+					'pt'              => $select->platform->mc,
+					'xz'              => $select->property->mc,
 					'plan_credit'     => 0,
 					'selected_credit' => $select->xf,
 					'score_credit'    => 0,
@@ -134,9 +138,11 @@ class CourseController extends Controller {
 			if (array_key_exists($score->kch, $credits)) {
 				$credits[$score->kch]['score_credit'] = $score->xf;
 			} else {
-				$credits[$select->kch] = [
+				$credits[$score->kch] = [
 					'kch'             => $score->kch,
 					'kcmc'            => $score->course->kcmc,
+					'pt'              => $score->platform->mc,
+					'xz'              => $score->property->mc,
 					'plan_credit'     => 0,
 					'selected_credit' => 0,
 					'score_credit'    => $score->xf,

@@ -43,6 +43,10 @@ class AppServiceProvider extends ServiceProvider {
 			// 是否允许公体选课
 			$allowed_pubsport = Setting::find('XK_GT')->value;
 
+			// 是否允许课程申请
+			// 2016-11-30：应教务处要求添加
+			$allowed_apply = Setting::find('XK_SQ')->value;
+
 			$view->withIsFresh($is_fresh)
 				->withIsStudent($is_student)
 				->withUser($user)
@@ -50,7 +54,8 @@ class AppServiceProvider extends ServiceProvider {
 				->withAllowedSelect($allowed_select)
 				->withAllowedGeneral($allowed_general)
 				->withAllowedOthers($allowed_others)
-				->withAllowedPubsport($allowed_pubsport);
+				->withAllowedPubsport($allowed_pubsport)
+				->withAllowedApply($allowed_apply);
 		});
 	}
 
