@@ -8,7 +8,7 @@ $.extend(true, $.fn.dataTable.defaults, {
 	'processing': true,
 	'serverSide': true,
 	'language': {
-		'url': '/student/js/plugins/dataTables/i18n/zh_cn.lang'
+		'url': '/dean/student/js/plugins/dataTables/i18n/zh_cn.lang'
 	},
 	'deferRender': true,
 	'autoWidth': true
