@@ -54,6 +54,7 @@ class Selcourse extends Model {
 
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'insert';
 			$log->save();
@@ -83,6 +84,7 @@ class Selcourse extends Model {
 
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'delete';
 			$log->save();
