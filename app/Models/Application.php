@@ -32,6 +32,7 @@ class Application extends Model {
 
 			$log->ip   = request()->ip();
 			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
 			$log->czlx = 'apply';
 
 			$log->save();
@@ -42,6 +43,7 @@ class Application extends Model {
 
 			$log->ip   = request()->ip();
 			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
 			$log->czlx = 'revoke';
 
 			$log->save();
@@ -68,6 +70,17 @@ class Application extends Model {
 	 */
 	public function oterm() {
 		return $this->belongsTo('App\Models\Term', 'yxq', 'dm');
+	}
+
+	/**
+	 * 课程
+	 * @author FuRongxin
+	 * @date    2017-03-15
+	 * @version 2.1.4
+	 * @return  object 所属对象
+	 */
+	public function course() {
+		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
 	}
 
 }
