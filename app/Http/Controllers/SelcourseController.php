@@ -278,9 +278,10 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 检索课程
+	 * 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2017-05-16
+	 * @version 2.1.5
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
@@ -298,7 +299,8 @@ class SelcourseController extends Controller {
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
-			->exceptGeneral();
+			->exceptGeneral()
+			->exceptCurrentGradeAndMajorAndTerm();
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {

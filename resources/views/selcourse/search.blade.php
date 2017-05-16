@@ -42,7 +42,7 @@
                 <div class="col-sm-5">
                     <label for="zy">开课专业</label>
                     <select name="zy" id="zy" class="form-control">
-                        <option value="all" class='all'>==全部==</option>
+                        <option value="all" class="all {{ $colleges->implode('dw', ' ') }}">==全部==</option>
                         @foreach ($majors as $major)
                             <option value="{{ $major->zy }}" class="{{ $major->xy }}"{{ $major->zy == $smajor ? ' selected' : '' }}>{{ $major->mc }}</option>
                         @endforeach
@@ -178,6 +178,14 @@
                 });
 
                 $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
+
+                $('#zy').chained('#xy');
+            });
+        </script>
+    @else
+        <script>
+            $(function() {
+                $('#zy').chained('#xy');
             });
         </script>
     @endif
