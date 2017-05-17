@@ -262,4 +262,19 @@ class Selcourse extends Model {
 					->whereRaw('t_a.xh = t_xk_xkxx.xh AND t_a.kcxh = t_xk_xkxx.kcxh');
 			});
 	}
+
+	/**
+	 * 扩展查询：根据课程号获取已选课程列表
+	 * @author FuRongxin
+	 * @date    2017-05-16
+	 * @version 2.1.5
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @param   string $kch 8位课程号
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelected($query, $user, $kch) {
+		return $query->whereXh($user->xh)
+			->whereKch($kch);
+	}
 }

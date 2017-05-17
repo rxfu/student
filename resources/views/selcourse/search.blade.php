@@ -42,7 +42,7 @@
                 <div class="col-sm-5">
                     <label for="zy">开课专业</label>
                     <select name="zy" id="zy" class="form-control">
-                        <option value="all" class='all'>==全部==</option>
+                        <option value="all" class="all {{ $colleges->implode('dw', ' ') }}">==全部==</option>
                         @foreach ($majors as $major)
                             <option value="{{ $major->zy }}" class="{{ $major->xy }}"{{ $major->zy == $smajor ? ' selected' : '' }}>{{ $major->mc }}</option>
                         @endforeach
@@ -127,9 +127,11 @@
 @stop
 
 @push('scripts')
-    @if ($search)
-        <script>
-            $(function() {
+    <script>
+        $(function() {
+            $('#zy').chained('#xy');
+
+            @if ($search)
                 $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
                     $('#selcourses-table-' + $(e.target).attr('id')).dataTable({
                         'ajax': {
@@ -178,7 +180,27 @@
                 });
 
                 $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
-            });
-        </script>
-    @endif
+
+
+                $(document).on('click', 'a#other', function(e) {
+                    var bSelected = false;
+
+                    $.ajax({
+                        'async': false,
+                        'url': '{!! url('application/is_selected') !!}/' + $(this).attr('data-course'),
+                        'success': function(data) {
+                            if (true == data) {
+                                alert('已选课程中发现您已修读该课程，需要重修请在提示结束后申请重修。');
+                                bSelected = false;
+                            } else {
+                                bSelected = true;
+                            }
+                        }
+                    });
+
+                    return bSelected;
+                });
+            @endif
+        });
+    </script>
 @endpush

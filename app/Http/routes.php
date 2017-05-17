@@ -68,6 +68,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store', 'destroy']]);
 
+		Route::get('application/is_selected/{course}', 'ApplicationController@isSelected');
 		Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
 
 		Route::get('exam/history', 'ExamController@history');
