@@ -38,7 +38,7 @@ class ApplicationController extends Controller {
 
 	/**
 	 * 显示学生选课申请表单
-	 * 2017-01-02：英教务处要求，添加同课程号课程申请检测
+	 * 2017-01-02：应教务处要求，添加同课程号课程申请检测
 	 * @author FuRongxin
 	 * @date    2017-01-02
 	 * @version 2.1.3
@@ -60,9 +60,19 @@ class ApplicationController extends Controller {
 		}
 
 		if ('retake' == $inputs['type']) {
-			$courses = Selcourse::studied(Auth::user())
-				->orderBy('kcxh')
+			$kch = Helper::getCno($inputs['kcxh']);
+
+			$courses = Selcourse::selected(Auth::user(), $kch)
+				->orderBy('sj')
 				->get();
+
+			if (!count($courses)) {
+				$courses = Selcourse::studied(Auth::user())
+					->orderBy('sj', 'desc')
+					->get();
+			} else {
+				$courses = $courses->take(1);
+			}
 		}
 
 		$view = view('application.create')
@@ -163,5 +173,25 @@ class ApplicationController extends Controller {
 		$app->delete();
 
 		return back()->withStatus('撤销课程申请成功');
+	}
+
+	/**
+	 * 同课程号课程已选检测
+	 * @author FuRongxin
+	 * @date    2017-05-16
+	 * @version 2.1.5
+	 * @param  STRING  $kch 8位课程号
+	 * @return boolean      true为已选课程，false为未选课程
+	 */
+	public function isSelected($kch) {
+		$courses = Selcourse::selected(Auth::user(), $kch)
+			->orderBy('sj')
+			->get();
+
+		if (request()->ajax()) {
+			return response()->json(count($courses));
+		} else {
+			return count($courses);
+		}
 	}
 }

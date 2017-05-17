@@ -19,9 +19,13 @@
                             <label for="ykcxh" class="col-sm-2 control-label">原课程</label>
                             <div class="col-sm-4">
                                 <select name="ykcxh" id="ykcxh" class="form-control">
-                                    @foreach ($courses as $course)
-                                        <option value="{{ $course->kcxh }}" data-ynd="{{ $course->nd }}" data-yxq="{{ $course->xq }}" data-yxqmc="{{ $course->term->mc }}" data-yxf="{{ $course->xf }}">{{ $course->kcxh }} - {{ $course->course->kcmc }}</option>
-                                    @endforeach
+                                    @if (1 == count($courses))
+                                        <option value="{{ $courses[0]->kcxh }}" data-ynd="{{ $courses[0]->nd }}" data-yxq="{{ $courses[0]->xq }}" data-yxqmc="{{ $courses[0]->term->mc }}" data-yxf="{{ $courses[0]->xf }}">{{ $courses[0]->kcxh }} - {{ $courses[0]->course->kcmc }}</option>
+                                    @else
+                                        @foreach ($courses as $course)
+                                            <option value="{{ $course->kcxh }}" data-ynd="{{ $course->nd }}" data-yxq="{{ $course->xq }}" data-yxqmc="{{ $course->term->mc }}" data-yxf="{{ $course->xf }}">{{ $course->kcxh }} - {{ $course->course->kcmc }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -60,6 +64,10 @@
 @push('scripts')
 <script>
 $(function() {
+    @if (1 < count($courses))
+        alert('在已选课程中未找到原课程，如果确认需要进行重修申请，请在提示结束后手工选择原课程。特别提示：原课程与重修课程不一致会导致重修申请被拒绝，请提交申请后与教学秘书联系并确认。');
+    @endif
+
     $('#ynd').val($('#ykcxh option:selected').attr('data-ynd'));
     $('#yxq').val($('#ykcxh option:selected').attr('data-yxq'));
     $('#yxqmc').val($('#ykcxh option:selected').attr('data-yxqmc'));
