@@ -60,9 +60,19 @@ class ApplicationController extends Controller {
 		}
 
 		if ('retake' == $inputs['type']) {
-			$courses = Selcourse::studied(Auth::user())
-				->orderBy('sj', 'desc')
+			$kch = Helper::getCno($inputs['kcxh']);
+
+			$courses = Selcourse::selected(Auth::user(), $kch)
+				->orderBy('sj')
 				->get();
+
+			if (!count($courses)) {
+				$courses = Selcourse::studied(Auth::user())
+					->orderBy('sj', 'desc')
+					->get();
+			} else {
+				$courses = $courses->take(1);
+			}
 		}
 
 		$view = view('application.create')
