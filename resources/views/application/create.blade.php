@@ -64,7 +64,7 @@
 @push('scripts')
 <script>
 $(function() {
-    @if (1 < count($courses))
+    @if (('retake' == $type) && (1 < count($courses)))
         alert('在已选课程中未找到原课程，如果确认需要进行重修申请，请在提示结束后手工选择原课程。特别提示：原课程与重修课程不一致会导致重修申请被拒绝，请提交申请后与教学秘书联系并确认。');
     @endif
 
