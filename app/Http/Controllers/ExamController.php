@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
+use App\Models\Exlimit;
 use App\Models\Exregister;
 use App\Models\Exscore;
 use App\Models\Extype;
@@ -24,9 +25,10 @@ class ExamController extends Controller {
 
 	/**
 	 * 显示考试列表
+	 * 2017-05-23：应教务处要求，添加中职升本专业报考四六级限制
 	 * @author FuRongxin
-	 * @date    2016-02-21
-	 * @version 2.0
+	 * @date    2017-05-31
+	 * @version 2.1.6
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
@@ -34,6 +36,20 @@ class ExamController extends Controller {
 		$types = Extype::whereZt(config('constants.status.enable'))->get();
 
 		foreach ($types as $type) {
+
+			// 检测是否为报考限制列表中的专业
+			$exists = Exlimit::whereKslx($type->kslx)
+				->whereZy(Auth::user()->profile->zy)
+				->whereXy(Auth::user()->profile->xy)
+				->whereZt(config('constants.status.disable'))
+				->exists();
+			if ($exists) {
+
+				// 不允许限制专业的新生报考CET3
+				if (Profile::isFresh(Auth::user())->exists()) {
+					continue;
+				}
+			}
 
 			// 检测是否CET4
 			if (in_array($type->kslx, Helper::getCet4())) {
