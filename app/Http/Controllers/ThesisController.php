@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Major;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 /**
  * 显示并处理毕业论文信息
@@ -64,5 +65,10 @@ class ThesisController extends Controller {
 	 * @return  \Illuminate\Http\Response 检索结果
 	 */
 	public function search(Request $request) {
+		$inputs = $request->all();
+
+		$datatable = Datatables::of($thesis);
+
+		return $datatable->make(true);
 	}
 }
