@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 通识素质课限制
+ * 通识素质课学分统计表
  *
  * @author FuRongxin
- * @date 2016-02-24
- * @version 2.0
+ * @date 2017-05-29
+ * @version 2.1.7
  */
-class Lmtgeneral extends Model {
+class Cntgeneral extends Model {
 
-	protected $table = 'xk_tsxz';
+	protected $table = 'xk_tsxftj';
 
-	protected $primaryKey = 'nj';
+	protected $primaryKey = 'xh';
 
 	public $incrementing = false;
 
