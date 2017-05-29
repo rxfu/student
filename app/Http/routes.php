@@ -79,6 +79,9 @@ Route::group(['middleware' => ['web']], function () {
 			],
 		]);
 
+		Route::get('thesis/search', 'ThesisController@showSearchForm');
+		Route::post('thesis/search', 'ThesisController@search');
+
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 		Route::get('password/change', 'Auth\PasswordController@showChangeForm');
 		Route::put('password/change', 'Auth\PasswordController@change');

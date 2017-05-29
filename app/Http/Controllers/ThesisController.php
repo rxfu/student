@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 /**
  * 显示并处理毕业论文信息
  *
@@ -23,5 +25,17 @@ class ThesisController extends Controller {
 		$title = '毕业论文检索';
 
 		return view('thesis.search', compact('title'));
+	}
+
+	/**
+	 * 检索毕业论文
+	 *
+	 * @author FuRongxin
+	 * @date    2017-05-29
+	 * @version 2.1.7
+	 * @param   \Illuminate\Http\Request $request 检索请求
+	 * @return  \Illuminate\Http\Response 检索结果
+	 */
+	public function search(Request $request) {
 	}
 }
