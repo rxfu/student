@@ -3,7 +3,8 @@
 @section('content')
 <section class="row">
     <div class="col-sm-8">
-        <form id="searchForm" name="searchForm" method="get" action="{{ url('thsis/search') }}" role="form" class="form-horizontal">
+        <form id="searchForm" name="searchForm" method="post" action="{{ url('thesis/search') }}" role="form" class="form-horizontal">
+            {{ csrf_field() }}
             <input type="hidden" name="searched" value="true">
             <div class="form-group">
                 <label for="js" class="col-sm-4 control-label">届数</label>
@@ -150,14 +151,19 @@
             @if ($search)
                 $('thesis-table').dataTable({
                     'ajax': {
-                        'url': '{!! url('thesis/search') !!}/' + $(e.target).attr('id'),
+                        'url': '{!! url('thesis/search') !!}',
                         'data': {
                             'searched': '{{ $search }}',
-                            'nj': '{{ $sgrade }}',
-                            'xy': '{{ $scollege }}',
-                            'zy': '{{ $smajor }}',
-                            'keyword': '{{ $keyword }}',
-                            'type': '{{ $type }}'
+                            'js': '{{ $js }}',
+                            'xy': '{{ $xy }}',
+                            'zy': '{{ $zy }}',
+                            'zdjsxm': '{{ $zdjsxm }}',
+                            'ly': '{{ $ly }}',
+                            'ky': '{{ $ky }}',
+                            'yx': '{{ $yx }}',
+                            'xh': '{{ $xh }}',
+                            'xm': '{{ $xm }}',
+                            'keywords': '{{ $keywords }}'
                         }
                     },
                     'columns': [
