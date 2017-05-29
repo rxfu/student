@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
+use App\Models\Exlimit;
 use App\Models\Exregister;
 use App\Models\Exscore;
 use App\Models\Extype;
@@ -24,9 +25,10 @@ class ExamController extends Controller {
 
 	/**
 	 * 显示考试列表
+	 * 2017-05-23：应教务处要求，添加中职升本专业报考四六级限制
 	 * @author FuRongxin
-	 * @date    2016-02-21
-	 * @version 2.0
+	 * @date    2017-05-31
+	 * @version 2.1.6
 	 * @return  \Illuminate\Http\Response 考试列表
 	 */
 	public function index() {
@@ -35,31 +37,40 @@ class ExamController extends Controller {
 
 		foreach ($types as $type) {
 
-			// 检测是否CET4
-			if (in_array($type->kslx, Helper::getCet4())) {
+			// 检测是否是新生
+			if (Profile::isFresh(Auth::user())->exists()) {
 
-				// 检测是否允许新生报考CET4
-				if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+				// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
+				$exists = Exlimit::whereKslx($type->kslx)
+					->whereZy(Auth::user()->profile->zy)
+					->whereXy(Auth::user()->profile->xy)
+					->whereZt(config('constants.status.enable'))
+					->exists();
 
-					// 不允许新生报考CET4
-					if (Profile::isFresh(Auth::user())->exists()) {
+				if (!$exists) {
+
+					// 检测是否CET4
+					if (in_array($type->kslx, Helper::getCet4())) {
+
+						// 检测是否禁止新生报考CET4
+						if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+							continue;
+						}
+					} elseif (config('constants.exam.type.cet6') == $type->kslx) {
+						// 检测是否CET6
+
+						// 检测是否禁止新生报考CET6
+						if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
+							continue;
+						}
+					} else {
 						continue;
 					}
-
 				}
 			}
 
 			// 检测是否CET6
 			if (config('constants.exam.type.cet6') == $type->kslx) {
-
-				// 检测是否允许新生报考CET6
-				if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
-
-					// 不允许新生报考CET6
-					if (Profile::isFresh(Auth::user())->exists()) {
-						continue;
-					}
-				}
 
 				// 检测CET6是否具有过往成绩或者CET4是否及格
 				if (!Exscore::whereC_xh(Auth::user()->xh)->whereC_kslx(config('constants.exam.type.cet6'))->exists() && !Exscore::isPassed(Auth::user(), Helper::getCet4())->exists()) {
@@ -67,7 +78,7 @@ class ExamController extends Controller {
 				}
 			}
 
-			$type = $type->toArray();
+			$type                  = $type->toArray();
 			$type['is_registered'] = Exregister::whereNd($type['nd'])
 				->whereXh(Auth::user()->xh)
 				->whereKslx($type['kslx'])
@@ -105,7 +116,7 @@ class ExamController extends Controller {
 	 */
 	public function register($kslx) {
 		$profile = Profile::find(Auth::user()->xh);
-		$exam = Extype::find($kslx);
+		$exam    = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -126,7 +137,7 @@ class ExamController extends Controller {
 			return redirect('profile/upfile');
 		}
 
-		$exam = Extype::find($kslx);
+		$exam       = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -137,17 +148,18 @@ class ExamController extends Controller {
 
 			$exams = Exregister::with('type')
 				->whereNd($exam->nd)
-				->whereXh(Auth::user()->xh);
+				->whereXh(Auth::user()->xh)
+				->get();
 
 			foreach ($exams as $cet) {
-				if (config('constants.exam.type.cet') == $cet->type->ksdl) {
-					abort(403, '已经报名本次' . $cet . '考试，' . $cet . '和' . $exam->ksmc . '不能同时报名');
+				if (($cet->type->kslx != $kslx) && (config('constants.exam.type.cet') == $cet->type->ksdl)) {
+					abort(403, '已经报名本次' . $cet->type->ksmc . '考试，' . $cet->type->ksmc . '和' . $exam->ksmc . '不能同时报名');
 				}
 			}
 		}
 
 		$profile = Profile::find(Auth::user()->xh);
-		$exam = Extype::find($kslx);
+		$exam    = Extype::find($kslx);
 
 		return view('exam.register')
 			->withTitle('考试报名')
@@ -167,7 +179,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 报名列表
 	 */
 	public function update(Request $request, $kslx) {
-		$exam = Extype::find($kslx);
+		$exam       = Extype::find($kslx);
 		$registered = Exregister::whereNd($exam->nd)
 			->whereXh(Auth::user()->xh)
 			->whereKslx($kslx)
@@ -223,15 +235,15 @@ class ExamController extends Controller {
 			}
 		}
 
-		$register = new Exregister();
-		$register->xh = Auth::user()->xh;
-		$register->xq = Auth::user()->profile->college->pivot->xq;
+		$register       = new Exregister();
+		$register->xh   = Auth::user()->xh;
+		$register->xq   = Auth::user()->profile->college->pivot->xq;
 		$register->kslx = $kslx;
 		$register->bklb = '00';
 		$register->kssj = $exam->sj;
 		$register->clbz = config('constants.exam.status.register');
 		$register->bmsj = date('Y-m-d H:i:s');
-		$register->nd = $exam->nd;
+		$register->nd   = $exam->nd;
 		$register->save();
 
 		return redirect('exam')->withStatus('考试报名成功，请交费！');
