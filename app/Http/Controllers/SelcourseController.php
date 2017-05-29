@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Campus;
+use App\Models\Cntgeneral;
 use App\Models\Count;
 use App\Models\Department;
 use App\Models\Lmtgeneral;
@@ -439,6 +440,24 @@ class SelcourseController extends Controller {
 
 					$limit_course = $limit->ms;
 					$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
+				}
+
+				// 2017-05-29：应教务处要求，添加通识素质课学分限制，本科最多8分，专科最多4分
+				if (config('constants.status.enable') == Setting::find('XK_TS_XF_KG')->value) {
+					$stu_tsxf = Cntgeneral::find(Auth::user()->xh);
+
+					if (!is_null($stu_tsxf)) {
+						$yxxf = Selcourse::ofType('other')
+							->whereXh(Auth::user()->xh)
+							->whereNd(session('year'))
+							->whereXq(session('term'))
+							->sum('xf');
+						$curcredit = $yxxf + $stu_tsxf->hdxf;
+
+						if ($curcredit >= $stu_tsxf->zgxf) {
+							abort(403, '你的通识素质课学分已达到' . $curcredit . '分，最高允许选课学分为' . $stu_tsxf->zgxf . '分，不允许选课');
+						}
+					}
 				}
 			} else {
 				$limit_ratio = 1;
