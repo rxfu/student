@@ -2,93 +2,93 @@
 
 @section('content')
 <section class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <form id="searchForm" name="searchForm" method="get" action="{{ url('thsis/search') }}" role="form" class="form-horizonal">
+    <div class="col-sm-8">
+        <form id="searchForm" name="searchForm" method="get" action="{{ url('thsis/search') }}" role="form" class="form-horizontal">
             <input type="hidden" name="searched" value="true">
             <div class="form-group">
-                <label for="js" class="col-sm-2 control-label">届数</label>
-                <div class="col-sm-10">
+                <label for="js" class="col-sm-4 control-label">届数</label>
+                <div class="col-sm-8">
                     <input type="search" class="form-control" id="js" name="js" placeholder="届数" value="{{ $js }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="xy" class="col-sm-2 control-label">学院（部）</label>
-                <div class="col-sm-10">
+                <label for="xy" class="col-sm-4 control-label">学院（部）</label>
+                <div class="col-sm-8">
                     <select name="xy" id="xy" class="form-control">
                         <option value="all">==全部==</option>
                         @foreach ($colleges as $college)
-                            <option value="{{ $college->dw }}"{{ $college->dw == $scollege ? ' selected' : '' }}>{{ $college->mc }}</option>
+                            <option value="{{ $college->dw }}"{{ $college->dw == $xy ? ' selected' : '' }}>{{ $college->mc }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="zy" class="col-sm-2 control-label">专业</label>
-                <div class="col-sm-10">
+                <label for="zy" class="col-sm-4 control-label">专业</label>
+                <div class="col-sm-8">
                     <select name="zy" id="zy" class="form-control">
                         <option value="all" class="all {{ $colleges->implode('dw', ' ') }}">==全部==</option>
                         @foreach ($majors as $major)
-                            <option value="{{ $major->zy }}" class="{{ $major->xy }}"{{ $major->zy == $smajor ? ' selected' : '' }}>{{ $major->mc }}</option>
+                            <option value="{{ $major->zy }}" class="{{ $major->xy }}"{{ $major->zy == $zy ? ' selected' : '' }}>{{ $major->mc }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="zdjsxm" class="col-sm-2 control-label">指导教师姓名</label>
-                <div class="col-sm-10">
+                <label for="zdjsxm" class="col-sm-4 control-label">指导教师姓名</label>
+                <div class="col-sm-8">
                     <input type="search" class="form-control" id="zdjsxm" name="zdjsxm" placeholder="指导教师姓名" value="{{ $zdjsxm }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="ly" class="col-sm-2 control-label">课题来源</label>
-                <div class="col-sm-10">
+                <label for="ly" class="col-sm-4 control-label">课题来源</label>
+                <div class="col-sm-8">
                     <select name="ly" id="ly" class="form-control">
                         <option value="all">==全部==</option>
-                        <option value="J">教师出题</option>}
-                        <option value="Z">学生自拟</option>}
+                        <option value="J"{{ 'J' == $ly ? ' selected' : '' }}>教师出题</option>}
+                        <option value="Z"{{ 'Z' == $ly ? ' selected' : '' }}>学生自拟</option>}
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="ky" class="col-sm-2 control-label">是否科研项目</label>
-                <div class="col-sm-10">
+                <label for="ky" class="col-sm-4 control-label">是否科研项目</label>
+                <div class="col-sm-8">
                     <select name="ky" id="ky" class="form-control">
                         <option value="all">==全部==</option>
-                        <option value="1">是</option>}
-                        <option value="0">否</option>}
+                        <option value="1"{{ '1' == $ky ? ' selected' : '' }}>是</option>}
+                        <option value="0"{{ '0' == $ky ? ' selected' : '' }}>否</option>}
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="yx" class="col-sm-2 control-label">是否优秀毕业论文（设计）</label>
-                <div class="col-sm-10">
+                <label for="yx" class="col-sm-4 control-label">是否优秀毕业论文（设计）</label>
+                <div class="col-sm-8">
                     <select name="yx" id="yx" class="form-control">
                         <option value="all">==全部==</option>
-                        <option value="1">是</option>}
-                        <option value="0">否</option>}
+                        <option value="1"{{ '1' == $yx ? ' selected' : '' }}>是</option>}
+                        <option value="0"{{ '0' == $yx ? ' selected' : '' }}>否</option>}
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="xh" class="col-sm-2 control-label">学号</label>
-                <div class="col-sm-10">
+                <label for="xh" class="col-sm-4 control-label">学号</label>
+                <div class="col-sm-8">
                     <input type="search" class="form-control" id="xh" name="xh" placeholder="学号" value="{{ $xh }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="xm" class="col-sm-2 control-label">姓名</label>
-                <div class="col-sm-10">
+                <label for="xm" class="col-sm-4 control-label">姓名</label>
+                <div class="col-sm-8">
                     <input type="search" class="form-control" id="xm" name="xm" placeholder="姓名" value="{{ $xm }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="keywords" class="col-sm-2 control-label">毕业论文（设计）题目关键词</label>
-                <div class="col-sm-10">
+                <label for="keywords" class="col-sm-4 control-label">毕业论文（设计）题目关键词</label>
+                <div class="col-sm-8">
                     <input type="search" class="form-control" id="keywords" name="keywords" placeholder="毕业论文（设计）题目关键词" value="{{ $keywords }}">
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-4 col-sm-8">
                     <button class="btn btn-primary" type="submit">查询</button>
                 </div>
             </div>
