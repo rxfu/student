@@ -3,8 +3,7 @@
 @section('content')
 <section class="row">
     <div class="col-sm-8">
-        <form id="searchForm" name="searchForm" method="post" action="{{ url('thesis/search') }}" role="form" class="form-horizontal">
-            {{ csrf_field() }}
+        <form id="searchForm" name="searchForm" method="get" action="{{ url('thesis/search') }}" role="form" class="form-horizontal">
             <input type="hidden" name="searched" value="true">
             <div class="form-group">
                 <label for="js" class="col-sm-4 control-label">届数</label>
@@ -149,9 +148,9 @@
             $('#zy').chained('#xy');
 
             @if ($search)
-                $('thesis-table').dataTable({
+                $('#thesis-table').dataTable({
                     'ajax': {
-                        'url': '{!! url('thesis/search') !!}',
+                        'url': '{!! url('thesis/searchThesis') !!}',
                         'data': {
                             'searched': '{{ $search }}',
                             'js': '{{ $js }}',

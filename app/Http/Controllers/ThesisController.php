@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Major;
+use App\Models\Teacher;
+use App\Models\Thesis;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 
@@ -65,9 +67,70 @@ class ThesisController extends Controller {
 	 * @return  \Illuminate\Http\Response 检索结果
 	 */
 	public function search(Request $request) {
-		$inputs = $request->all();
+		$inputs   = $request->all();
+		$keywords = explode(' ', $inputs['keywords']);
 
-		$datatable = Datatables::of($thesis);
+		$thesis = Thesis::ofJs($inputs['js'])
+			->ofXy($inputs['xy'])
+			->ofZy($inputs['zy'])
+			->ofLy($inputs['ly'])
+			->ofKy($inputs['ky'])
+			->ofYx($inputs['yx'])
+			->ofXh($inputs['xh'])
+			->ofXm($inputs['xm'])
+			->ofZdjs($inputs['zdjsxm'])
+			->whereZt(config('constants.status.enable'));
+
+		foreach ($keywords as $keyword) {
+			$thesis = $thesis->where('lwtm', 'like', '%' . $keyword . '%');
+		}
+
+		$datatable = Datatables::of($thesis)
+			->addColumn('xymc', function ($paper) {
+				return Department::find($paper->xy)->mc;
+			})
+			->addColumn('zymc', function ($paper) {
+				return Major::find($paper->zy)->mc;
+			})
+			->addColumn('zdjsxm', function ($paper) {
+				return Teacher::find($paper->zdjs)->xm;
+			})
+			->editColumn('ly', function ($paper) {
+				switch ($paper->ly) {
+				case 'J':
+					return '教师出题';
+
+				case 'Z':
+					return '学生自拟';
+
+				default:
+					return '无';
+				}
+			})
+			->editColumn('ky', function ($paper) {
+				switch ($paper->ky) {
+				case '1':
+					return '是';
+
+				case '0':
+					return '否';
+
+				default:
+					return '否';
+				}
+			})
+			->editColumn('yx', function ($paper) {
+				switch ($paper->yx) {
+				case '1':
+					return '是';
+
+				case '0':
+					return '否';
+
+				default:
+					return '否';
+				}
+			});
 
 		return $datatable->make(true);
 	}
