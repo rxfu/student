@@ -197,7 +197,10 @@ class Thesis extends Model {
 	 */
 	public function scopeOfZdjs($query, $zdjs) {
 		if (!empty($zdjs)) {
-			$teachers = Teacher::whereXm($zdjs)->lists('jsgh')->all();
+
+			$teachers = Teacher::where('xm', 'like', '%' . $zdjs . '%')
+				->lists('jsgh')
+				->all();
 
 			return $query->whereIn('zdjs', $teachers);
 		}

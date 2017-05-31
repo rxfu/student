@@ -85,6 +85,7 @@
                 <label for="keywords" class="col-sm-4 control-label">毕业论文（设计）题目关键词</label>
                 <div class="col-sm-8">
                     <input type="search" class="form-control" id="keywords" name="keywords" placeholder="毕业论文（设计）题目关键词" value="{{ $keywords }}">
+                    <p class="help-block">Tips:多个关键词用空格隔开</p>
                 </div>
             </div>
             <div class="form-group">
