@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Major;
-use App\Models\Teacher;
 use App\Models\Thesis;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
@@ -70,7 +69,8 @@ class ThesisController extends Controller {
 		$inputs   = $request->all();
 		$keywords = explode(' ', $inputs['keywords']);
 
-		$thesis = Thesis::ofJs($inputs['js'])
+		$thesis = Thesis::with('instructor', 'college', 'major')
+			->ofJs($inputs['js'])
 			->ofXy($inputs['xy'])
 			->ofZy($inputs['zy'])
 			->ofLy($inputs['ly'])
@@ -87,13 +87,13 @@ class ThesisController extends Controller {
 
 		$datatable = Datatables::of($thesis)
 			->addColumn('xymc', function ($paper) {
-				return Department::find($paper->xy)->mc;
+				return $paper->college->mc;
 			})
 			->addColumn('zymc', function ($paper) {
-				return Major::find($paper->zy)->mc;
+				return $paper->major->mc;
 			})
 			->addColumn('zdjsxm', function ($paper) {
-				return Teacher::find($paper->zdjs)->xm;
+				return $paper->instructor->xm;
 			})
 			->editColumn('ly', function ($paper) {
 				switch ($paper->ly) {

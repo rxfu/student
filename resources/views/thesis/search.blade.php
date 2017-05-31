@@ -149,7 +149,41 @@
             $('#zy').chained('#xy');
 
             @if ($search)
-                $('#thesis-table').dataTable({
+                $('#thesis-table').DataTable({
+                    'dom': 'Bfrtip',
+                    'buttons': [
+                        'pageLength',
+                        {
+                            'extend': 'copyHtml5',
+                            'text': '复制到剪贴板'
+                        },
+                        {
+                            'extend': 'csvHtml5',
+                            'text': '导出到CSV文件',
+                            'title': '毕业论文检索结果',
+                            'bom': true
+                        },
+                        {
+                            'extend': 'excelHtml5',
+                            'text': '导出到Excel文件',
+                            'title': '毕业论文检索结果',
+                            'bom': true
+                        }
+                    ],
+                    'language': {
+                        'buttons': {
+                            'pageLength': {
+                                '-1': '显示全部结果',
+                                '_': '显示 %d 条结果'
+                            },
+                            'copyTitle': '复制到剪贴板',
+                            'copyKeys':'请按 <i>ctrl</i> 或 <i>\u2318</i> + <i>C</i> 复制表格数据到系统剪贴板<br><br>取消请点击此消息或按ESC键',
+                            'copySuccess': {
+                                '_': '已复制 %d 条记录到剪贴板',
+                                '1': '已复制 1 条记录到剪贴板'
+                            }
+                        }
+                    },
                     'ajax': {
                         'url': '{!! url('thesis/searchThesis') !!}',
                         'data': {
