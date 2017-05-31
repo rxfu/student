@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
         <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/dataTables.bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/buttons.dataTables.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/sb-admin-2.css') }}">
         <link rel="stylesheet" href="{{ asset('css/timeline.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -209,6 +210,15 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
+                            <li>
+                                <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 毕业论文<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{{ url('thesis/search') }}">毕业论文查询</a>
+                                    </li>
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
                             <!--li>
                                 <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
@@ -377,6 +387,10 @@
         <script src="{{ asset('js/metisMenu.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/jszip.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/dataTables/buttons.flash.min.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
         @stack('scripts')
