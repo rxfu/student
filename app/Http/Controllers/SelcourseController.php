@@ -359,19 +359,11 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create() {
-		//
-	}
-
-	/**
 	 * 保存所选课程
+	 * 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 	 * @author FuRongxin
-	 * @date 2016-06-29
-	 * @version 2.1.1
+	 * @date 2017-06-15
+	 * @version 2.2.1
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
@@ -388,23 +380,22 @@ class SelcourseController extends Controller {
 			abort(403, '请交清费用再进行选课');
 		}
 
-		if ('pubsport' != $request->input('type')) {
-			if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
-				$profile = Profile::whereXh(Auth::user()->xh)
-					->select('nj', 'xz')
-					->firstOrFail();
+		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
+		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
+			$profile = Profile::whereXh(Auth::user()->xh)
+				->select('nj', 'xz')
+				->firstOrFail();
 
-				// 未在时间限制表中配置，默认不允许选课
-				$now    = Carbon::now();
-				$exists = Lmttime::whereNj($profile->nj)
-					->whereXz($profile->xz)
-					->where('kssj', '<', $now)
-					->where('jssj', '>', $now)
-					->exists();
+			// 未在时间限制表中配置，默认不允许选课
+			$now    = Carbon::now();
+			$exists = Lmttime::whereNj($profile->nj)
+				->whereXz($profile->xz)
+				->where('kssj', '<', $now)
+				->where('jssj', '>', $now)
+				->exists();
 
-				if (!$exists) {
-					abort(403, '现在未到选课时间，不允许选课');
-				}
+			if (!$exists) {
+				abort(403, '现在未到选课时间，不允许选课');
 			}
 		}
 
