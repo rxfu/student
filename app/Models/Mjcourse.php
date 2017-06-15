@@ -228,16 +228,27 @@ class Mjcourse extends Model {
 	}
 
 	/**
-	 * 扩展查询，获取排除本年级本专业本学期的课程数据
+	 * 扩展查询，获取排除本年级的课程数据
 	 * @author FuRongxin
-	 * @date    2017-05-12
-	 * @version 2.1.5
+	 * @date    2017-06-15
+	 * @version 2.2.2
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeExceptCurrentGradeAndMajorAndTerm($query) {
-		return $query->where('pk_kczy.nj', '<>', session('grade'))
-			->where('pk_kczy.zy', '<>', session('major'));
+	public function scopeExceptCurrentGrade($query) {
+		return $query->where('pk_kczy.nj', '<>', session('grade'));
+	}
+
+	/**
+	 * 扩展查询，获取排除本专业的课程数据
+	 * @author FuRongxin
+	 * @date    2017-06-15
+	 * @version 2.2.2
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeExceptCurrentMajor($query) {
+		return $query->where('pk_kczy.zy', '<>', session('major'));
 	}
 
 	/**

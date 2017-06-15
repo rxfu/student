@@ -296,13 +296,22 @@ class SelcourseController extends Controller {
 
 		$inputs = $request->all();
 
-		// 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
+		// 2017-06-15：应教务处要求，在检索结果中排除本年级本专业本学期课程
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
-			->exceptGeneral()
-			->exceptCurrentGradeAndMajorAndTerm();
+			->exceptGeneral();
+
+		// 2017-06-15：当是本年级时，排除本专业课程
+		if (session('grade') == $inputs['nj']) {
+			$courses = $courses->exceptCurrentMajor();
+		}
+
+		// 2017-06-15：当是本专业时，排除本年级课程
+		if (session('major') == $inputs['zy']) {
+			$courses = $courses->exceptCurrentGrade();
+		}
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
