@@ -455,7 +455,7 @@ class SelcourseController extends Controller {
 						$curcredit = $yxxf + $stu_tsxf->hdxf;
 
 						if ($curcredit >= $stu_tsxf->zgxf) {
-							abort(403, '你的通识素质课学分已达到' . $curcredit . '分，最高允许选课学分为' . $stu_tsxf->zgxf . '分，不允许选课');
+							abort(403, '你的通识素质选修课累计选课学分已达' . $curcredit . '分，如需多选，请在第二轮、第三轮选课期间选课。');
 						}
 					}
 				}
