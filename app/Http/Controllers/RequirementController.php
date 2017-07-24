@@ -59,10 +59,12 @@ class RequirementController extends Controller {
 		}
 
 		foreach ($studied as $item) {
-			if ('B' == $item->kcxz) {
-				$credits['B'][$item->pt . $item->kcxz]['studied'] = $item->xf;
-			} else {
-				$credits['X'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+			if ('R' != $item->kcxz) {
+				if ('B' == $item->kcxz) {
+					$credits['B'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+				} else {
+					$credits['X'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+				}
 			}
 		}
 
