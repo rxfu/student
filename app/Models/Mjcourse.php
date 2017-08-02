@@ -4,6 +4,7 @@ namespace App\Models;
 
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -71,6 +72,20 @@ class Mjcourse extends Model {
 			->whereNj($this->nj)
 			->whereZsjj($this->zsjj)
 			->whereKch(Str::substr($this->kcxh, 2, 8));
+	}
+
+	/**
+	 * 选课表
+	 * @author FuRongxin
+	 * @date    2017-08-02
+	 * @version 2.2.4
+	 * @return object 所属对象
+	 */
+	public function selcourse() {
+		return $this->belongsTo('App\Models\Selcourse', 'kcxh', 'kcxh')
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereXh(Auth::user()->xh);
 	}
 
 	/**
