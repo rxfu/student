@@ -80,13 +80,11 @@
                 <aside class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul id="side-menu" class="nav">
-                            <!--
                             @if ($is_fresh)
                                 <li>
                                     <a href="{{ route('fresh.edit', $user->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>
                             @endif
-                            -->
                             @if ($is_student)
                             <li>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>

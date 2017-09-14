@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Fresh;
 use App\Models\User;
+use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -95,4 +97,27 @@ class AuthController extends Controller {
 		];
 	}
 
+	/**
+	 * Send the response after the user was authenticated.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  bool  $throttles
+	 * @return \Illuminate\Http\Response
+	 */
+	protected function handleUserWasAuthenticated(Request $request, $throttles) {
+
+		if ($throttles) {
+			$this->clearLoginAttempts($request);
+		}
+
+		if (method_exists($this, 'authenticated')) {
+			return $this->authenticated($request, Auth::guard($this->getGuard())->user());
+		}
+
+		if (Fresh::whereXh(Auth::user()->xh)->exists()) {
+			return redirect()->route('fresh.edit', Auth::user()->xh);
+		}
+
+		return redirect()->intended($this->redirectPath());
+	}
 }
