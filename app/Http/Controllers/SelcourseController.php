@@ -174,6 +174,7 @@ class SelcourseController extends Controller {
 
 		return view('selcourse.timetable')
 			->withTitle('当前课程表')
+			->withSubtitle('<span class="text-danger">（当前课程表有时候存在显示误差，仅供参考，具体课程时间以已选课程列表为准）</span>')
 			->withCourses($courses)
 			->withPeriods($periods);
 	}

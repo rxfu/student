@@ -345,7 +345,10 @@
 
                 <article class="row">
                     <header class="col-sm-12">
-                        <h1 class="page-header">{{ $title or '默认页面' }}</h1>
+                        <h1 class="page-header">
+                            {{ $title or '默认页面' }}
+                            {!! isset($subtitle) ? '<small>' . $subtitle . '</small>' : '' !!}
+                        </h1>
                     </header>
                     <!-- /.col-sm-12 -->
 
