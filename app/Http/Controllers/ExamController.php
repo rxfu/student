@@ -40,30 +40,31 @@ class ExamController extends Controller {
 			// 检测是否是新生
 			if (Profile::isFresh(Auth::user())->exists()) {
 
-				// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
-				$exists = Exlimit::whereKslx($type->kslx)
-					->whereZy(Auth::user()->profile->zy)
-					->whereXy(Auth::user()->profile->xy)
-					->whereZt(config('constants.status.enable'))
-					->exists();
+				// 检测是否CET4
+				if (in_array($type->kslx, Helper::getCet4())) {
 
-				if (!$exists) {
+					// 检测是否禁止新生报考CET4
+					if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+						continue;
+					}
+				} elseif (config('constants.exam.type.cet6') == $type->kslx) {
+					// 检测是否CET6
 
-					// 检测是否CET4
-					if (in_array($type->kslx, Helper::getCet4())) {
+					// 检测是否禁止新生报考CET6
+					if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
+						continue;
+					}
+				} elseif (config('constants.exam.type.cet3') == $type->kslx) {
+					// 检测是否CET3
 
-						// 检测是否禁止新生报考CET4
-						if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
-							continue;
-						}
-					} elseif (config('constants.exam.type.cet6') == $type->kslx) {
-						// 检测是否CET6
+					// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
+					$exists = Exlimit::whereKslx($type->kslx)
+						->whereZy(Auth::user()->profile->zy)
+						->whereXy(Auth::user()->profile->xy)
+						->whereZt(config('constants.status.enable'))
+						->exists();
 
-						// 检测是否禁止新生报考CET6
-						if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
-							continue;
-						}
-					} else {
+					if (!$exists) {
 						continue;
 					}
 				}
