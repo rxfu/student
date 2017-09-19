@@ -134,7 +134,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试报名表单
 	 */
 	public function edit($kslx) {
-		if (!Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext'))) {
+		if (!Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext')) || config('constants.file.status.passed') != Auth::user()->zpzt) {
 			return redirect('profile/upfile');
 		}
 
