@@ -26,6 +26,7 @@ class ExamController extends Controller {
 	/**
 	 * 显示考试列表
 	 * 2017-05-23：应教务处要求，添加中职升本专业报考四六级限制
+	 * 2017-09-22：应教务处要求，修改程序逻辑为“新生只有专升本才能报三级，其他学生在专业允许列表中才能报名”
 	 * @author FuRongxin
 	 * @date    2017-05-31
 	 * @version 2.1.6
@@ -57,16 +58,20 @@ class ExamController extends Controller {
 				} elseif (config('constants.exam.type.cet3') == $type->kslx) {
 					// 检测是否CET3
 
-					// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
-					$exists = Exlimit::whereKslx($type->kslx)
-						->whereZy(Auth::user()->profile->zy)
-						->whereXy(Auth::user()->profile->xy)
-						->whereZt(config('constants.status.enable'))
-						->exists();
+					continue;
+				}
+			} elseif (config('constants.exam.type.cet3') == $type->kslx) {
+				// 检测是否CET3
 
-					if (!$exists) {
-						continue;
-					}
+				// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
+				$exists = Exlimit::whereKslx($type->kslx)
+					->whereZy(Auth::user()->profile->zy)
+					->whereXy(Auth::user()->profile->xy)
+					->whereZt(config('constants.status.enable'))
+					->exists();
+
+				if (!$exists) {
+					continue;
 				}
 			}
 
