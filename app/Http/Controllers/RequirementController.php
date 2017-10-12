@@ -41,37 +41,57 @@ class RequirementController extends Controller {
 				$credits['B'][$item->pt . $item->xz] = [
 					'title'      => $item->platform->mc . $item->property->mc,
 					'graduation' => $item->xf,
+					'selected'   => 0,
+					'studied'    => 0,
 				];
 			} else {
 				$credits['X'][$item->pt . $item->xz] = [
 					'title'      => $item->platform->mc . $item->property->mc,
 					'graduation' => $item->xf,
+					'selected'   => 0,
+					'studied'    => 0,
 				];
 			}
 		}
 
 		foreach ($selected as $item) {
-			if ('Z' == $item->pt) {
-				$item->pt = 'J';
-			}
-
 			if ('B' == $item->xz) {
-				$credits['B'][$item->pt . $item->xz]['selected'] = $item->xf;
+				if ('J' == $item->pt && !isset($credits['B'][$item->pt . $item->xz])) {
+					$item->pt = 'Z';
+				} elseif ('Z' == $item->pt && !isset($credits['B'][$item->pt . $item->xz])) {
+					$item->pt = 'J';
+				}
+
+				$credits['B'][$item->pt . $item->xz]['selected'] += $item->xf;
 			} else {
-				$credits['X'][$item->pt . $item->xz]['selected'] = $item->xf;
+				if ('J' == $item->pt && !isset($credits['X'][$item->pt . $item->xz])) {
+					$item->pt = 'Z';
+				} elseif ('Z' == $item->pt && !isset($credits['X'][$item->pt . $item->xz])) {
+					$item->pt = 'J';
+				}
+
+				$credits['X'][$item->pt . $item->xz]['selected'] += $item->xf;
 			}
 		}
 
 		foreach ($studied as $item) {
-			if ('Z' == $item->pt) {
-				$item->pt = 'J';
-			}
-
 			if ('R' != $item->kcxz) {
 				if ('B' == $item->kcxz) {
-					$credits['B'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+					if ('J' == $item->pt && !isset($credits['B'][$item->pt . $item->kcxz])) {
+						$item->pt = 'Z';
+					} elseif ('Z' == $item->pt && !isset($credits['B'][$item->pt . $item->kcxz])) {
+						$item->pt = 'J';
+					}
+
+					$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 				} else {
-					$credits['X'][$item->pt . $item->kcxz]['studied'] = $item->xf;
+					if ('J' == $item->pt && !isset($credits['X'][$item->pt . $item->kcxz])) {
+						$item->pt = 'Z';
+					} elseif ('Z' == $item->pt && !isset($credits['X'][$item->pt . $item->kcxz])) {
+						$item->pt = 'J';
+					}
+
+					$credits['X'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 				}
 			}
 		}
