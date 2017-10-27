@@ -111,6 +111,16 @@ class ApplicationController extends Controller {
 				->whereZsjj(session('season'))
 				->firstOrFail();
 
+			$same = Selcourse::whereXh(Auth::user()->xh)
+				->whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereKch(Helper::getCno($course->kcxh))
+				->exists();
+
+			if ($same) {
+				return back()->withInput()->withStatus('已选同号课程，请重新申请');
+			}
+
 			$application       = new Application;
 			$application->xh   = Auth::user()->xh;
 			$application->xm   = Auth::user()->profile->xm;
