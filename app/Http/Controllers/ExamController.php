@@ -26,6 +26,7 @@ class ExamController extends Controller {
 	/**
 	 * 显示考试列表
 	 * 2017-05-23：应教务处要求，添加中职升本专业报考四六级限制
+	 * 2017-09-22：应教务处要求，修改程序逻辑为“新生只有专升本才能报三级，其他学生在专业允许列表中才能报名”
 	 * @author FuRongxin
 	 * @date    2017-05-31
 	 * @version 2.1.6
@@ -40,6 +41,28 @@ class ExamController extends Controller {
 			// 检测是否是新生
 			if (Profile::isFresh(Auth::user())->exists()) {
 
+				// 检测是否CET4
+				if (in_array($type->kslx, Helper::getCet4())) {
+
+					// 检测是否禁止新生报考CET4
+					if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
+						continue;
+					}
+				} elseif (config('constants.exam.type.cet6') == $type->kslx) {
+					// 检测是否CET6
+
+					// 检测是否禁止新生报考CET6
+					if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
+						continue;
+					}
+				} elseif (config('constants.exam.type.cet3') == $type->kslx) {
+					// 检测是否CET3
+
+					continue;
+				}
+			} elseif (config('constants.exam.type.cet3') == $type->kslx) {
+				// 检测是否CET3
+
 				// 检测是否为报考限制列表中的专业，列表中允许的专业才能报名，否则禁止报名
 				$exists = Exlimit::whereKslx($type->kslx)
 					->whereZy(Auth::user()->profile->zy)
@@ -48,24 +71,7 @@ class ExamController extends Controller {
 					->exists();
 
 				if (!$exists) {
-
-					// 检测是否CET4
-					if (in_array($type->kslx, Helper::getCet4())) {
-
-						// 检测是否禁止新生报考CET4
-						if (config('constants.status.enable') == Setting::find('KS_CET4_XS')) {
-							continue;
-						}
-					} elseif (config('constants.exam.type.cet6') == $type->kslx) {
-						// 检测是否CET6
-
-						// 检测是否禁止新生报考CET6
-						if (config('constants.status.enable') == Setting::find('KS_CET6_XS')) {
-							continue;
-						}
-					} else {
-						continue;
-					}
+					continue;
 				}
 			}
 
@@ -133,7 +139,7 @@ class ExamController extends Controller {
 	 * @return  \Illuminate\Http\Response 考试报名表单
 	 */
 	public function edit($kslx) {
-		if (!Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext'))) {
+		if (!Storage::exists(config('constants.file.path.portrait') . Auth::user()->profile->sfzh . '.' . config('constants.file.image.ext')) || config('constants.file.status.passed') != Auth::user()->zpzt) {
 			return redirect('profile/upfile');
 		}
 

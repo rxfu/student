@@ -181,7 +181,6 @@
 
                 $('#campus-tab a[href="#campus-{{ session('campus') }}"]').tab('show');
 
-
                 $(document).on('click', 'a#other', function(e) {
                     var bSelected = false;
 
