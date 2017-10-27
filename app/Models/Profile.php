@@ -246,4 +246,15 @@ class Profile extends Model {
 			->where('xz', '<>', '2');
 	}
 
+	/**
+	 * 处分信息
+	 * @author FuRongxin
+	 * @date    2017-10-27
+	 * @version 2.2.4
+	 * @return  object 所属对象
+	 */
+	public function cfxxs() {
+		return $this->hasMany('App\Models\Cfxx', 'xh', 'xh');
+	}
+
 }
