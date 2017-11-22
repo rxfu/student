@@ -223,6 +223,9 @@
                                     <li>
                                         <a href="{{ url('dcxm/list') }}">项目列表</a>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('dcxm/xmxx') }}">项目申请</a>
+                                    </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>

@@ -32,6 +32,17 @@ class Dcxmxx extends DcxmModel {
 	 * @return  object 所属对象
 	 */
 	public function category() {
-		return $this->belongsTo('App\Models\Xmlb', 'xmlb_dm', 'dm');
+		return $this->belongsTo('App\Models\Dcxmlb', 'xmlb_dm', 'dm');
+	}
+
+	/**
+	 * 一级学科
+	 * @author FuRongxin
+	 * @date    2017-11-22
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function subjects() {
+		return $this->belongsTo('App\Models\Dcyjxk', 'yjxk_dm', 'dm');
 	}
 }

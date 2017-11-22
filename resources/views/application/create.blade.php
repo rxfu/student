@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="yxq" class="col-sm-2 control-label">原学分</label>
+                            <label for="yxf" class="col-sm-2 control-label">原学分</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="yxf" name="yxf" readonly>
                             </div>
