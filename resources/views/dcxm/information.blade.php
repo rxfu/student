@@ -59,65 +59,38 @@
                     <div class="panel-title">项目组成员</div>
                 </div>
                 <div class="panel-body">
-                    <table id="xmcy" class="table table-bordered table-striped table-hover">
+                    <table id="xmcy-table" class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th class="active">身份</th>
+                                <th class="active"><em>#</em></th>
+                                <th class="active">是否本校本科生</th>
                                 <th class="active">学号</th>
                                 <th class="active">姓名</th>
                                 <th class="active">年级</th>
                                 <th class="active">所在院系</th>
                                 <th class="active">联系电话</th>
                                 <th class="active">项目中的分工</th>
-                                <th class="active">是否本校本科生</th>
                                 <th class="active">操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>负责人</td>
+                                <td><em>1</em></td>
+                                <td>是</td>
                                 <td>{{ Auth::user()->xh }}</td>
                                 <td>{{ Auth::user()->profile->xm }}</td>
                                 <td>{{ Auth::user()->profile->nj }}</td>
                                 <td>{{ Auth::user()->profile->college->mc }}</td>
                                 <td>{{ Auth::user()->profile->lxdh }}</td>
                                 <td>
-                                    <input type="text" class="form-control" id="fg" name="fg">
+                                    <input type="text" class="form-control" id="fg" name="fg[]">
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="sfbx" data-on-text="是" data-off-text="否" readonly checked>
-                                </td>
-                                <td>
-                                    <a href="#" title="增加" role="button" class="cy-plus"><i class="fa fa-plus text-success"></i></a>
-                                    <a href="#" title="减少" role="button" class="cy-minus"><i class="fa fa-minus text-danger"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>成员</td>
-                                <td>
-                                    <input type="text" class="form-control" id="xh" name="xh">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="xm" name="xm">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="nj" name="nj">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="szyx" name="szyx">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="lxdh" name="lxdh">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="fg" name="fg">
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="sfbx" data-on-text="是" data-off-text="否" checked>
-                                </td>
-                                <td>
-                                    <a href="#" title="增加" role="button"><i class="fa fa-plus text-success"></i></a>
-                                    <a href="#" title="减少" role="button"><i class="fa fa-minus text-danger"></i></a>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" title="增加" class="btn btn-success cy-add"><i class="fa fa-plus"></i></button>
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -133,9 +106,10 @@
                     <div class="panel-title">指导教师</div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-bordered table-striped table-hover">
+                    <table id="zdjs-table" class="table table-striped table-hover">
                         <thead>
                             <tr>
+                                <th class="active"><em>#</em></th>
                                 <th class="active">是否本校教师</th>
                                 <th class="active">工号</th>
                                 <th class="active">姓名</th>
@@ -148,12 +122,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>
-                                    <select id="sfbx" name="sfbx">
-                                        <option value="1" selected>是</option>
-                                        <option value="0">否</option>
-                                    </select>
-                                </td>
+                                <td><em>1</em></td>
+                                <td>是</td>
                                 <td>
                                     <input type="text" class="form-control" id="jsgh" name="jsgh">
                                 </td>
@@ -173,8 +143,7 @@
                                     <input type="text" class="form-control" id="email" name="email">
                                 </td>
                                 <td>
-                                    <a href="#" title="增加" role="button"><i class="fa fa-plus text-success"></i></a>
-                                    <a href="#" title="减少" role="button"><i class="fa fa-minus text-danger"></i></a>
+                                    <button type="button" title="增加" class="btn btn-success js-add"><i class="fa fa-plus"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -184,8 +153,8 @@
         </div>
     </section>
     <div class="form-group">
-        <div class="col-sm-8 col-sm-offset-3">
-            <button type="submit" class="btn btn-primary">保存</button>
+        <div class="col-sm-2 col-sm-offset-5">
+            <button type="submit" class="btn btn-primary btn-block btn-lg">保存</button>
         </div>
     </div>
 </form>
@@ -194,53 +163,133 @@
 @push('scripts')
 <script>
 $(function() {
-    $('input[name="sfbx"]').bootstrapSwitch();
-    $('input[name="sfbx"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        var row = $(this).closest('tr');
-
-        if (true == state) {
-            row.find('td').slice(2, 6).children().remove();
-        } else {
-            row.find('td:eq(2)').append('<input type="text" class="form-control" id="xm" name="xm">');
-            row.find('td:eq(3)').append('<input type="text" class="form-control" id="nj" name="nj">');
-            row.find('td:eq(4)').append('<input type="text" class="form-control" id="szyx" name="szyx">');
-            row.find('td:eq(5)').append('<input type="text" class="form-control" id="lxdh" name="lxdh">');
-        }
-    });
-    $('td').on('click', '.cy-plus', function() {
-        $('#xmcy tbody tr:last').after('\
+    $('#xmcy-table').on('click', '.cy-add', function() {
+        $(this).closest('tr').after('\
             <tr>\
-                <td>成员</td>\
+                <td></td>\
                 <td>\
-                    <input type="text" class="form-control" id="xh" name="xh">\
+                    <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked>\
                 </td>\
                 <td>\
-                    <input type="text" class="form-control" id="xm" name="xm">\
+                    <input type="text" class="form-control" name="xh[]">\
                 </td>\
                 <td>\
-                    <input type="text" class="form-control" id="nj" name="nj">\
+                    <span class="xm"></span>\
                 </td>\
                 <td>\
-                    <input type="text" class="form-control" id="szyx" name="szyx">\
+                    <span class="nj"></span>\
                 </td>\
                 <td>\
-                    <input type="text" class="form-control" id="lxdh" name="lxdh">\
+                    <span class="szyx"></span>\
                 </td>\
                 <td>\
-                    <input type="text" class="form-control" id="fg" name="fg">\
+                    <span class="lxdh"></span>\
                 </td>\
                 <td>\
-                    <input type="checkbox" name="sfbx" data-on-text="是" data-off-text="否" checked>\
+                    <input type="text" class="form-control" id="fg" name="fg[]">\
                 </td>\
                 <td>\
-                    <a href="#" title="增加" role="button" class="cy-plus"><i class="fa fa-plus text-success"></i></a>\
-                    <a href="#" title="减少" role="button" class="cy-minus"><i class="fa fa-minus text-danger"></i></a>\
+                    <div class="input-group">\
+                        <span class="input-group-btn">\
+                            <button type="button" title="增加" class="btn btn-success cy-add"><i class="fa fa-plus"></i></button>\
+                            <button type="button" title="减少" class="btn btn-danger cy-remove"><i class="fa fa-minus"></i></button>\
+                        </span>\
+                    </div>\
                 </td>\
             </tr>\
         ');
+
+        $('#xmcy-table tr').each(function(index) {
+            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+        });
+
+        $('input[name="cysfbx[]"]').bootstrapSwitch({
+            onSwitchChange: function(event, state) {
+                var row = $(this).closest('tr');
+
+                if (true == state) {
+                    row.find('td').slice(3, 7).children().remove();
+                } else {
+                    row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
+                    row.find('td:eq(4)').append('<input type="text" class="form-control" name="nj[]">');
+                    row.find('td:eq(5)').append('<input type="text" class="form-control" name="szyx[]]">');
+                    row.find('td:eq(6)').append('<input type="text" class="form-control" name="lxdh[]">');
+                }
+            }
+        });
     });
-    $('td').on('click', '.cy-minus', function() {
+
+    $('#xmcy-table').on('click', '.cy-remove', function() {
         $(this).closest('tr').remove();
+
+        $('#xmcy-table tr').each(function(index) {
+            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+        });
+    });
+
+    $('#zdjs-table').on('click', '.js-add', function() {
+        $(this).closest('tr').after('\
+            <tr>\
+                <td></td>\
+                <td>\
+                    <input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked>\
+                </td>\
+                <td>\
+                    <input type="text" class="form-control" name="jsgh[]">\
+                </td>\
+                <td>\
+                    <span class="xm"></span>\
+                </td>\
+                <td>\
+                    <span class="zc"></span>\
+                </td>\
+                <td>\
+                    <span class="xzdw"></span>\
+                </td>\
+                <td>\
+                    <span class="lxdh"></span>\
+                </td>\
+                <td>\
+                    <span class="email"></span>\
+                </td>\
+                <td>\
+                    <div class="input-group">\
+                        <span class="input-group-btn">\
+                            <button type="button" title="增加" class="btn btn-success js-add"><i class="fa fa-plus"></i></button>\
+                            <button type="button" title="减少" class="btn btn-danger js-remove"><i class="fa fa-minus"></i></button>\
+                        </span>\
+                    </div>\
+                </td>\
+            </tr>\
+        ');
+
+        $('#zdjs-table tr').each(function(index) {
+            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+        });
+
+        $('input[name="jssfbx[]"]').bootstrapSwitch({
+            onSwitchChange: function(event, state) {
+                var row = $(this).closest('tr');
+
+                if (true == state) {
+                    row.find('td').slice(3, 8).children().remove();
+                } else {
+                    row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
+                    row.find('td:eq(4)').append('<input type="text" class="form-control" name="zc[]">');
+                    row.find('td:eq(5)').append('<input type="text" class="form-control" name="szdw[]]">');
+                    row.find('td:eq(6)').append('<input type="text" class="form-control" name="lxdh[]">');
+                    row.find('td:eq(7)').append('<input type="text" class="form-control" name="email[]">');
+                }
+            }
+        });
+    });
+
+    $('#zdjs-table').on('click', '.js-remove', function() {
+        $(this).closest('tr').remove();
+
+        $('#zdjs-table tr').each(function(index) {
+            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+        });
     });
 });
 </script>
