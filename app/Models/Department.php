@@ -56,4 +56,14 @@ class Department extends Model {
 			->whereZt(config('constants.status.enable'));
 	}
 
+	/**
+	 * 教师
+	 * @author FuRongxin
+	 * @date    2017-12-03
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function department() {
+		return $this->belongsTo('App\Models\Teacher', 'xy', 'dw');
+	}
 }

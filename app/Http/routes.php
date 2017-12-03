@@ -87,6 +87,8 @@ Route::group(['middleware' => ['web']], function () {
 		Route::post('dcxm/xmxx', 'DcxmController@postInfo');
 		Route::get('dcxm/apply', 'DcxmController@getApplication');
 		Route::post('dcxm/apply', 'DcxmController@postApplication');
+		Route::get('dcxm/xmcy', 'DcxmController@getStudent');
+		Route::get('dcxm/zdjs', 'DcxmController@getTeacher');
 
 		Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 		Route::get('password/change', 'Auth\PasswordController@showChangeForm');

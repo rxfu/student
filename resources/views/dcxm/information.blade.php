@@ -37,15 +37,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="kssj" class="col-sm-3 control-label">项目起始时间</label>
+                        <label for="kssj" class="col-sm-3 control-label">项目起止时间</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kssj" name="kssj">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="jssj" class="col-sm-3 control-label">项目结束时间</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="jssj" name="jssj">
+                            <div id="datepicker" class="input-daterange input-group">
+                                <input type="text" class="form-control" id="kssj" name="kssj">
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" id="jssj" name="jssj">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,23 +123,13 @@
                                 <td><em>1</em></td>
                                 <td>是</td>
                                 <td>
-                                    <input type="text" class="form-control" id="jsgh" name="jsgh">
+                                    <input type="text" class="form-control" id="jsgh" name="jsgh[]">
                                 </td>
-                                <td>
-                                    <input type="text" class="form-control" id="xm" name="xm">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="zc" name="zc">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="szdw" name="szdw">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="lxdh" name="lxdh">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" id="email" name="email">
-                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td>
                                     <button type="button" title="增加" class="btn btn-success js-add"><i class="fa fa-plus"></i></button>
                                 </td>
@@ -173,18 +161,10 @@ $(function() {
                 <td>\
                     <input type="text" class="form-control" name="xh[]">\
                 </td>\
-                <td>\
-                    <span class="xm"></span>\
-                </td>\
-                <td>\
-                    <span class="nj"></span>\
-                </td>\
-                <td>\
-                    <span class="szyx"></span>\
-                </td>\
-                <td>\
-                    <span class="lxdh"></span>\
-                </td>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
                 <td>\
                     <input type="text" class="form-control" id="fg" name="fg[]">\
                 </td>\
@@ -210,6 +190,8 @@ $(function() {
                 if (true == state) {
                     row.find('td').slice(3, 7).children().remove();
                 } else {
+                    row.find('td').slice(3, 7). empty();
+                    row.find('td:eq(2)').children('input').focus();
                     row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
                     row.find('td:eq(4)').append('<input type="text" class="form-control" name="nj[]">');
                     row.find('td:eq(5)').append('<input type="text" class="form-control" name="szyx[]]">');
@@ -274,6 +256,8 @@ $(function() {
                 if (true == state) {
                     row.find('td').slice(3, 8).children().remove();
                 } else {
+                    row.find('td').slice(3, 8).empty();
+                    row.find('td:eq(2)').children('input').focus();
                     row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
                     row.find('td:eq(4)').append('<input type="text" class="form-control" name="zc[]">');
                     row.find('td:eq(5)').append('<input type="text" class="form-control" name="szdw[]]">');
@@ -290,6 +274,58 @@ $(function() {
         $('#zdjs-table tr').each(function(index) {
             $(this).children('td:eq(0)').html('<em>' + index + '</em>');
         });
+    });
+
+    $('#datepicker').datepicker({
+        language: 'zh-CN',
+        todayBtn: 'linked',
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        startDate: '-0d',
+        endDate: '+1y'
+    });
+
+    $('#xmcy-table').on('keyup blur', 'input[name="xh[]"]', function() {
+        var xh = $(this);
+
+        if (12 === $(this).val().length) {
+            $.get({
+                url: '{{ url('dcxm/xmcy') }}',
+                data: {
+                    xh: $(this).val()
+                },
+                success: function(data) {
+                    var row = xh.closest('tr');
+                    row.find('td:eq(3)').html(data.xm);
+                    row.find('td:eq(4)').html(data.nj);
+                    row.find('td:eq(5)').html(data.szyx);
+                    row.find('td:eq(6)').html(data.lxdh);
+                },
+                dataType: 'json'
+            });
+        }
+    });
+
+    $('#zdjs-table').on('keyup blur', 'input[name="jsgh[]"]', function() {
+        var jsgh = $(this);
+
+        if (6 === $(this).val().length) {
+            $.get({
+                url: '{{ url('dcxm/zdjs') }}',
+                data: {
+                    jsgh: $(this).val()
+                },
+                success: function(data) {
+                    var row = jsgh.closest('tr');
+                    row.find('td:eq(3)').html(data.xm);
+                    row.find('td:eq(4)').html(data.zc);
+                    row.find('td:eq(5)').html(data.szdw);
+                    row.find('td:eq(6)').html(data.lxdh);
+                    row.find('td:eq(7)').html(data.email);
+                },
+                dataType: 'json'
+            });
+        }
     });
 });
 </script>

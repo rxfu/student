@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-switch.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
         <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/dataTables.bootstrap.min.css') }}">
@@ -394,6 +395,8 @@
         <script src="{{ asset('js/bootstrap-paginator.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-switch.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-datepicker.zh-CN.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-typeahead.js') }}"></script>
         <script src="{{ asset('js/jquery.placeholder.js') }}"></script>
         <script src="{{ asset('js/jquery.stacktable.js') }}"></script>

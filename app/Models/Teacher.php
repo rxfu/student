@@ -42,4 +42,15 @@ class Teacher extends Model {
 	public function position() {
 		return $this->belongsTo('App\Models\Position', 'zc', 'dm');
 	}
+
+	/**
+	 * 学院
+	 * @author FuRongxin
+	 * @date    2017-12-03
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function department() {
+		return $this->belongsTo('App\Models\Department', 'xy', 'dw');
+	}
 }
