@@ -23,7 +23,7 @@
                         <tbody>
                             @foreach ($projects as $project)
                             <tr>
-                            	<td>{{ $projct->xmbh }}</td>
+                            	<td>{{ $project->xmbh }}</td>
                                 <td>{{ $project->xmmc }}</td>
                                 <td>{{ $project->category->mc }}</td>
                                 <td>{{ $project->subject->mc }}</td>

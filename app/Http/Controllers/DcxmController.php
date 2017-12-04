@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dcxmcy;
 use App\Models\Dcxmlb;
 use App\Models\Dcxmxx;
 use App\Models\Dcyjxk;
+use App\Models\Dczdjs;
 use App\Models\Profile;
 use App\Models\Teacher;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
@@ -78,14 +81,56 @@ class DcxmController extends Controller {
 			$xmxx->kssj    = $inputs['kssj'];
 			$xmxx->jssj    = $inputs['jssj'];
 			$xmxx->sfsh    = config('constants.status.disable');
-			$xmxx->sftg    = config('constatns.status.disable');
-			$xmxx->cjsj    = date('Y-m-d');
+			$xmxx->sftg    = config('constants.status.disable');
+			$xmxx->cjsj    = Carbon::now();
 
-			if ($xmxx->save()) {
-				return redirect('dcxm/list')->withStatus('项目基本信息保存成功');
-			} else {
-				return back()->withInput()->withStatus('项目基本信息保存失败');
+			$xmxx->save();
+
+			// 项目组成员
+			$i       = 0;
+			$members = [];
+			foreach ($inputs['cypm'] as $key => $value) {
+				if (!empty($inputs['xh'][$key])) {
+					$member       = new Dcxmcy;
+					$member->xh   = $inputs['xh'][$key];
+					$member->xm   = $inputs['cyxm'][$key];
+					$member->nj   = $inputs['nj'][$key];
+					$member->szyx = $inputs['szyx'][$key];
+					$member->lxdh = $inputs['cylxdh'][$key];
+					$member->fg   = $inputs['fg'][$key];
+					$member->sfbx = ('on' === $inputs['cysfbx'][$key]) ? true : false;
+					$member->pm   = ++$i;
+
+					$members[] = $member;
+				}
 			}
+
+			// 指导教师
+			$i      = 0;
+			$tutors = [];
+			foreach ($inputs['jspm'] as $key => $value) {
+				if (!empty($inputs['jsgh'][$key])) {
+					$tutor        = new Dczdjs;
+					$tutor->jsgh  = $inputs['jsgh'][$key];
+					$tutor->xm    = $inputs['jsxm'][$key];
+					$tutor->zc    = $inputs['zc'][$key];
+					$tutor->szdw  = $inputs['szdw'][$key];
+					$tutor->lxdh  = $inputs['jslxdh'][$key];
+					$tutor->email = $inputs['email'][$key];
+					$tutor->sfbx  = ('on' === $inputs['jssfbx'][$key]) ? true : false;
+					$tutor->pm    = ++$i;
+
+					$tutors[] = $tutor;
+				}
+			}
+
+			$project       = Dcxmxx::find($xmxx->id);
+			$project->jsgh = $inputs['jsgh'][0];
+			$project->save();
+			$project->members()->saveMany($members);
+			$project->tutors()->saveMany($tutors);
+
+			return redirect('dcxm/list')->withStatus('项目信息保存成功');
 		}
 	}
 

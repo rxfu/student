@@ -60,7 +60,7 @@
                     <table id="xmcy-table" class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th class="active"><em>#</em></th>
+                                <th class="active">排名</th>
                                 <th class="active">是否本校本科生</th>
                                 <th class="active">学号</th>
                                 <th class="active">姓名</th>
@@ -73,15 +73,29 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><em>1</em></td>
-                                <td>是</td>
-                                <td>{{ Auth::user()->xh }}</td>
-                                <td>{{ Auth::user()->profile->xm }}</td>
-                                <td>{{ Auth::user()->profile->nj }}</td>
-                                <td>{{ Auth::user()->profile->college->mc }}</td>
-                                <td>{{ Auth::user()->profile->lxdh }}</td>
                                 <td>
-                                    <input type="text" class="form-control" id="fg" name="fg[]">
+                                    <input type="text" class="form-control" name="cypm[]" value="1" size="1" readonly>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="xh[]" value="{{ Auth::user()->xh }}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="cyxm[]" value="{{ Auth::user()->profile->xm }}" size="10" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="nj[]" value="{{ Auth::user()->profile->nj }}" size="4" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="szyx[]" value="{{ Auth::user()->profile->college->mc }}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="cylxdh[]" value="{{ Auth::user()->profile->lxdh }}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="fg[]">
                                 </td>
                                 <td>
                                     <div class="input-group">
@@ -107,7 +121,7 @@
                     <table id="zdjs-table" class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th class="active"><em>#</em></th>
+                                <th class="active">排名</th>
                                 <th class="active">是否本校教师</th>
                                 <th class="active">工号</th>
                                 <th class="active">姓名</th>
@@ -120,16 +134,30 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><em>1</em></td>
-                                <td>是</td>
+                                <td>
+                                    <input type="text" class="form-control" name="jspm[]" value="1" size="1" readonly>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked readonly>
+                                </td>
                                 <td>
                                     <input type="text" class="form-control" id="jsgh" name="jsgh[]">
                                 </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>
+                                    <input type="text" class="form-control" name="jsxm[]" size="10" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="zc[]" size="12" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="szdw[]" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="jslxdh[]" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="email[]" readonly>
+                                </td>
                                 <td>
                                     <button type="button" title="增加" class="btn btn-success js-add"><i class="fa fa-plus"></i></button>
                                 </td>
@@ -154,20 +182,14 @@ $(function() {
     $('#xmcy-table').on('click', '.cy-add', function() {
         $(this).closest('tr').after('\
             <tr>\
-                <td></td>\
-                <td>\
-                    <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked>\
-                </td>\
-                <td>\
-                    <input type="text" class="form-control" name="xh[]">\
-                </td>\
-                <td></td>\
-                <td></td>\
-                <td></td>\
-                <td></td>\
-                <td>\
-                    <input type="text" class="form-control" id="fg" name="fg[]">\
-                </td>\
+                <td><input type="text" class="form-control" name="cypm[]" size="1" readonly></td>\
+                <td><input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked></td>\
+                <td><input type="text" class="form-control" name="xh[]"></td>\
+                <td><input type="text" class="form-control" name="cyxm[]" size="10" readonly></td>\
+                <td><input type="text" class="form-control" name="nj[]" size="4" readonly></td>\
+                <td><input type="text" class="form-control" name="szyx[]" readonly></td>\
+                <td><input type="text" class="form-control" name="cylxdh[]" readonly></td>\
+                <td><input type="text" class="form-control" name="fg[]"></td>\
                 <td>\
                     <div class="input-group">\
                         <span class="input-group-btn">\
@@ -180,22 +202,19 @@ $(function() {
         ');
 
         $('#xmcy-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+            $(this).children('td:eq(0)').html('<input type="text" class="form-control" name="cypm[]" size="1" readonly value="' + index + '">');
         });
 
         $('input[name="cysfbx[]"]').bootstrapSwitch({
             onSwitchChange: function(event, state) {
                 var row = $(this).closest('tr');
+                row.find('td:lt(8):gt(1)').children('input').val('');
 
                 if (true == state) {
-                    row.find('td').slice(3, 7).children().remove();
+                    row.find('td').slice(3, 7).children('input').attr('readonly', true);
                 } else {
-                    row.find('td').slice(3, 7). empty();
                     row.find('td:eq(2)').children('input').focus();
-                    row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
-                    row.find('td:eq(4)').append('<input type="text" class="form-control" name="nj[]">');
-                    row.find('td:eq(5)').append('<input type="text" class="form-control" name="szyx[]]">');
-                    row.find('td:eq(6)').append('<input type="text" class="form-control" name="lxdh[]">');
+                    row.find('td:lt(7):gt(2)').children('input').attr('readonly', false);
                 }
             }
         });
@@ -205,35 +224,21 @@ $(function() {
         $(this).closest('tr').remove();
 
         $('#xmcy-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+            $(this).children('td:eq(0)').children('input').val(index);
         });
     });
 
     $('#zdjs-table').on('click', '.js-add', function() {
         $(this).closest('tr').after('\
             <tr>\
-                <td></td>\
-                <td>\
-                    <input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked>\
-                </td>\
-                <td>\
-                    <input type="text" class="form-control" name="jsgh[]">\
-                </td>\
-                <td>\
-                    <span class="xm"></span>\
-                </td>\
-                <td>\
-                    <span class="zc"></span>\
-                </td>\
-                <td>\
-                    <span class="xzdw"></span>\
-                </td>\
-                <td>\
-                    <span class="lxdh"></span>\
-                </td>\
-                <td>\
-                    <span class="email"></span>\
-                </td>\
+                <td><input type="text" class="form-control" name="jspm[]" size="1" readonly></td>\
+                <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked></td>\
+                <td><input type="text" class="form-control" name="jsgh[]"></td>\
+                <td><input type="text" class="form-control" name="jsxm[]" size="10" readonly></td>\
+                <td><input type="text" class="form-control" name="zc[]" size="12" readonly></td>\
+                <td><input type="text" class="form-control" name="szdw[]" readonly></td>\
+                <td><input type="text" class="form-control" name="jslxdh[]" readonly></td>\
+                <td><input type="text" class="form-control" name="email[]" readonly></td>\
                 <td>\
                     <div class="input-group">\
                         <span class="input-group-btn">\
@@ -246,23 +251,19 @@ $(function() {
         ');
 
         $('#zdjs-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+            $(this).children('td:eq(0)').html('<input type="text" class="form-control" name="jspm[]" size="1" readonly value="' + index + '">');
         });
 
         $('input[name="jssfbx[]"]').bootstrapSwitch({
             onSwitchChange: function(event, state) {
                 var row = $(this).closest('tr');
+                row.find('td:lt(8):gt(1)').children('input').val('');
 
                 if (true == state) {
-                    row.find('td').slice(3, 8).children().remove();
+                    row.find('td').slice(3, 8).children('input').attr('readonly', true);
                 } else {
-                    row.find('td').slice(3, 8).empty();
                     row.find('td:eq(2)').children('input').focus();
-                    row.find('td:eq(3)').append('<input type="text" class="form-control" name="xm[]">');
-                    row.find('td:eq(4)').append('<input type="text" class="form-control" name="zc[]">');
-                    row.find('td:eq(5)').append('<input type="text" class="form-control" name="szdw[]]">');
-                    row.find('td:eq(6)').append('<input type="text" class="form-control" name="lxdh[]">');
-                    row.find('td:eq(7)').append('<input type="text" class="form-control" name="email[]">');
+                    row.find('td:lt(8):gt(2)').children('input').attr('readonly', false);
                 }
             }
         });
@@ -272,9 +273,11 @@ $(function() {
         $(this).closest('tr').remove();
 
         $('#zdjs-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<em>' + index + '</em>');
+            $(this).children('td:eq(0)').children('input').val(index);
         });
     });
+
+    $('input[name="cysfbx[]"], input[name="jssfbx[]"]').bootstrapSwitch();
 
     $('#datepicker').datepicker({
         language: 'zh-CN',
@@ -296,10 +299,10 @@ $(function() {
                 },
                 success: function(data) {
                     var row = xh.closest('tr');
-                    row.find('td:eq(3)').html(data.xm);
-                    row.find('td:eq(4)').html(data.nj);
-                    row.find('td:eq(5)').html(data.szyx);
-                    row.find('td:eq(6)').html(data.lxdh);
+                    row.find('td:eq(3)').children('input').val(data.xm);
+                    row.find('td:eq(4)').children('input').val(data.nj);
+                    row.find('td:eq(5)').children('input').val(data.szyx);
+                    row.find('td:eq(6)').children('input').val(data.lxdh);
                 },
                 dataType: 'json'
             });
@@ -317,11 +320,11 @@ $(function() {
                 },
                 success: function(data) {
                     var row = jsgh.closest('tr');
-                    row.find('td:eq(3)').html(data.xm);
-                    row.find('td:eq(4)').html(data.zc);
-                    row.find('td:eq(5)').html(data.szdw);
-                    row.find('td:eq(6)').html(data.lxdh);
-                    row.find('td:eq(7)').html(data.email);
+                    row.find('td:eq(3)').children('input').val(data.xm);
+                    row.find('td:eq(4)').children('input').val(data.zc);
+                    row.find('td:eq(5)').children('input').val(data.szdw);
+                    row.find('td:eq(6)').children('input').val(data.lxdh);
+                    row.find('td:eq(7)').children('input').val(data.email);
                 },
                 dataType: 'json'
             });
