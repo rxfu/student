@@ -8,6 +8,7 @@ use App\Models\Cfxx;
 use App\Models\Setting;
 use App\Models\Term;
 use Auth;
+use DB;
 
 /**
  * 显示并处理系统消息
@@ -31,7 +32,8 @@ class HomeController extends Controller {
 		$broadcasts = Broadcast::whereId('xt_web')->get();
 		$cfxxs      = Cfxx::with('profile', 'jg')->whereXh(Auth::user()->xh)->get();
 		$title      = '综合管理系统';
-
+		$cwc        = DB::connection('cwcsrv')->select('select * from VW_Mid_ChargeMid where StudentCode = ?', ['201610600008']);
+		dd($cwc);
 		return view('home.index', compact('title', 'broadcasts', 'message', 'cfxxs'));
 	}
 }

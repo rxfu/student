@@ -86,6 +86,16 @@ return [
 			'schema'   => 'public',
 		],
 
+		'cwcsrv'  => [
+			'driver'   => 'sqlsrv',
+			'host'     => '202.193.162.31',
+			'database' => 'cwcmid',
+			'username' => 'cwc_mid',
+			'password' => 'CWC111mid',
+			'charset'  => 'utf8',
+			'prefix'   => '',
+		],
+
 		'sqlsrv'  => [
 			'driver'   => 'sqlsrv',
 			'host'     => env('DB_HOST', 'localhost'),
