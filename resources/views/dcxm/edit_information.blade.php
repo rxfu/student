@@ -79,8 +79,7 @@
                                         <input type="text" class="form-control" name="cypm[]" size="1" value="{{ $member->pm }}" readonly>
                                     </td>
                                     <td>
-                                        <input type="hidden" name="cysfbx[]" value="false">
-                                        <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" value="true"@if ($member->sfbx) checked @endif @if (0 == $key) readonly @endif>
+                                        <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否"@if ($member->sfbx) checked @endif @if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" name="xh[]" value="{{ $member->xh }}"@if ($member->sfbx) readonly @endif>
