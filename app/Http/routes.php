@@ -85,6 +85,8 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('dcxm/list', 'DcxmController@getList');
 		Route::get('dcxm/xmxx', 'DcxmController@getInfo');
 		Route::post('dcxm/xmxx', 'DcxmController@postInfo');
+		Route::get('dcxm/xmxx/{id}/edit', 'DcxmController@getEditInfo');
+		Route::post('dcxm/xmxx/{id}', 'DcxmController@postEditInfo');
 		Route::get('dcxm/apply', 'DcxmController@getApplication');
 		Route::post('dcxm/apply', 'DcxmController@postApplication');
 		Route::get('dcxm/xmcy', 'DcxmController@getStudent');

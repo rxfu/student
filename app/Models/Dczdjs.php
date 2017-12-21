@@ -27,4 +27,15 @@ class Dczdjs extends DcxmModel {
 	public function projects() {
 		return $this->belongsTo('App\Models\Dcxmxx', 'xm_id', 'id');
 	}
+
+	/**
+	 * 教师资料
+	 * @author FuRongxin
+	 * @date    2017-12-21
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function teacher() {
+		return $this->belongsTo('App\Models\Teacher', 'jsgh', 'jsgh');
+	}
 }

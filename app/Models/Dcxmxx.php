@@ -54,7 +54,7 @@ class Dcxmxx extends DcxmModel {
 	 * @return  object 所属对象
 	 */
 	public function members() {
-		return $this->hasMany('App\Models\Dcxmcy', 'xm_id', 'id');
+		return $this->hasMany('App\Models\Dcxmcy', 'xm_id', 'id')->orderBy('pm');
 	}
 
 	/**
@@ -65,6 +65,6 @@ class Dcxmxx extends DcxmModel {
 	 * @return  object 所属对象
 	 */
 	public function tutors() {
-		return $this->hasMany('App\Models\Dczdjs', 'xm_id', 'id');
+		return $this->hasMany('App\Models\Dczdjs', 'xm_id', 'id')->orderBy('pm');
 	}
 }

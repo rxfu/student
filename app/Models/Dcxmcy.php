@@ -19,6 +19,10 @@ class Dcxmcy extends DcxmModel {
 
 	public $timestamps = false;
 
+	protected $casts = [
+		'sfbx' => 'boolean',
+	];
+
 	/**
 	 * 项目信息
 	 * @author FuRongxin
@@ -26,7 +30,18 @@ class Dcxmcy extends DcxmModel {
 	 * @version 2.3
 	 * @return  object 所属对象
 	 */
-	public function projects() {
+	public function project() {
 		return $this->belongsTo('App\Models\Dcxmxx', 'xm_id', 'id');
+	}
+
+	/**
+	 * 学生资料
+	 * @author FuRongxin
+	 * @date    2017-12-21
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function profile() {
+		return $this->belongsTo('App\Models\Profile', 'xh', 'xh');
 	}
 }

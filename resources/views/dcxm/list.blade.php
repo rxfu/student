@@ -24,10 +24,12 @@
                             @foreach ($projects as $project)
                             <tr>
                             	<td>{{ $project->xmbh }}</td>
-                                <td>{{ $project->xmmc }}</td>
+                                <td>
+                                    <a href="{{ url('dcxm/xmxx/' . $project->id . '/edit') }}">{{ $project->xmmc }}</a>
+                                </td>
                                 <td>{{ $project->category->mc }}</td>
                                 <td>{{ $project->subject->mc }}</td>
-                                <td>{{ $project->cjsj }}</td>
+                                <td>{{ date('Y-m-d', strtotime($project->cjsj)) }}</td>
                             	<td>
                                     @if ($project->sfsh)
                                         @if ($project->sftg)

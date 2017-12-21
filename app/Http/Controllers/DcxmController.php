@@ -135,6 +135,115 @@ class DcxmController extends Controller {
 	}
 
 	/**
+	 * 编辑项目基本信息
+	 *
+	 * @author FuRongxin
+	 * @date    2017-12-21
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 大创项目基本信息
+	 */
+	public function getEditInfo($id) {
+		$categories = Dcxmlb::orderBy('dm')->get();
+		$subjects   = Dcyjxk::orderBy('dm')->get();
+		$project    = Dcxmxx::find($id);
+		$members    = $project->members()->get();
+		$tutors     = $project->tutors()->get();
+		$title      = '编辑项目信息';
+
+		return view('dcxm.edit_information', compact('title', 'id', 'categories', 'subjects', 'project', 'members', 'tutors'));
+	}
+
+	/**
+	 * 编辑项目基本信息
+	 *
+	 * @author FuRongxin
+	 * @date    2017-12-21
+	 * @version 2.3
+	 * @param   \Illuminate\Http\Request $request 项目申请修改请求
+	 * @return  \Illuminate\Http\Response 大创项目基本信息
+	 */
+	public function postEditInfo(Request $request, $id) {
+		if ($request->isMethod('post')) {
+			dd($request);
+			$this->validate($request, [
+				'xmmc' => 'required|string|max:100',
+				'kssj' => 'required|date',
+				'jssj' => 'required|date',
+			]);
+			$inputs = $request->all();
+
+			$xmxx          = Dcxmxx::find($id);
+			$xmxx->xmmc    = $inputs['xmmc'];
+			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
+			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
+			$xmxx->xh      = Auth::user()->xh;
+			$xmxx->kssj    = $inputs['kssj'];
+			$xmxx->jssj    = $inputs['jssj'];
+			$xmxx->sfsh    = config('constants.status.disable');
+			$xmxx->sftg    = config('constants.status.disable');
+			$xmxx->cjsj    = Carbon::now();
+
+			$xmxx->save();
+
+			// 项目组成员
+			$i       = 0;
+			$members = [];
+			foreach ($inputs['cypm'] as $key => $value) {
+				if (!empty($inputs['xh'][$key])) {
+					if (isset($inputs['cyid'][$key])) {
+						$member = Dcxmcy::find($inputs['cyid'][$key]);
+					} else {
+						$member = new Dcxmcy;
+					}
+
+					$member->xh   = $inputs['xh'][$key];
+					$member->xm   = $inputs['cyxm'][$key];
+					$member->nj   = $inputs['nj'][$key];
+					$member->szyx = $inputs['szyx'][$key];
+					$member->lxdh = $inputs['cylxdh'][$key];
+					$member->fg   = $inputs['fg'][$key];
+					$member->sfbx = ('on' === $inputs['cysfbx'][$key]) ? true : false;
+					$member->pm   = ++$i;
+
+					$members[] = $member;
+				}
+			}
+
+			// 指导教师
+			$i      = 0;
+			$tutors = [];
+			foreach ($inputs['jspm'] as $key => $value) {
+				if (!empty($inputs['jsgh'][$key])) {
+					if (isset($inputs['jsid'][$key])) {
+						$tutor = Dczdjs::find($inputs['jsid'][$key]);
+					} else {
+						$tutor = new Dczdjs;
+					}
+
+					$tutor->jsgh  = $inputs['jsgh'][$key];
+					$tutor->xm    = $inputs['jsxm'][$key];
+					$tutor->zc    = $inputs['zc'][$key];
+					$tutor->szdw  = $inputs['szdw'][$key];
+					$tutor->lxdh  = $inputs['jslxdh'][$key];
+					$tutor->email = $inputs['email'][$key];
+					$tutor->sfbx  = ('on' === $inputs['jssfbx'][$key]) ? true : false;
+					$tutor->pm    = ++$i;
+
+					$tutors[] = $tutor;
+				}
+			}
+
+			$project       = Dcxmxx::find($xmxx->id);
+			$project->jsgh = $inputs['jsgh'][0];
+			$project->save();
+			$project->members()->saveMany($members);
+			$project->tutors()->saveMany($tutors);
+
+			return redirect('dcxm/list')->withStatus('项目信息保存成功');
+		}
+	}
+
+	/**
 	 * 大创项目申请
 	 *
 	 * @author FuRongxin
