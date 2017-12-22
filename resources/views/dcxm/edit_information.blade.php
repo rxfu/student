@@ -82,7 +82,7 @@
                                         <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否"@if ($member->sfbx) checked @endif @if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="xh[]" value="{{ $member->xh }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="xh[]" value="{{ $member->xh }}"@if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" name="cyxm[]" size="10" value="{{ $member->profile->xm }}"@if ($member->sfbx) readonly @endif>
@@ -221,7 +221,7 @@ $(function() {
             $(this).children('td:eq(0)').html('<input type="text" class="form-control" name="cypm[]" size="1" readonly value="' + index + '">');
         });
 
-        $('input:checkbox[name="cysfbx[]"]').bootstrapSwitch({
+        $('input:checkbox[name^="cysfbx"]').bootstrapSwitch({
             onSwitchChange: function(event, state) {
                 var row = $(this).closest('tr');
                 row.find('td:lt(8):gt(1)').children('input').val('');
@@ -244,7 +244,7 @@ $(function() {
         });
     });
 
-    $('input:checkbox[name="cysfbx[]"]').bootstrapSwitch({
+    $('input:checkbox[name^="cysfbx"]').bootstrapSwitch({
         onSwitchChange: function(event, state) {
             var row = $(this).closest('tr');
             row.find('td:lt(8):gt(1)').children('input').val('');
@@ -371,6 +371,10 @@ $(function() {
                 dataType: 'json'
             });
         }
+    });
+
+    $('form#appForm').submit(function(event) {
+        event.preventDefault();
     });
 });
 </script>
