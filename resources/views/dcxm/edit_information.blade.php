@@ -378,7 +378,7 @@ $(function() {
         $('input[type="checkbox"]:not(:checked)').each(function() {
             $(this).prop('checked', true).val(false);
         })
-    })
+    });
 });
 </script>
 @endpush

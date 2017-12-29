@@ -98,7 +98,7 @@ class DcxmController extends Controller {
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
 					$member->fg   = $inputs['fg'][$key];
-					$member->sfbx = ('on' === $inputs['cysfbx'][$key]) ? true : false;
+					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
 
 					$members[] = $member;
@@ -117,7 +117,7 @@ class DcxmController extends Controller {
 					$tutor->szdw  = $inputs['szdw'][$key];
 					$tutor->lxdh  = $inputs['jslxdh'][$key];
 					$tutor->email = $inputs['email'][$key];
-					$tutor->sfbx  = ('on' === $inputs['jssfbx'][$key]) ? true : false;
+					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
 
 					$tutors[] = $tutor;
