@@ -243,6 +243,25 @@ class DcxmController extends Controller {
 	}
 
 	/**
+	 * 删除大创项目
+	 *
+	 * @author FuRongxin
+	 * @date    2017-12-29
+	 * @version 2.3
+	 * @param  \Illuminate\Http\Request  $request 删除请求
+	 * @param   string $id 项目ID
+	 * @return  \Illuminate\Http\Response 大创项目列表
+	 */
+	public function deleteDeleteInfo($id) {
+		if ($request->isMethod('delete')) {
+			$project = Dcxmxx::findOrFail($id);
+			$project->delete();
+
+			return back()->withStatus('删除项目成功');
+		}
+	}
+
+	/**
 	 * 大创项目申请
 	 *
 	 * @author FuRongxin
@@ -250,10 +269,12 @@ class DcxmController extends Controller {
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 大创项目列表
 	 */
-	public function getApplication() {
-		$title = '项目申报书';
+	public function getApplication($id) {
+		$project = Dcxmxx::findOrFail($id);
 
-		return view('dcxm.application', compact('title', 'categories', 'subjects'));
+		$title = '项目' . $project->xmmc . '申报书';
+
+		return view('dcxm.application', compact('title'));
 	}
 
 	/**

@@ -170,7 +170,7 @@
     </section>
     <div class="form-group">
         <div class="col-sm-2 col-sm-offset-5">
-            <button type="submit" class="btn btn-primary btn-block btn-lg">保存</button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg">下一步</button>
         </div>
     </div>
 </form>
