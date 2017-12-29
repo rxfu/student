@@ -79,22 +79,22 @@
                                         <input type="text" class="form-control" name="cypm[]" size="1" value="{{ $member->pm }}" readonly>
                                     </td>
                                     <td>
-                                        <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否"@if ($member->sfbx) checked @endif @if (0 == $key) readonly @endif>
+                                        <input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" value="true"@if ($member->sfbx) checked @endif @if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" name="xh[]" value="{{ $member->xh }}"@if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="cyxm[]" size="10" value="{{ $member->profile->xm }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="cyxm[]" size="10" value="{{ $member->sfbx ? $member->profile->xm : $member->xm }}"@if ($member->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="nj[]" size="4" value="{{ $member->profile->nj }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="nj[]" size="4" value="{{ $member->sfbx ? $member->profile->nj : $member->nj }}"@if ($member->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="szyx[]" value="{{ $member->profile->college->mc }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="szyx[]" value="{{ $member->sfbx ? $member->profile->college->mc : $member->szyx }}"@if ($member->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="cylxdh[]" value="{{ $member->profile->lxdh }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="cylxdh[]" value="{{ $member->sfbx ? $member->profile->lxdh : $member->lxdh }}"@if ($member->sfbx) readonly @endif>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" name="fg[]" value={{ $member->fg }}>
@@ -146,25 +146,25 @@
                                         <input type="text" class="form-control" name="jspm[]" size="1" value="{{ $tutor->pm}}" readonly>
                                     </td>
                                     <td>
-                                        <input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否"@if ($tutor->sfbx) checked @endif @if (0 == $key) readonly @endif>
+                                        <input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" value="true"@if ($tutor->sfbx) checked @endif @if (0 == $key) readonly @endif>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" id="jsgh" name="jsgh[]" value="{{ $tutor->jsgh }}">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="jsxm[]" size="10" value="{{ $tutor->teacher->xm }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="jsxm[]" size="10" value="{{ $tutor->sfbx ? $tutor->teacher->xm : $tutor->xm }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="zc[]" size="12" value="{{ $tutor->teacher->position->mc }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="zc[]" size="12" value="{{ $tutor->sfbx ? $tutor->teacher->position->mc : $tutor->zc }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="szdw[]" value="{{ $tutor->teacher->department->mc }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="szdw[]" value="{{ $tutor->sfbx ? $tutor->teacher->department->mc : $tutor->szdw }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="jslxdh[]" value="{{ $tutor->teacher->lxdh }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="jslxdh[]" value="{{ $tutor->sfbx ? $tutor->teacher->lxdh : $tutor->jslxdh }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="email[]" value="{{ $tutor->teacher->email }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="email[]" value="{{ $tutor->sfbx ? $tutor->teacher->email : $tutor->email }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
                                         <div class="input-group">
@@ -198,6 +198,7 @@ $(function() {
     $('#xmcy-table').on('click', '.cy-add', function() {
         $(this).closest('tr').after('\
             <tr>\
+                <input type="hidden" name="cyid[]" value="id">\
                 <td><input type="text" class="form-control" name="cypm[]" size="1" readonly></td>\
                 <td><input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked></td>\
                 <td><input type="text" class="form-control" name="xh[]"></td>\
@@ -261,6 +262,7 @@ $(function() {
     $('#zdjs-table').on('click', '.js-add', function() {
         $(this).closest('tr').after('\
             <tr>\
+                <input type="hidden" name="jsid[]" value="id">\
                 <td><input type="text" class="form-control" name="jspm[]" size="1" readonly></td>\
                 <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked></td>\
                 <td><input type="text" class="form-control" name="jsgh[]"></td>\
@@ -372,10 +374,11 @@ $(function() {
             });
         }
     });
-
-    $('form#appForm').submit(function(event) {
-        event.preventDefault();
-    });
+    $('#appForm').on('submit', function(e) {
+        $('input[type="checkbox"]:not(:checked)').each(function() {
+            $(this).prop('checked', true).val(false);
+        })
+    })
 });
 </script>
 @endpush

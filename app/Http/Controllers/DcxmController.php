@@ -164,7 +164,6 @@ class DcxmController extends Controller {
 	 */
 	public function postEditInfo(Request $request, $id) {
 		if ($request->isMethod('post')) {
-			dd($request);
 			$this->validate($request, [
 				'xmmc' => 'required|string|max:100',
 				'kssj' => 'required|date',
@@ -190,7 +189,7 @@ class DcxmController extends Controller {
 			$members = [];
 			foreach ($inputs['cypm'] as $key => $value) {
 				if (!empty($inputs['xh'][$key])) {
-					if (isset($inputs['cyid'][$key])) {
+					if ('id' != $inputs['cyid'][$key]) {
 						$member = Dcxmcy::find($inputs['cyid'][$key]);
 					} else {
 						$member = new Dcxmcy;
@@ -202,7 +201,7 @@ class DcxmController extends Controller {
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
 					$member->fg   = $inputs['fg'][$key];
-					$member->sfbx = ('on' === $inputs['cysfbx'][$key]) ? true : false;
+					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
 
 					$members[] = $member;
@@ -214,7 +213,7 @@ class DcxmController extends Controller {
 			$tutors = [];
 			foreach ($inputs['jspm'] as $key => $value) {
 				if (!empty($inputs['jsgh'][$key])) {
-					if (isset($inputs['jsid'][$key])) {
+					if ('id' != $inputs['jsid'][$key]) {
 						$tutor = Dczdjs::find($inputs['jsid'][$key]);
 					} else {
 						$tutor = new Dczdjs;
@@ -226,7 +225,7 @@ class DcxmController extends Controller {
 					$tutor->szdw  = $inputs['szdw'][$key];
 					$tutor->lxdh  = $inputs['jslxdh'][$key];
 					$tutor->email = $inputs['email'][$key];
-					$tutor->sfbx  = ('on' === $inputs['jssfbx'][$key]) ? true : false;
+					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
 
 					$tutors[] = $tutor;
