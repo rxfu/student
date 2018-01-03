@@ -38,7 +38,7 @@ class Prior extends Model {
 		return $query->join('cj_zxscj', 'cj_zxscj.kch', '=', 'jx_kc_qxgx.kch2')
 			->where('cj_zxscj.xh', '=', $user->xh)
 			->where('cj_zxscj.xf', '<=', 0)
-			->where('kch', '=', $course)
+			->where('jx_kc_qxgx.kch', '=', $course)
 			->where('gx', '=', '>');
 	}
 }
