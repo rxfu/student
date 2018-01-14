@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dcxmcy;
 use App\Models\Dcxmlb;
+use App\Models\Dcxmsq;
 use App\Models\Dcxmxx;
 use App\Models\Dcyjxk;
 use App\Models\Dczdjs;
@@ -267,14 +268,14 @@ class DcxmController extends Controller {
 	 * @author FuRongxin
 	 * @date    2017-11-22
 	 * @version 2.3
+	 * @param   $id 项目ID
 	 * @return  \Illuminate\Http\Response 大创项目列表
 	 */
 	public function getApplication($id) {
-		$project = Dcxmxx::findOrFail($id);
+		$project = Dcxmxx::with('application')->findOrFail($id);
+		$title   = '项目' . $project->xmmc . '申报书';
 
-		$title = '项目' . $project->xmmc . '申报书';
-
-		return view('dcxm.application', compact('title'));
+		return view('dcxm.application', compact('title', 'project'));
 	}
 
 	/**
@@ -283,11 +284,41 @@ class DcxmController extends Controller {
 	 * @author FuRongxin
 	 * @date    2017-11-22
 	 * @version 2.3
+	 * @param   $id 项目ID
 	 * @param   \Illuminate\Http\Request $request 项目申请请求
 	 * @return  \Illuminate\Http\Response 大创项目列表
 	 */
-	public function postApplication(Request $request) {
-		return redirect('dcxm/list');
+	public function postApplication(Request $request, $id) {
+		if ($request->isMethod('post')) {
+			$project = Dcxmxx::whereId($id)
+				->whereXh(Auth::user()->xh);
+
+			if ($project->exists()) {
+				$project = $project->first();
+
+				if (Dcxmsq::whereXmId($id)->exists()) {
+					$xmsq = Dcxmsq::findOrFail($id);
+				} else {
+					$xmsq = new Dcxmsq;
+				}
+
+				$xmsq->xm_id = $project->id;
+				$xmsq->xmjj  = $request->xmjj;
+				$xmsq->sqly  = $request->sqly;
+				$xmsq->xmfa  = $request->xmfa;
+				$xmsq->tscx  = $request->tscx;
+				$xmsq->jdap  = $request->jdap;
+				$xmsq->zmcl  = $request->zmcl;
+
+				if ($xmsq->save()) {
+					return redirect('dcxm/list')->withStatus('填写申报书成功');
+				} else {
+					return back()->withStatus('填写申报书失败');
+				}
+			} else {
+				return redirect('dcxm/list');
+			}
+		}
 	}
 
 	/**

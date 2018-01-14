@@ -67,4 +67,15 @@ class Dcxmxx extends DcxmModel {
 	public function tutors() {
 		return $this->hasMany('App\Models\Dczdjs', 'xm_id', 'id')->orderBy('pm');
 	}
+
+	/**
+	 * 项目申报书
+	 * @author FuRongxin
+	 * @date    2018-01-14
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function application() {
+		return $this->hasOne('App\Models\Dcxmsq', 'xm_id', 'id');
+	}
 }
