@@ -308,7 +308,22 @@ class DcxmController extends Controller {
 				$xmsq->xmfa  = $request->xmfa;
 				$xmsq->tscx  = $request->tscx;
 				$xmsq->jdap  = $request->jdap;
-				$xmsq->zmcl  = $request->zmcl;
+
+				if ($request->hasFile('zmcl')) {
+					$this->validate($request, [
+						'zmcl' => 'file',
+					]);
+
+					if ($request->file('zmcl')->isValid()) {
+						$file     = $request->file('zmcl');
+						$content  = Storage::get($file);
+						$filename = config('constants.file.path.dcxm') . Auth::user()->xh . time() . '.' . $file->extension();
+
+						Storage::put($filename, $content);
+
+						$xmsq->zmcl = $filename;
+					}
+				}
 
 				if ($xmsq->save()) {
 					return redirect('dcxm/list')->withStatus('填写申报书成功');
