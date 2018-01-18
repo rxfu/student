@@ -13,6 +13,7 @@ use App\Models\Teacher;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 显示并处理大创项目西悉尼
@@ -316,7 +317,7 @@ class DcxmController extends Controller {
 
 					if ($request->file('zmcl')->isValid()) {
 						$file     = $request->file('zmcl');
-						$content  = Storage::get($file);
+						$content  = file_get_contents($file->getRealPath());
 						$filename = config('constants.file.path.dcxm') . Auth::user()->xh . time() . '.' . $file->extension();
 
 						Storage::put($filename, $content);
@@ -408,5 +409,25 @@ class DcxmController extends Controller {
 
 			return json_encode($teacher);
 		}
+	}
+
+	/**
+	 * 下载证明材料
+	 * @author FuRongxin
+	 * @date    2018-01-18
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 证明材料
+	 */
+	public function getFile() {
+
+		$filename = config('constants.file.path.dcxm') . Auth::user()->xh . '.' . config('constants.file.image.ext');
+
+		if (Storage::exists($filename)) {
+			$file = Storage::get($filename);
+
+			return response()->downlaod($file);
+		}
+
+		abort(404, '没有照片');
 	}
 }
