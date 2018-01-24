@@ -90,6 +90,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::delete('dcxm/xmxx/{id}', 'DcxmController@deleteDeleteInfo');
 		Route::get('dcxm/xmsq/{id}', 'DcxmController@getApplication');
 		Route::post('dcxm/xmsq/{id}', 'DcxmController@postApplication');
+		Route::get('dcxm/zmcl/{id}', 'DcxmController@getFile');
 		Route::get('dcxm/xmcy', 'DcxmController@getStudent');
 		Route::get('dcxm/zdjs', 'DcxmController@getTeacher');
 

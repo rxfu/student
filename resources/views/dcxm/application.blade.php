@@ -50,6 +50,11 @@
                     </label>
                     <div>
                         <input type="file" name="zmcl" id="zmcl" placeholder="项目证明材料" class="form-control">
+                        @if (count($project->application) && (!empty($project->application->zmcl)))
+                        <p class="help-block">
+                            <a href="{{ url('dcxm/zmcl', $project->id) }}" title="项目证明材料">下载项目证明材料</a>
+                        </p>
+                        @endif
                     </div>
                 </div>
             </div>

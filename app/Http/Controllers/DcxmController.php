@@ -418,16 +418,14 @@ class DcxmController extends Controller {
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 证明材料
 	 */
-	public function getFile() {
-
-		$filename = config('constants.file.path.dcxm') . Auth::user()->xh . '.' . config('constants.file.image.ext');
+	public function getFile($id) {
+		$xmsq     = Dcxmsq::findOrFail($id);
+		$filename = $xmsq->zmcl;
 
 		if (Storage::exists($filename)) {
 			$file = Storage::get($filename);
 
-			return response()->downlaod($file);
+			return response()->download(storage_path('uploads/' . $filename));
 		}
-
-		abort(404, '没有照片');
 	}
 }
