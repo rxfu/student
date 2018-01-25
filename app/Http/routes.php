@@ -91,6 +91,8 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('dcxm/xmsq/{id}', 'DcxmController@getApplication');
 		Route::post('dcxm/xmsq/{id}', 'DcxmController@postApplication');
 		Route::get('dcxm/zmcl/{id}', 'DcxmController@getFile');
+		Route::get('dcxm/xmjf/{id}', 'DcxmController@getFund');
+		Route::post('dcxm/xmjf/{id}', 'DcxmController@postFund');
 		Route::get('dcxm/xmcy', 'DcxmController@getStudent');
 		Route::get('dcxm/zdjs', 'DcxmController@getTeacher');
 

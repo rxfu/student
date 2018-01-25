@@ -327,7 +327,82 @@ class DcxmController extends Controller {
 				}
 
 				if ($xmsq->save()) {
-					return redirect('dcxm/list')->withStatus('填写申报书成功');
+					return redirect('dcxm/xmjf/' . $id)->withStatus('填写申报书成功');
+				} else {
+					return back()->withStatus('填写申报书失败');
+				}
+			} else {
+				return redirect('dcxm/list');
+			}
+		}
+	}
+
+	/**
+	 * 大创项目经费计划
+	 *
+	 * @author FuRongxin
+	 * @date    2018-01-25
+	 * @version 2.3
+	 * @param   $id 项目ID
+	 * @return  \Illuminate\Http\Response 大创项目列表
+	 */
+	public function getFund($id) {
+		$project = Dcxmxx::with('funds')->findOrFail($id);
+		$funds   = $project->funds()->get();
+		$title   = '项目' . $project->xmmc . '经费使用计划';
+
+		return view('dcxm.fund', compact('title', 'project', 'funds'));
+	}
+
+	/**
+	 * 大创项目经费计划
+	 *
+	 * @author FuRongxin
+	 * @date    2018-01-25
+	 * @version 2.3
+	 * @param   $id 项目ID
+	 * @param   \Illuminate\Http\Request $request 经费填报请求
+	 * @return  \Illuminate\Http\Response 大创项目列表
+	 */
+	public function postFund(Request $request, $id) {
+		if ($request->isMethod('post')) {
+			$project = Dcxmxx::whereId($id)
+				->whereXh(Auth::user()->xh);
+
+			if ($project->exists()) {
+				$project = $project->first();
+
+				if (Dcxmsq::whereXmId($id)->exists()) {
+					$xmsq = Dcxmsq::findOrFail($id);
+				} else {
+					$xmsq = new Dcxmsq;
+				}
+
+				$xmsq->xm_id = $project->id;
+				$xmsq->xmjj  = $request->xmjj;
+				$xmsq->sqly  = $request->sqly;
+				$xmsq->xmfa  = $request->xmfa;
+				$xmsq->tscx  = $request->tscx;
+				$xmsq->jdap  = $request->jdap;
+
+				if ($request->hasFile('zmcl')) {
+					$this->validate($request, [
+						'zmcl' => 'file',
+					]);
+
+					if ($request->file('zmcl')->isValid()) {
+						$file     = $request->file('zmcl');
+						$content  = file_get_contents($file->getRealPath());
+						$filename = config('constants.file.path.dcxm') . Auth::user()->xh . time() . '.' . $file->extension();
+
+						Storage::put($filename, $content);
+
+						$xmsq->zmcl = $filename;
+					}
+				}
+
+				if ($xmsq->save()) {
+					return redirect('dcxm/xmjf/' . $id)->withStatus('填写申报书成功');
 				} else {
 					return back()->withStatus('填写申报书失败');
 				}
