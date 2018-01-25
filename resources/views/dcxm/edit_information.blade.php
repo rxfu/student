@@ -374,6 +374,7 @@ $(function() {
             });
         }
     });
+
     $('#appForm').on('submit', function(e) {
         $('input[type="checkbox"]:not(:checked)').each(function() {
             $(this).prop('checked', true).val(false);

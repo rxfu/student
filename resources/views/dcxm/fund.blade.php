@@ -45,6 +45,7 @@
                                 </tr>
                             @empty
                                 <tr>
+                                    <input type="hidden" name="jfid[]" value="id">
                                     <td>
                                         <input type="text" class="form-control" name="kzkm[]">
                                     </td>
@@ -64,6 +65,19 @@
                                 </tr>
                             @endforelse
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <ol>
+                                        创新训练、创业训练项目的经费使用范围如下：
+                                        <li>调研、差旅费；</li>
+                                        <li>用于项目研发的元器件、软硬件测试、小型硬件购置费等；</li>
+                                        <li>资料购置、打印、复印、印刷等费用；</li>
+                                        <li>学生撰写与项目有关的论文版面费、申请专利费等。</li>
+                                    </ol>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -80,189 +94,27 @@
 @push('scripts')
 <script>
 $(function() {
-    $('#xmcy-table').on('click', '.cy-add', function() {
+    $('#xmjf-table').on('click', '.add', function() {
         $(this).closest('tr').after('\
             <tr>\
-                <input type="hidden" name="cyid[]" value="id">\
-                <td><input type="text" class="form-control" name="cypm[]" size="1" readonly></td>\
-                <td><input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked></td>\
-                <td><input type="text" class="form-control" name="xh[]"></td>\
-                <td><input type="text" class="form-control" name="cyxm[]" size="10" readonly></td>\
-                <td><input type="text" class="form-control" name="nj[]" size="4" readonly></td>\
-                <td><input type="text" class="form-control" name="szyx[]" readonly></td>\
-                <td><input type="text" class="form-control" name="cylxdh[]" readonly></td>\
-                <td><input type="text" class="form-control" name="fg[]"></td>\
+                <input type="hidden" name="jfid[]" value="id">\
+                <td><input type="text" class="form-control" name="kzkm[]"></td>\
+                <td><input type="text" class="form-control" name="je[]"></td>\
+                <td><input type="text" class="form-control" name="yt[]"></td>\
                 <td>\
                     <div class="input-group">\
                         <span class="input-group-btn">\
-                            <button type="button" title="增加" class="btn btn-success cy-add"><i class="fa fa-plus"></i></button>\
-                            <button type="button" title="减少" class="btn btn-danger cy-remove"><i class="fa fa-minus"></i></button>\
+                            <button type="button" title="增加" class="btn btn-success add"><i class="fa fa-plus"></i></button>\
+                            <button type="button" title="减少" class="btn btn-danger remove"><i class="fa fa-minus"></i></button>\
                         </span>\
                     </div>\
                 </td>\
             </tr>\
         ');
-
-        $('#xmcy-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<input type="text" class="form-control" name="cypm[]" size="1" readonly value="' + index + '">');
-        });
-
-        $('input:checkbox[name^="cysfbx"]').bootstrapSwitch({
-            onSwitchChange: function(event, state) {
-                var row = $(this).closest('tr');
-                row.find('td:lt(8):gt(1)').children('input').val('');
-
-                if (true == state) {
-                    row.find('td').slice(3, 7).children('input').attr('readonly', true);
-                } else {
-                    row.find('td:eq(2)').children('input').focus();
-                    row.find('td:lt(7):gt(2)').children('input').attr('readonly', false);
-                }
-            }
-        });
     });
 
-    $('#xmcy-table').on('click', '.cy-remove', function() {
+    $('#xmjf-table').on('click', '.remove', function() {
         $(this).closest('tr').remove();
-
-        $('#xmcy-table tr').each(function(index) {
-            $(this).children('td:eq(0)').children('input').val(index);
-        });
-    });
-
-    $('input:checkbox[name^="cysfbx"]').bootstrapSwitch({
-        onSwitchChange: function(event, state) {
-            var row = $(this).closest('tr');
-            row.find('td:lt(8):gt(1)').children('input').val('');
-
-            if (true == state) {
-                row.find('td').slice(3, 7).children('input').attr('readonly', true);
-            } else {
-                row.find('td:eq(2)').children('input').focus();
-                row.find('td:lt(7):gt(2)').children('input').attr('readonly', false);
-            }
-        }
-    });
-
-    $('#zdjs-table').on('click', '.js-add', function() {
-        $(this).closest('tr').after('\
-            <tr>\
-                <input type="hidden" name="jsid[]" value="id">\
-                <td><input type="text" class="form-control" name="jspm[]" size="1" readonly></td>\
-                <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked></td>\
-                <td><input type="text" class="form-control" name="jsgh[]"></td>\
-                <td><input type="text" class="form-control" name="jsxm[]" size="10" readonly></td>\
-                <td><input type="text" class="form-control" name="zc[]" size="12" readonly></td>\
-                <td><input type="text" class="form-control" name="szdw[]" readonly></td>\
-                <td><input type="text" class="form-control" name="jslxdh[]" readonly></td>\
-                <td><input type="text" class="form-control" name="email[]" readonly></td>\
-                <td>\
-                    <div class="input-group">\
-                        <span class="input-group-btn">\
-                            <button type="button" title="增加" class="btn btn-success js-add"><i class="fa fa-plus"></i></button>\
-                            <button type="button" title="减少" class="btn btn-danger js-remove"><i class="fa fa-minus"></i></button>\
-                        </span>\
-                    </div>\
-                </td>\
-            </tr>\
-        ');
-
-        $('#zdjs-table tr').each(function(index) {
-            $(this).children('td:eq(0)').html('<input type="text" class="form-control" name="jspm[]" size="1" readonly value="' + index + '">');
-        });
-
-        $('input[name="jssfbx[]"]').bootstrapSwitch({
-            onSwitchChange: function(event, state) {
-                var row = $(this).closest('tr');
-                row.find('td:lt(8):gt(1)').children('input').val('');
-
-                if (true == state) {
-                    row.find('td').slice(3, 8).children('input').attr('readonly', true);
-                } else {
-                    row.find('td:eq(2)').children('input').focus();
-                    row.find('td:lt(8):gt(2)').children('input').attr('readonly', false);
-                }
-            }
-        });
-    });
-
-    $('#zdjs-table').on('click', '.js-remove', function() {
-        $(this).closest('tr').remove();
-
-        $('#zdjs-table tr').each(function(index) {
-            $(this).children('td:eq(0)').children('input').val(index);
-        });
-    });
-
-    $('input[name="jssfbx[]"]').bootstrapSwitch({
-        onSwitchChange: function(event, state) {
-            var row = $(this).closest('tr');
-            row.find('td:lt(8):gt(1)').children('input').val('');
-
-            if (true == state) {
-                row.find('td').slice(3, 8).children('input').attr('readonly', true);
-            } else {
-                row.find('td:eq(2)').children('input').focus();
-                row.find('td:lt(8):gt(2)').children('input').attr('readonly', false);
-            }
-        }
-    });
-
-    $('#datepicker').datepicker({
-        language: 'zh-CN',
-        todayBtn: 'linked',
-        todayHighlight: true,
-        format: 'yyyy-mm-dd',
-        startDate: '-0d',
-        endDate: '+1y'
-    });
-
-    $('#xmcy-table').on('keyup blur', 'input[name="xh[]"]', function() {
-        var xh = $(this);
-
-        if (12 === $(this).val().length) {
-            $.get({
-                url: '{{ url('dcxm/xmcy') }}',
-                data: {
-                    xh: $(this).val()
-                },
-                success: function(data) {
-                    var row = xh.closest('tr');
-                    row.find('td:eq(3)').children('input').val(data.xm);
-                    row.find('td:eq(4)').children('input').val(data.nj);
-                    row.find('td:eq(5)').children('input').val(data.szyx);
-                    row.find('td:eq(6)').children('input').val(data.lxdh);
-                },
-                dataType: 'json'
-            });
-        }
-    });
-
-    $('#zdjs-table').on('keyup blur', 'input[name="jsgh[]"]', function() {
-        var jsgh = $(this);
-
-        if (6 === $(this).val().length) {
-            $.get({
-                url: '{{ url('dcxm/zdjs') }}',
-                data: {
-                    jsgh: $(this).val()
-                },
-                success: function(data) {
-                    var row = jsgh.closest('tr');
-                    row.find('td:eq(3)').children('input').val(data.xm);
-                    row.find('td:eq(4)').children('input').val(data.zc);
-                    row.find('td:eq(5)').children('input').val(data.szdw);
-                    row.find('td:eq(6)').children('input').val(data.lxdh);
-                    row.find('td:eq(7)').children('input').val(data.email);
-                },
-                dataType: 'json'
-            });
-        }
-    });
-    $('#appForm').on('submit', function(e) {
-        $('input[type="checkbox"]:not(:checked)').each(function() {
-            $(this).prop('checked', true).val(false);
-        })
     });
 });
 </script>

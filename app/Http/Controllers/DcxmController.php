@@ -366,49 +366,34 @@ class DcxmController extends Controller {
 	 */
 	public function postFund(Request $request, $id) {
 		if ($request->isMethod('post')) {
-			$project = Dcxmxx::whereId($id)
-				->whereXh(Auth::user()->xh);
+			$this->validate($request, [
+				'kzkm' => 'required|string|max:50',
+				'je'   => 'required|numeric',
+				'yt'   => 'required|string',
+			]);
 
-			if ($project->exists()) {
-				$project = $project->first();
+			$inputs = $request->all();
 
-				if (Dcxmsq::whereXmId($id)->exists()) {
-					$xmsq = Dcxmsq::findOrFail($id);
+			$project = Dcxmxx::findOrFail($id);
+
+			foreach ($inputs['je'] as $key => $value) {
+				if ('id' != $inputs['jfid'][$key]) {
+					$fund       = Dcxmjf::find($inputs['jfid'][$key]);
+					$fund->gxsj = Carbon::now();
 				} else {
-					$xmsq = new Dcxmsq;
+					$fund       = new Dcxmjf;
+					$fund->cjsj = Carbon::now();
 				}
 
-				$xmsq->xm_id = $project->id;
-				$xmsq->xmjj  = $request->xmjj;
-				$xmsq->sqly  = $request->sqly;
-				$xmsq->xmfa  = $request->xmfa;
-				$xmsq->tscx  = $request->tscx;
-				$xmsq->jdap  = $request->jdap;
+				$fund->xm_id = $project->id;
+				$fund->kzkm  = $inputs['kzkm'][$key];
+				$fund->je    = $inputs['je'][$key];
+				$fund->yt    = $inputs['yt'][$key];
 
-				if ($request->hasFile('zmcl')) {
-					$this->validate($request, [
-						'zmcl' => 'file',
-					]);
-
-					if ($request->file('zmcl')->isValid()) {
-						$file     = $request->file('zmcl');
-						$content  = file_get_contents($file->getRealPath());
-						$filename = config('constants.file.path.dcxm') . Auth::user()->xh . time() . '.' . $file->extension();
-
-						Storage::put($filename, $content);
-
-						$xmsq->zmcl = $filename;
-					}
-				}
-
-				if ($xmsq->save()) {
-					return redirect('dcxm/xmjf/' . $id)->withStatus('填写申报书成功');
-				} else {
-					return back()->withStatus('填写申报书失败');
-				}
-			} else {
-				return redirect('dcxm/list');
+				$fund->save();
 			}
+
+			return redirect('dcxm/list')->withStatus('项目经费计划保存成功');
 		}
 	}
 
