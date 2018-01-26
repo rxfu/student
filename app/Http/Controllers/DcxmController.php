@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dcxmcy;
+use App\Models\Dcxmjf;
 use App\Models\Dcxmlb;
 use App\Models\Dcxmsq;
 use App\Models\Dcxmxx;
@@ -367,9 +368,9 @@ class DcxmController extends Controller {
 	public function postFund(Request $request, $id) {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
-				'kzkm' => 'required|string|max:50',
-				'je'   => 'required|numeric',
-				'yt'   => 'required|string',
+				'kzkm.*' => 'required|string|max:50',
+				'je.*'   => 'required|numeric',
+				'yt.*'   => 'required|string',
 			]);
 
 			$inputs = $request->all();
