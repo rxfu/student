@@ -369,7 +369,7 @@ class DcxmController extends Controller {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
 				'kzkm.*' => 'required|string|max:50',
-				'je.*'   => 'required|numeric',
+				'je.*'   => 'required|integer',
 				'yt.*'   => 'required|string',
 			]);
 
@@ -393,6 +393,10 @@ class DcxmController extends Controller {
 
 				$fund->save();
 			}
+
+			$updated = Dcxmjf::whereXmId($project->id)->get();
+			$delIds  = array_diff($updated->pluck('id')->all(), $inputs['jfid']);
+			Dcxmjf::destroy($delIds);
 
 			return redirect('dcxm/list')->withStatus('项目经费计划保存成功');
 		}

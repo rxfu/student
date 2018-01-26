@@ -20,7 +20,9 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $total = 0;?>
                             @forelse ($funds as $key => $fund)
+                                <?php $total += $fund->je;?>
                                 <tr>
                                     <input type="hidden" name="jfid[]" value="{{ $fund->id }}">
                                     <td>
@@ -64,6 +66,14 @@
                                     </td>
                                 </tr>
                             @endforelse
+                            <tr>
+                                <th>合计</th>
+                                <th>
+                                    <span id="total">{{ $total }}</span>
+                                </th>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                         <tfoot>
                             <tr>
@@ -115,6 +125,17 @@ $(function() {
 
     $('#xmjf-table').on('click', '.remove', function() {
         $(this).closest('tr').remove();
+    });
+
+    $('#xmjf-table').on('keyup blur', 'input[name="je[]"]', function() {
+        $('#total').html(function() {
+            var total = 0;
+            $('input[name="je[]"]').each(function() {
+                total += Number($(this).val());
+            });
+
+            return total;
+        });
     });
 });
 </script>
