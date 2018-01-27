@@ -15,6 +15,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 /**
  * 显示并处理大创项目西悉尼
@@ -502,15 +503,30 @@ class DcxmController extends Controller {
 	}
 
 	/**
-	 * 获取PDF申报书
+	 * 显示PDF申报书
 	 * @author FuRongxin
-	 * @date    2018-01-18
+	 * @date    2018-01-27
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response PDF申报书
 	 */
 	public function getPdf($id) {
-		$title = '广西高校大学生创新创业计划项目申报书';
+		$project = Dcxmxx::with('application')->findOrFail($id);
+		$profile = Profile::findOrFail($project->xh);
+		$title   = '广西高校大学生创新创业计划项目申报书';
 
-		return view('dcxm.pdf', compact('title'));
+		return PDF::loadView('dcxm.pdf', compact('title', 'project', 'profile'))
+			->setPaper('a4')
+			->inline('application.pdf');
+	}
+
+	/**
+	 * 获取PDF申报书
+	 * @author FuRongxin
+	 * @date    2018-01-27
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response PDF申报书
+	 */
+	public function getDownloadPdf($id) {
+		return PDF::loadFile(url('dcxm/pdf/' . $id))->download('application.pdf');
 	}
 }
