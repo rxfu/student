@@ -500,4 +500,22 @@ class DcxmController extends Controller {
 			return response()->download(storage_path('uploads/' . $filename));
 		}
 	}
+
+	/**
+	 * 获取PDF申报书
+	 * @author FuRongxin
+	 * @date    2018-01-18
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response PDF申报书
+	 */
+	public function getPdf($id) {
+		$xmsq     = Dcxmsq::findOrFail($id);
+		$filename = $xmsq->zmcl;
+
+		if (Storage::exists($filename)) {
+			$file = Storage::get($filename);
+
+			return response()->download(storage_path('uploads/' . $filename));
+		}
+	}
 }

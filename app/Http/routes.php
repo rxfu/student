@@ -83,6 +83,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('thesis/searchThesis', 'ThesisController@search');
 
 		Route::get('dcxm/list', 'DcxmController@getList');
+		Route::get('dcxm/pdf/{id}', 'DcxmController@getPdf');
 		Route::get('dcxm/xmxx', 'DcxmController@getInfo');
 		Route::post('dcxm/xmxx', 'DcxmController@postInfo');
 		Route::get('dcxm/xmxx/{id}/edit', 'DcxmController@getEditInfo');

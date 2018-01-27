@@ -50,6 +50,7 @@
                                         {!! method_field('delete') !!}
                                         {!! csrf_field() !!}
                                     </form>
+                                    <a href="{{ url('dcxm/pdf/' . $project->id) }}" title="下载申报书" role="button" class="btn btn-warning">下载申报书</a>
                                 </td>
                             </tr>
                             @endforeach
