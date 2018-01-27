@@ -509,13 +509,8 @@ class DcxmController extends Controller {
 	 * @return  \Illuminate\Http\Response PDF申报书
 	 */
 	public function getPdf($id) {
-		$xmsq     = Dcxmsq::findOrFail($id);
-		$filename = $xmsq->zmcl;
+		$title = '广西高校大学生创新创业计划项目申报书';
 
-		if (Storage::exists($filename)) {
-			$file = Storage::get($filename);
-
-			return response()->download(storage_path('uploads/' . $filename));
-		}
+		return view('dcxm.pdf', compact('title'));
 	}
 }
