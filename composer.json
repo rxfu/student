@@ -11,7 +11,10 @@
         "intervention/image": "dev-master",
         "laracasts/presenter": "0.2.*",
         "maatwebsite/excel": "~2.1.0",
-        "barryvdh/laravel-dompdf": "0.7.*"
+        "barryvdh/laravel-dompdf": "0.7.*",
+        "h4cc/wkhtmltopdf-amd64": "^0.12.4",
+        "h4cc/wkhtmltoimage-amd64": "^0.12.4",
+        "barryvdh/laravel-snappy": "^0.4.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

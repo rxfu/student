@@ -7,25 +7,28 @@ namespace Composer\Autoload;
 class ComposerStaticInitdc666f35eb3706393306732ddaed2517
 {
     public static $files = array (
-        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
-        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
-        'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
+        '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
-        '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
-        '3d5a4d29ce3a373ff9fae05310ce663f' => __DIR__ . '/../..' . '/app/Http/helper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'h' => 
+        array (
+            'h4cc\\WKHTMLToPDF\\' => 17,
         ),
         'Y' => 
         array (
@@ -80,6 +83,10 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
             'League\\Fractal\\' => 15,
             'League\\Flysystem\\' => 17,
         ),
+        'K' => 
+        array (
+            'Knp\\Snappy\\' => 11,
+        ),
         'I' => 
         array (
             'Intervention\\Image\\' => 19,
@@ -108,6 +115,7 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         ),
         'B' => 
         array (
+            'Barryvdh\\Snappy\\' => 16,
             'Barryvdh\\DomPDF\\' => 16,
             'Barryvdh\\Debugbar\\' => 18,
         ),
@@ -121,8 +129,12 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'h4cc\\WKHTMLToPDF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/h4cc/wkhtmltopdf-amd64',
         ),
         'Yajra\\Datatables\\' => 
         array (
@@ -240,6 +252,10 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
+        'Knp\\Snappy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy',
+        ),
         'Intervention\\Image\\' => 
         array (
             0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
@@ -283,6 +299,10 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
+        'Barryvdh\\Snappy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src',
         ),
         'Barryvdh\\DomPDF\\' => 
         array (
@@ -380,6 +400,7 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'App\\Http\\Controllers\\Auth\\PasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/PasswordController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\CourseController' => __DIR__ . '/../..' . '/app/Http/Controllers/CourseController.php',
+        'App\\Http\\Controllers\\DcxmController' => __DIR__ . '/../..' . '/app/Http/Controllers/DcxmController.php',
         'App\\Http\\Controllers\\ExamController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExamController.php',
         'App\\Http\\Controllers\\FreshController' => __DIR__ . '/../..' . '/app/Http/Controllers/FreshController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
@@ -390,6 +411,7 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'App\\Http\\Controllers\\RequirementController' => __DIR__ . '/../..' . '/app/Http/Controllers/RequirementController.php',
         'App\\Http\\Controllers\\ScoreController' => __DIR__ . '/../..' . '/app/Http/Controllers/ScoreController.php',
         'App\\Http\\Controllers\\SelcourseController' => __DIR__ . '/../..' . '/app/Http/Controllers/SelcourseController.php',
+        'App\\Http\\Controllers\\ThesisController' => __DIR__ . '/../..' . '/app/Http/Controllers/ThesisController.php',
         'App\\Http\\Helper' => __DIR__ . '/../..' . '/app/Http/Helper.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -408,13 +430,26 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'App\\Models\\Broadcast' => __DIR__ . '/../..' . '/app/Models/Broadcast.php',
         'App\\Models\\Campus' => __DIR__ . '/../..' . '/app/Models/Campus.php',
         'App\\Models\\Campuspivot' => __DIR__ . '/../..' . '/app/Models/Campuspivot.php',
+        'App\\Models\\Cfjg' => __DIR__ . '/../..' . '/app/Models/Cfjg.php',
+        'App\\Models\\Cfxx' => __DIR__ . '/../..' . '/app/Models/Cfxx.php',
+        'App\\Models\\Cfyy' => __DIR__ . '/../..' . '/app/Models/Cfyy.php',
         'App\\Models\\Classroom' => __DIR__ . '/../..' . '/app/Models/Classroom.php',
+        'App\\Models\\Cntgeneral' => __DIR__ . '/../..' . '/app/Models/Cntgeneral.php',
         'App\\Models\\Count' => __DIR__ . '/../..' . '/app/Models/Count.php',
         'App\\Models\\Country' => __DIR__ . '/../..' . '/app/Models/Country.php',
         'App\\Models\\Course' => __DIR__ . '/../..' . '/app/Models/Course.php',
+        'App\\Models\\DcxmModel' => __DIR__ . '/../..' . '/app/Models/DcxmModel.php',
+        'App\\Models\\Dcxmcy' => __DIR__ . '/../..' . '/app/Models/Dcxmcy.php',
+        'App\\Models\\Dcxmjf' => __DIR__ . '/../..' . '/app/Models/Dcxmjf.php',
+        'App\\Models\\Dcxmlb' => __DIR__ . '/../..' . '/app/Models/Dcxmlb.php',
+        'App\\Models\\Dcxmsq' => __DIR__ . '/../..' . '/app/Models/Dcxmsq.php',
+        'App\\Models\\Dcxmxx' => __DIR__ . '/../..' . '/app/Models/Dcxmxx.php',
+        'App\\Models\\Dcyjxk' => __DIR__ . '/../..' . '/app/Models/Dcyjxk.php',
+        'App\\Models\\Dczdjs' => __DIR__ . '/../..' . '/app/Models/Dczdjs.php',
         'App\\Models\\Department' => __DIR__ . '/../..' . '/app/Models/Department.php',
         'App\\Models\\Dtscore' => __DIR__ . '/../..' . '/app/Models/Dtscore.php',
         'App\\Models\\Entrance' => __DIR__ . '/../..' . '/app/Models/Entrance.php',
+        'App\\Models\\Exlimit' => __DIR__ . '/../..' . '/app/Models/Exlimit.php',
         'App\\Models\\Exregister' => __DIR__ . '/../..' . '/app/Models/Exregister.php',
         'App\\Models\\Exscore' => __DIR__ . '/../..' . '/app/Models/Exscore.php',
         'App\\Models\\Exstatus' => __DIR__ . '/../..' . '/app/Models/Exstatus.php',
@@ -455,6 +490,7 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'App\\Models\\Task' => __DIR__ . '/../..' . '/app/Models/Task.php',
         'App\\Models\\Teacher' => __DIR__ . '/../..' . '/app/Models/Teacher.php',
         'App\\Models\\Term' => __DIR__ . '/../..' . '/app/Models/Term.php',
+        'App\\Models\\Thesis' => __DIR__ . '/../..' . '/app/Models/Thesis.php',
         'App\\Models\\Timetable' => __DIR__ . '/../..' . '/app/Models/Timetable.php',
         'App\\Models\\Unpaid' => __DIR__ . '/../..' . '/app/Models/Unpaid.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
@@ -498,6 +534,14 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
+        'Barryvdh\\Snappy\\Facades\\SnappyImage' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/Facades/SnappyImage.php',
+        'Barryvdh\\Snappy\\Facades\\SnappyPdf' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/Facades/SnappyPdf.php',
+        'Barryvdh\\Snappy\\IlluminateSnappyImage' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/IlluminateSnappyImage.php',
+        'Barryvdh\\Snappy\\IlluminateSnappyPdf' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/IlluminateSnappyPdf.php',
+        'Barryvdh\\Snappy\\ImageWrapper' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/ImageWrapper.php',
+        'Barryvdh\\Snappy\\LumenServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/LumenServiceProvider.php',
+        'Barryvdh\\Snappy\\PdfWrapper' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/PdfWrapper.php',
+        'Barryvdh\\Snappy\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src/ServiceProvider.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'ClassPreloader\\ClassList' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/ClassList.php',
@@ -1889,6 +1933,11 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/ConsoleColor.php',
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/JakubOnderka/PhpConsoleHighlighter/Highlighter.php',
+        'Knp\\Snappy\\AbstractGenerator' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/AbstractGenerator.php',
+        'Knp\\Snappy\\Exception\\FileAlreadyExistsException' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/Exception/FileAlreadyExistsException.php',
+        'Knp\\Snappy\\GeneratorInterface' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/GeneratorInterface.php',
+        'Knp\\Snappy\\Image' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/Image.php',
+        'Knp\\Snappy\\Pdf' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/Pdf.php',
         'Laracasts\\Presenter\\Contracts\\PresentableInterface' => __DIR__ . '/..' . '/laracasts/presenter/src/Laracasts/Presenter/Contracts/PresentableInterface.php',
         'Laracasts\\Presenter\\Exceptions\\PresenterException' => __DIR__ . '/..' . '/laracasts/presenter/src/Laracasts/Presenter/Exceptions/PresenterException.php',
         'Laracasts\\Presenter\\PresentableTrait' => __DIR__ . '/..' . '/laracasts/presenter/src/Laracasts/Presenter/PresentableTrait.php',
@@ -3748,6 +3797,7 @@ class ComposerStaticInitdc666f35eb3706393306732ddaed2517
         'Yajra\\Datatables\\Request' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/Request.php',
         'Yajra\\Datatables\\Services\\DataTable' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/Services/DataTable.php',
         'Yajra\\Datatables\\Transformers\\DataTransformer' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/Transformers/DataTransformer.php',
+        'h4cc\\WKHTMLToPDF\\WKHTMLToPDF' => __DIR__ . '/..' . '/h4cc/wkhtmltopdf-amd64/WKHTMLToPDF.php',
         'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
         'phpDocumentor\\Reflection\\DocBlockFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
         'phpDocumentor\\Reflection\\DocBlockFactoryInterface' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactoryInterface.php',
