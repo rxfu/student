@@ -69,6 +69,28 @@ class Dcxmxx extends DcxmModel {
 	}
 
 	/**
+	 * 本校指导教师
+	 * @author FuRongxin
+	 * @date    2018-01-28
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function bxtutors() {
+		return $this->hasMany('App\Models\Dczdjs', 'xm_id', 'id')->whereSfbx(true)->orderBy('pm');
+	}
+
+	/**
+	 * 外校指导教师
+	 * @author FuRongxin
+	 * @date    2018-01-28
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function wxtutors() {
+		return $this->hasMany('App\Models\Dczdjs', 'xm_id', 'id')->whereSfbx(false)->orderBy('pm');
+	}
+
+	/**
 	 * 项目申报书
 	 * @author FuRongxin
 	 * @date    2018-01-14
@@ -88,5 +110,16 @@ class Dcxmxx extends DcxmModel {
 	 */
 	public function funds() {
 		return $this->hasMany('App\Models\Dcxmjf', 'xm_id', 'id')->orderBy('id');
+	}
+
+	/**
+	 * 项目负责人
+	 * @author FuRongxin
+	 * @date    2018-01-28
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function student() {
+		return $this->belongsTo('App\Models\Profile', 'xh', 'xh');
 	}
 }

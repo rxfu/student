@@ -38,4 +38,17 @@ class Dczdjs extends DcxmModel {
 	public function teacher() {
 		return $this->belongsTo('App\Models\Teacher', 'jsgh', 'jsgh');
 	}
+
+	/**
+	 * 扩展查询：判断是否本校教师
+	 * @author FuRongxin
+	 * @date    2018-01-28
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   boolean $flag 是否本校教师，true为是，false为否
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeInSchool($query, $flag) {
+		return $query->whereSfbx($flag);
+	}
 }

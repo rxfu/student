@@ -510,12 +510,15 @@ class DcxmController extends Controller {
 	 * @return  \Illuminate\Http\Response PDF申报书
 	 */
 	public function getPdf($id) {
-		$project = Dcxmxx::with('application')->findOrFail($id);
-		$profile = Profile::findOrFail($project->xh);
+		$project = Dcxmxx::with('student', 'application')->findOrFail($id);
 		$title   = '广西高校大学生创新创业计划项目申报书';
 
-		return PDF::loadView('dcxm.pdf', compact('title', 'project', 'profile'))
+		return PDF::loadView('dcxm.pdf', compact('title', 'project'))
 			->setPaper('a4')
+			->setOption('margin-top', '3.7cm')
+			->setOption('margin-bottom', '3.5cm')
+			->setOption('margin-left', '2.8cm')
+			->setOption('margin-right', '2.6cm')
 			->inline('application.pdf');
 	}
 
