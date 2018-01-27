@@ -200,7 +200,7 @@ $(function() {
             <tr>\
                 <input type="hidden" name="cyid[]" value="id">\
                 <td><input type="text" class="form-control" name="cypm[]" size="1" readonly></td>\
-                <td><input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" checked></td>\
+                <td><input type="checkbox" name="cysfbx[]" data-on-text="是" data-off-text="否" value="true" checked></td>\
                 <td><input type="text" class="form-control" name="xh[]"></td>\
                 <td><input type="text" class="form-control" name="cyxm[]" size="10" readonly></td>\
                 <td><input type="text" class="form-control" name="nj[]" size="4" readonly></td>\
@@ -264,7 +264,7 @@ $(function() {
             <tr>\
                 <input type="hidden" name="jsid[]" value="id">\
                 <td><input type="text" class="form-control" name="jspm[]" size="1" readonly></td>\
-                <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" checked></td>\
+                <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" value="true" checked></td>\
                 <td><input type="text" class="form-control" name="jsgh[]"></td>\
                 <td><input type="text" class="form-control" name="jsxm[]" size="10" readonly></td>\
                 <td><input type="text" class="form-control" name="zc[]" size="12" readonly></td>\

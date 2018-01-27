@@ -183,11 +183,15 @@ class DcxmController extends Controller {
 			$xmxx->jssj    = $inputs['jssj'];
 			$xmxx->sfsh    = config('constants.status.disable');
 			$xmxx->sftg    = config('constants.status.disable');
-			$xmxx->cjsj    = Carbon::now();
+			$xmxx->gxsj    = Carbon::now();
 
 			$xmxx->save();
 
 			// 项目组成员
+			$cys    = Dcxmcy::whereXmId($xmxx->id)->get();
+			$delIds = array_diff($cys->pluck('id')->all(), $inputs['cyid']);
+			Dcxmcy::destroy($delIds);
+
 			$i       = 0;
 			$members = [];
 			foreach ($inputs['cypm'] as $key => $value) {
@@ -212,6 +216,10 @@ class DcxmController extends Controller {
 			}
 
 			// 指导教师
+			$jss    = Dczdjs::whereXmId($xmxx->id)->get();
+			$delIds = array_diff($jss->pluck('id')->all(), $inputs['jsid']);
+			Dczdjs::destroy($delIds);
+
 			$i      = 0;
 			$tutors = [];
 			foreach ($inputs['jspm'] as $key => $value) {
@@ -376,6 +384,9 @@ class DcxmController extends Controller {
 			$inputs = $request->all();
 
 			$project = Dcxmxx::findOrFail($id);
+			$funds   = Dcxmjf::whereXmId($project->id)->get();
+			$delIds  = array_diff($funds->pluck('id')->all(), $inputs['jfid']);
+			Dcxmjf::destroy($delIds);
 
 			foreach ($inputs['je'] as $key => $value) {
 				if ('id' != $inputs['jfid'][$key]) {
@@ -393,10 +404,6 @@ class DcxmController extends Controller {
 
 				$fund->save();
 			}
-
-			$updated = Dcxmjf::whereXmId($project->id)->get();
-			$delIds  = array_diff($updated->pluck('id')->all(), $inputs['jfid']);
-			Dcxmjf::destroy($delIds);
 
 			return redirect('dcxm/list')->withStatus('项目经费计划保存成功');
 		}
