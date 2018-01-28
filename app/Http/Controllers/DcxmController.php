@@ -510,7 +510,7 @@ class DcxmController extends Controller {
 	 * @return  \Illuminate\Http\Response PDF申报书
 	 */
 	public function getPdf($id) {
-		$project = Dcxmxx::with('student', 'application')->findOrFail($id);
+		$project = Dcxmxx::with('student', 'application', 'funds')->findOrFail($id);
 		$title   = '广西高校大学生创新创业计划项目申报书';
 
 		return PDF::loadView('dcxm.pdf', compact('title', 'project'))

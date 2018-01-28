@@ -30,6 +30,9 @@
                 font-family: STFangsong, FangSong, SimSun;
                 line-height: 27pt;
             }
+            h4 {
+                line-height: 21pt;
+            }
             p {
                 text-indent: 2em;
             }
@@ -195,6 +198,9 @@
                             </tr>
                         @else
                             <tr>
+                                @if (0 == $i)
+                                    <td rowspan="6">校内指导教师</td>
+                                @endif
                                 <td>姓名</td>
                                 <td colspan="2">&nbsp;</td>
                                 <td>职务/职称</td>
@@ -237,6 +243,9 @@
                             </tr>
                         @else
                             <tr>
+                                @if (0 == $i)
+                                    <td rowspan="6">校外指导教师</td>
+                                @endif
                                 <td>姓名</td>
                                 <td colspan="2">&nbsp;</td>
                                 <td>职务/职称</td>
@@ -254,6 +263,113 @@
                             </tr>
                         @endif
                     @endfor
+                </table>
+            </article>
+
+            <article class="page">
+                <table class="table table-bordered">
+                    <tr>
+                        <td colspan="3">
+                            <h4>一、项目简介（200字左右）</h4>
+                            {!! $project->application->xmjj !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h4>二、申请理由（包括自身/团队具备的知识、条件、特长、兴趣、已有的成果、前期准备、项目研究的国内外研究现状和发展动态等）</h4>
+                            {!! $project->application->sqly !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h4>三、项目方案（包括项目研究的目标和主要内容、拟解决的途径、人员分工、预期成果等，创业类项目还需包括市场分析、营销模式、管理模式、财务分析、风险预期等内容）</h4>
+                            {!! $project->application->xmfa !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h4>四、简述特色与创新点</h4>
+                            {!! $project->application->tscx !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h4>五、项目进度安排（包括详细的计划安排）</h4>
+                            {!! $project->application->jdap !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h4>六、项目经费使用计划</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">开支科目</td>
+                        <td class="text-center">预算经费（元）</td>
+                        <td class="text-center">主要用途</td>
+                    </tr>
+                    @foreach ($project->funds as $fund)
+                        <tr>
+                            <td class="text-center">{{ $fund->kzkm }}</td>
+                            <td class="text-center">{{ $fund->je }}</td>
+                            <td class="text-center">{{ $fund->yt }}</td>
+                        </tr>
+                    @endforeach
+                    <tr>
+                        <td colspan="3">
+                            <div>创新训练、创业训练项目的经费使用范围如下：</div>
+                            <ol>
+                                <li>调研、差旅费；</li>
+                                <li>用于项目研发的元器件、软硬件测试、小型硬件购置费等；</li>
+                                <li>资料购置、打印、复印、印刷等费用；</li>
+                                <li>学生撰写与项目有关的论文版面费、申请专利费等</li>
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
+            </article>
+
+            <article class="page">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <h4>七、指导教师意见</h4>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <div class="text-right">签 名：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <p>&nbsp;</p>
+                            <div class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>八、院系意见</h4>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <div class="text-right">负责人签名：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <p>&nbsp;</p>
+                            <div class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>九、学校意见</h4>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <div class="text-right">盖 章：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <p>&nbsp;</p>
+                            <div class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                        </td>
+                    </tr>
                 </table>
             </article>
         </main>
