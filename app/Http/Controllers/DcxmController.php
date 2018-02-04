@@ -264,7 +264,7 @@ class DcxmController extends Controller {
 	 * @param   string $id 项目ID
 	 * @return  \Illuminate\Http\Response 大创项目列表
 	 */
-	public function deleteDeleteInfo($id) {
+	public function deleteDeleteInfo(Request $request, $id) {
 		if ($request->isMethod('delete')) {
 			$project = Dcxmxx::findOrFail($id);
 			$project->delete();
