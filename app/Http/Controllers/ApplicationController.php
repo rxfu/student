@@ -49,9 +49,14 @@ class ApplicationController extends Controller {
 		$inputs = $request->all();
 
 		// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
-		$courses = Mjcourse::exceptGeneral()
-			->exceptCurrentMajor()
-			->exceptCurrentGrade()
+		$courses = Mjcourse::whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereZsjj(session('season'))
+			->exceptGeneral()
+			->where(function ($query) {
+				$query->where('pk_kczy.nj', '<>', session('grade'))
+					->orWhere('pk_kczy.zy', '<>', session('major'));
+			})
 			->whereKcxh($inputs['kcxh']);
 
 		if (!$courses->exists()) {
@@ -116,9 +121,14 @@ class ApplicationController extends Controller {
 			$inputs = $request->all();
 
 			// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
-			$courses = Mjcourse::exceptGeneral()
-				->exceptCurrentMajor()
-				->exceptCurrentGrade()
+			$courses = Mjcourse::whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereZsjj(session('season'))
+				->exceptGeneral()
+				->where(function ($query) {
+					$query->where('pk_kczy.nj', '<>', session('grade'))
+						->orWhere('pk_kczy.zy', '<>', session('major'));
+				})
 				->whereKcxh($inputs['kcxh']);
 
 			if (!$courses->exists()) {
