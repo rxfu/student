@@ -485,7 +485,7 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			if (Prior::failed(Helper::getCno($course->kcxh), Auth::user())->exists()) {
+			if (Prior::whereKch(Helper::getCno($course->kcxh))->exists() && (!Prior::studied(Helper::getCno($course->kcxh), Auth::user())->exists())) {
 				$request->session()->flash('forbidden', '前修课未修读');
 				return back()->withInput();
 			}
@@ -733,7 +733,7 @@ class SelcourseController extends Controller {
 					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif ($same) {
 					return '<div class="text-danger">已选同号课程</div>';
-				} elseif (Prior::failed($course->kch, Auth::user())->exists()) {
+				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
 					return '<div class="text-danger">前修课未修读</div>';
 				} elseif ($course->rs >= $course->zrs) {
 					return '<div class="text-danger">人数已满</div>';
