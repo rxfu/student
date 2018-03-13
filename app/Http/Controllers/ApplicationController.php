@@ -60,7 +60,7 @@ class ApplicationController extends Controller {
 			->whereKcxh($inputs['kcxh']);
 
 		if (!$courses->exists()) {
-			return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请');
+			return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
 		}
 
 		// 2017-01-02：应教务处要求添加同课程号课程申请检测
@@ -132,7 +132,7 @@ class ApplicationController extends Controller {
 				->whereKcxh($inputs['kcxh']);
 
 			if (!$courses->exists()) {
-				return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请');
+				return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
 			}
 
 			$course = Mjcourse::whereNd(session('year'))
