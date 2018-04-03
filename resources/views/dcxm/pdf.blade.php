@@ -335,9 +335,7 @@
                         <td>
                             <h4>七、指导教师意见</h4>
                             <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
+                            {!! $project->application->jsyj !!}
                             <p>&nbsp;</p>
                             <div class="text-right">签 名：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                             <p>&nbsp;</p>
@@ -371,6 +369,11 @@
                         </td>
                     </tr>
                 </table>
+            </article>
+
+            <article class="page">
+                <h3 class="text-center">项目前期研究成果证明材料清单</h3>
+                {!! $project->application->zmcl !!}
             </article>
         </main>
 
