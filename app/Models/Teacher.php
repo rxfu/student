@@ -21,6 +21,8 @@ class Teacher extends Model {
 
 	public $timestamps = false;
 
+	protected $connection = 'pgsql';
+
 	/**
 	 * 排课表
 	 * @author FuRongxin

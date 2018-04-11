@@ -76,7 +76,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
@@ -167,7 +167,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
@@ -211,7 +211,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
@@ -302,17 +302,11 @@ class SelcourseController extends Controller {
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
-			->exceptGeneral();
-
-		// 2017-06-15：当是本年级时，排除本专业课程
-		if (session('grade') == $inputs['nj']) {
-			$courses = $courses->exceptCurrentMajor();
-		}
-
-		// 2017-06-15：当是本专业时，排除本年级课程
-		if (session('major') == $inputs['zy']) {
-			$courses = $courses->exceptCurrentGrade();
-		}
+			->exceptGeneral()
+			->where(function ($query) {
+				$query->where('pk_kczy.nj', '<>', session('grade'))
+					->orWhere('pk_kczy.zy', '<>', session('major'));
+			});
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
@@ -365,7 +359,7 @@ class SelcourseController extends Controller {
 			});
 		}
 
-		return $datatable->make(true);
+		return $datatable->escapeColumns(['*'])->make(true);
 	}
 
 	/**
@@ -795,7 +789,7 @@ class SelcourseController extends Controller {
 			});
 		}
 
-		return $datatable->make(true);
+		return $datatable->escapeColumns(['*'])->make(true);
 	}
 
 	/**

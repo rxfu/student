@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use PDF;
 
 /**
- * 显示并处理大创项目西悉尼
+ * 显示并处理大创项目信息
  *
  * @author FuRongxin
  * @date 2017-11-22
@@ -72,8 +72,6 @@ class DcxmController extends Controller {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
 				'xmmc' => 'required|string|max:100',
-				'kssj' => 'required|date',
-				'jssj' => 'required|date',
 			]);
 			$inputs = $request->all();
 
@@ -82,11 +80,13 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->kssj    = $inputs['kssj'];
-			$xmxx->jssj    = $inputs['jssj'];
 			$xmxx->sfsh    = config('constants.status.disable');
 			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->cjsj    = Carbon::now();
+
+			$begdate    = Carbon::create(null, 4, 1);
+			$xmxx->kssj = $begdate->toDateString();
+			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
 			$xmxx->save();
 
@@ -152,9 +152,10 @@ class DcxmController extends Controller {
 		$project    = Dcxmxx::find($id);
 		$members    = $project->members()->get();
 		$tutors     = $project->tutors()->get();
+		$deadline   = idate('Y', strtotime($project->jssj)) - idate('Y', strtotime($project->kssj));
 		$title      = '编辑项目信息';
 
-		return view('dcxm.edit_information', compact('title', 'id', 'categories', 'subjects', 'project', 'members', 'tutors'));
+		return view('dcxm.edit_information', compact('title', 'id', 'categories', 'subjects', 'project', 'members', 'tutors', 'deadline'));
 	}
 
 	/**
@@ -170,8 +171,6 @@ class DcxmController extends Controller {
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
 				'xmmc' => 'required|string|max:100',
-				'kssj' => 'required|date',
-				'jssj' => 'required|date',
 			]);
 			$inputs = $request->all();
 
@@ -180,11 +179,13 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->kssj    = $inputs['kssj'];
-			$xmxx->jssj    = $inputs['jssj'];
 			$xmxx->sfsh    = config('constants.status.disable');
 			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->gxsj    = Carbon::now();
+
+			$begdate    = Carbon::create(null, 4, 1);
+			$xmxx->kssj = $begdate->toDateString();
+			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
 			$xmxx->save();
 
@@ -319,22 +320,7 @@ class DcxmController extends Controller {
 				$xmsq->xmfa  = $request->xmfa;
 				$xmsq->tscx  = $request->tscx;
 				$xmsq->jdap  = $request->jdap;
-
-				if ($request->hasFile('zmcl')) {
-					$this->validate($request, [
-						'zmcl' => 'file',
-					]);
-
-					if ($request->file('zmcl')->isValid()) {
-						$file     = $request->file('zmcl');
-						$content  = file_get_contents($file->getRealPath());
-						$filename = config('constants.file.path.dcxm') . Auth::user()->xh . time() . '.' . $file->extension();
-
-						Storage::put($filename, $content);
-
-						$xmsq->zmcl = $filename;
-					}
-				}
+				$xmsq->zmcl  = $request->zmcl;
 
 				if ($xmsq->save()) {
 					return redirect('dcxm/xmjf/' . $id)->withStatus('填写申报书成功');
@@ -519,7 +505,7 @@ class DcxmController extends Controller {
 			->setOption('margin-bottom', '3.5cm')
 			->setOption('margin-left', '2.8cm')
 			->setOption('margin-right', '2.6cm')
-			->inline('application.pdf');
+			->inline($project->student->xh . '.pdf');
 	}
 
 	/**

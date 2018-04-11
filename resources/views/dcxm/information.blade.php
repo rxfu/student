@@ -37,13 +37,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="kssj" class="col-sm-3 control-label">项目起止时间</label>
+                        <label for="kssj" class="col-sm-3 control-label">项目期限</label>
                         <div class="col-sm-8">
-                            <div id="datepicker" class="input-daterange input-group">
-                                <input type="text" class="form-control" id="kssj" name="kssj">
-                                <span class="input-group-addon">至</span>
-                                <input type="text" class="form-control" id="jssj" name="jssj">
-                            </div>
+                            <select id="xmqx" name="xmqx" class="form-control">
+                                <option value="1" selected>1年</option>
+                                <option value="2">2年</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -278,15 +277,6 @@ $(function() {
     });
 
     $('input[name="cysfbx[]"], input[name="jssfbx[]"]').bootstrapSwitch();
-
-    $('#datepicker').datepicker({
-        language: 'zh-CN',
-        todayBtn: 'linked',
-        todayHighlight: true,
-        format: 'yyyy-mm-dd',
-        startDate: '-0d',
-        endDate: '+1y'
-    });
 
     $('#xmcy-table').on('keyup blur', 'input[name="xh[]"]', function() {
         var xh = $(this);

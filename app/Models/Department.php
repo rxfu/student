@@ -21,6 +21,8 @@ class Department extends Model {
 
 	public $timestatmps = false;
 
+	protected $connection = 'pgsql';
+
 	/**
 	 * 个人资料
 	 * @author FuRongxin

@@ -39,11 +39,10 @@
                     <div class="form-group">
                         <label for="kssj" class="col-sm-3 control-label">项目起止时间</label>
                         <div class="col-sm-8">
-                            <div id="datepicker" class="input-daterange input-group">
-                                <input type="text" class="form-control" id="kssj" name="kssj" value="{{ $project->kssj }}">
-                                <span class="input-group-addon">至</span>
-                                <input type="text" class="form-control" id="jssj" name="jssj" value="{{ $project->jssj }}">
-                            </div>
+                            <select id="xmqx" name="xmqx" class="form-control">
+                                <option value="1"{{ 1 == $deadline ? ' selected' : '' }}>1年</option>
+                                <option value="2"{{ 2 == $deadline ? ' selected' : '' }}>2年</option>
+                            </select>
                         </div>
                     </div>
                 </div>

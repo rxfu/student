@@ -39,17 +39,6 @@ class User extends Authenticatable {
 	protected $primaryKey = 'xh';
 
 	/**
-	 * 获取用户名
-	 * @author FuRongxin
-	 * @date    2016-01-12
-	 * @version 2.0
-	 * @return  string 用户名
-	 */
-	public function getAuthIdentifierName() {
-		return $this->xh;
-	}
-
-	/**
 	 * 获取密码
 	 * @author FuRongxin
 	 * @date    2016-01-12

@@ -3,6 +3,7 @@
 use Illuminate\Http\Response;
 use Knp\Snappy\Pdf as SnappyPDF;
 use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\Support\Renderable;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class PdfWrapper{
 
     /**
-     * @var \Knp\Snappy\Pdf 
+     * @var \Knp\Snappy\Pdf
      */
     protected $snappy;
 
@@ -34,12 +35,23 @@ class PdfWrapper{
 
     /**
      * Get the Snappy instance.
-     * 
+     *
      * @return \Knp\Snappy\Pdf
      */
      public function snappy()
      {
          return $this->snappy;
+     }
+
+    /**
+     * Set temporary folder
+     *
+     * @param  string $path
+     */
+     public function setTemporaryFolder($path)
+     {
+         $this->snappy->setTemporaryFolder($path);
+         return $this;
      }
 
     /**
@@ -90,6 +102,9 @@ class PdfWrapper{
      */
     public function setOption($name, $value)
     {
+        if ($value instanceof Renderable) {
+            $value = $value->render();
+        }
         $this->snappy->setOption($name, $value);
         return $this;
     }
@@ -107,12 +122,15 @@ class PdfWrapper{
     /**
      * Load a HTML string
      *
-     * @param  string $string
+     * @param  Array|string|Renderable $html
      * @return $this
      */
-    public function loadHTML($string)
+    public function loadHTML($html)
     {
-        $this->html = (string) $string;
+        if ($html instanceof Renderable) {
+            $html = $html->render();
+        }
+        $this->html = $html;
         $this->file = null;
         return $this;
     }
@@ -140,9 +158,9 @@ class PdfWrapper{
      */
     public function loadView($view, $data = array(), $mergeData = array())
     {
-        $this->html = View::make($view, $data, $mergeData)->render();
-        $this->file = null;
-        return $this;
+	$view = View::make($view, $data, $mergeData);
+
+	return $this->loadHTML($view);
     }
 
     /**
@@ -234,12 +252,12 @@ class PdfWrapper{
 
     /**
      * Call Snappy instance.
-     * 
+     *
      * Also shortcut's
      * ->html => loadHtml
      * ->view => loadView
      * ->file => loadFile
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return mixed
@@ -251,7 +269,7 @@ class PdfWrapper{
         {
             return call_user_func_array(array($this, $method), $arguments);
         }
-        
+
         return call_user_func_array (array($this->snappy, $name), $arguments);
     }
 

@@ -29,7 +29,7 @@
                                     @foreach ($scores as $score)
                                     <tr>
                                         <td>{{ $score->c_kssj }}</td>
-                                        <td>{{ count($score->type) ? $score->type->ksmc : '' }}</td>
+                                        <td>{{ is_null($score->type) ? '' : $score->type->ksmc }}</td>
                                         <td>{{ $score->c_cj }}</td>
                                     </tr>
                                     @endforeach

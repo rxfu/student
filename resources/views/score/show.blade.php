@@ -52,7 +52,7 @@
                                         <td>{{ $score->nd }}</td>
                                         <td>{{ $score->term->mc }}</td>
                                         <td>{{ $score->kcxh }}</td>
-                                        <td>{{ count($score->task) ? $score->task->course->kcmc : '' }}</td>
+                                        <td>{{ is_null($score->task) ? '' : $score->task->course->kcmc }}</td>
                                         <td>{{ $score->platform->mc }}</td>
                                         <td>{{ $score->property->mc }}</td>
                                         @foreach (array_pluck($values, 'id') as $id)

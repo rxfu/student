@@ -73,7 +73,11 @@
                             @endif
                             <li><a href="{{ url('password/change') }}"><i class="fa fa-unlock fa-fw"></i> 修改密码</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
+                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="post" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
                         </ul>
                     </li>
                 </ul>
@@ -220,18 +224,20 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="{{ url('dcxm/list') }}">项目列表</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ url('dcxm/xmxx') }}">项目申请</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
+                            @if ($allowed_dcxm)
+                                <li>
+                                    <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{ url('dcxm/list') }}">项目列表</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url('dcxm/xmxx') }}">项目申请</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                            @endif
                             <!--li>
                                 <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
@@ -298,7 +304,7 @@
                                 <!-- /.nav-second-level -->
                             </li>
                             <li>
-                                <a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                             </li>
                         </ul>
                         <!-- /#side-menu -->
