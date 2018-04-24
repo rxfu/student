@@ -84,7 +84,7 @@ class DcxmController extends Controller {
 			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->cjsj    = Carbon::now();
 
-			$begdate    = Carbon::create(null, 4, 1);
+			$begdate    = Carbon::create(null, 4, 20);
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
