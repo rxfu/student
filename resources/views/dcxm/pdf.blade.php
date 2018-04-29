@@ -130,7 +130,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="text-nowrap">项目起止时间</td>
-                        <td colspan="5" class="text-center">{{ date('Y年m月', strtotime($project->kssj)) }}至{{ date('Y年m月', strtotime($project->kssj)) }}</td>
+                        <td colspan="5" class="text-center">{{ date('Y年m月', strtotime($project->kssj)) }}至{{ date('Y年m月', strtotime($project->jssj)) }}</td>
                     </tr>
                     <tr>
                         <td rowspan="2" width="22">负责人</td>
