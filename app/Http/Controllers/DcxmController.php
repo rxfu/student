@@ -83,6 +83,8 @@ class DcxmController extends Controller {
 			$xmxx->sfsh    = config('constants.status.disable');
 			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->cjsj    = Carbon::now();
+			$xmxx->xy      = Auth::user()->profile->xy;
+			$xmxx->nd      = Carbon::now()->year;
 
 			$begdate    = Carbon::create(null, 4, 20);
 			$xmxx->kssj = $begdate->toDateString();
@@ -134,7 +136,7 @@ class DcxmController extends Controller {
 			$project->members()->saveMany($members);
 			$project->tutors()->saveMany($tutors);
 
-			return redirect('dcxm/list')->withStatus('项目信息保存成功');
+			return redirect('dcxm/xmsq/' . $xmxx->id)->withStatus('项目信息保存成功');
 		}
 	}
 
@@ -183,7 +185,7 @@ class DcxmController extends Controller {
 			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->gxsj    = Carbon::now();
 
-			$begdate    = Carbon::create(null, 4, 1);
+			$begdate    = Carbon::create(null, 4, 20);
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 

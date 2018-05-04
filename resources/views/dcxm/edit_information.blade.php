@@ -93,7 +93,7 @@
                                         <input type="text" class="form-control" name="szyx[]" value="{{ $member->sfbx ? $member->profile->college->mc : $member->szyx }}"@if ($member->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="cylxdh[]" value="{{ $member->sfbx ? $member->profile->lxdh : $member->lxdh }}"@if ($member->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="cylxdh[]" value="{{ $member->lxdh }}">
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" name="fg[]" value={{ $member->fg }}>
@@ -130,8 +130,8 @@
                                 <th class="active">是否本校教师</th>
                                 <th class="active">工号</th>
                                 <th class="active">姓名</th>
-                                <th class="active">职称</th>
                                 <th class="active">所在单位</th>
+                                <th class="active">职称</th>
                                 <th class="active">联系电话</th>
                                 <th class="active">Email</th>
                                 <th class="active">操作</th>
@@ -154,16 +154,16 @@
                                         <input type="text" class="form-control" name="jsxm[]" size="10" value="{{ $tutor->sfbx ? $tutor->teacher->xm : $tutor->xm }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="zc[]" size="12" value="{{ $tutor->sfbx ? $tutor->teacher->position->mc : $tutor->zc }}"@if ($tutor->sfbx) readonly @endif>
-                                    </td>
-                                    <td>
                                         <input type="text" class="form-control" name="szdw[]" value="{{ $tutor->sfbx ? $tutor->teacher->department->mc : $tutor->szdw }}"@if ($tutor->sfbx) readonly @endif>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="jslxdh[]" value="{{ $tutor->sfbx ? $tutor->teacher->lxdh : $tutor->jslxdh }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="zc[]" size="12" value="{{ $tutor->zc }}">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="email[]" value="{{ $tutor->sfbx ? $tutor->teacher->email : $tutor->email }}"@if ($tutor->sfbx) readonly @endif>
+                                        <input type="text" class="form-control" name="jslxdh[]" value="{{ $tutor->lxdh }}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="email[]" value="{{ $tutor->email }}">
                                     </td>
                                     <td>
                                         <div class="input-group">
@@ -204,7 +204,7 @@ $(function() {
                 <td><input type="text" class="form-control" name="cyxm[]" size="10" readonly></td>\
                 <td><input type="text" class="form-control" name="nj[]" size="4" readonly></td>\
                 <td><input type="text" class="form-control" name="szyx[]" readonly></td>\
-                <td><input type="text" class="form-control" name="cylxdh[]" readonly></td>\
+                <td><input type="text" class="form-control" name="cylxdh[]"></td>\
                 <td><input type="text" class="form-control" name="fg[]"></td>\
                 <td>\
                     <div class="input-group">\
@@ -225,12 +225,12 @@ $(function() {
             onSwitchChange: function(event, state) {
                 var row = $(this).closest('tr');
                 row.find('td:lt(8):gt(1)').children('input').val('');
+                row.find('td:eq(2)').children('input').focus();
 
                 if (true == state) {
-                    row.find('td').slice(3, 7).children('input').attr('readonly', true);
+                    row.find('td').slice(3, 6).children('input').attr('readonly', true);
                 } else {
-                    row.find('td:eq(2)').children('input').focus();
-                    row.find('td:lt(7):gt(2)').children('input').attr('readonly', false);
+                    row.find('td:lt(6):gt(2)').children('input').attr('readonly', false);
                 }
             }
         });
@@ -248,12 +248,12 @@ $(function() {
         onSwitchChange: function(event, state) {
             var row = $(this).closest('tr');
             row.find('td:lt(8):gt(1)').children('input').val('');
+            row.find('td:eq(2)').children('input').focus();
 
             if (true == state) {
-                row.find('td').slice(3, 7).children('input').attr('readonly', true);
+                row.find('td').slice(3, 6).children('input').attr('readonly', true);
             } else {
-                row.find('td:eq(2)').children('input').focus();
-                row.find('td:lt(7):gt(2)').children('input').attr('readonly', false);
+                row.find('td:lt(6):gt(2)').children('input').attr('readonly', false);
             }
         }
     });
@@ -266,10 +266,10 @@ $(function() {
                 <td><input type="checkbox" name="jssfbx[]" data-on-text="是" data-off-text="否" value="true" checked></td>\
                 <td><input type="text" class="form-control" name="jsgh[]"></td>\
                 <td><input type="text" class="form-control" name="jsxm[]" size="10" readonly></td>\
-                <td><input type="text" class="form-control" name="zc[]" size="12" readonly></td>\
                 <td><input type="text" class="form-control" name="szdw[]" readonly></td>\
-                <td><input type="text" class="form-control" name="jslxdh[]" readonly></td>\
-                <td><input type="text" class="form-control" name="email[]" readonly></td>\
+                <td><input type="text" class="form-control" name="zc[]" size="12"></td>\
+                <td><input type="text" class="form-control" name="jslxdh[]"></td>\
+                <td><input type="text" class="form-control" name="email[]"></td>\
                 <td>\
                     <div class="input-group">\
                         <span class="input-group-btn">\
@@ -289,12 +289,12 @@ $(function() {
             onSwitchChange: function(event, state) {
                 var row = $(this).closest('tr');
                 row.find('td:lt(8):gt(1)').children('input').val('');
+                row.find('td:eq(2)').children('input').focus();
 
                 if (true == state) {
-                    row.find('td').slice(3, 8).children('input').attr('readonly', true);
+                    row.find('td').slice(3, 5).children('input').attr('readonly', true);
                 } else {
-                    row.find('td:eq(2)').children('input').focus();
-                    row.find('td:lt(8):gt(2)').children('input').attr('readonly', false);
+                    row.find('td:lt(5):gt(2)').children('input').attr('readonly', false);
                 }
             }
         });
@@ -312,23 +312,14 @@ $(function() {
         onSwitchChange: function(event, state) {
             var row = $(this).closest('tr');
             row.find('td:lt(8):gt(1)').children('input').val('');
+            row.find('td:eq(2)').children('input').focus();
 
             if (true == state) {
-                row.find('td').slice(3, 8).children('input').attr('readonly', true);
+                row.find('td').slice(3, 5).children('input').attr('readonly', true);
             } else {
-                row.find('td:eq(2)').children('input').focus();
-                row.find('td:lt(8):gt(2)').children('input').attr('readonly', false);
+                row.find('td:lt(5):gt(2)').children('input').attr('readonly', false);
             }
         }
-    });
-
-    $('#datepicker').datepicker({
-        language: 'zh-CN',
-        todayBtn: 'linked',
-        todayHighlight: true,
-        format: 'yyyy-mm-dd',
-        startDate: '-0d',
-        endDate: '+1y'
     });
 
     $('#xmcy-table').on('keyup blur', 'input[name="xh[]"]', function() {
@@ -364,8 +355,8 @@ $(function() {
                 success: function(data) {
                     var row = jsgh.closest('tr');
                     row.find('td:eq(3)').children('input').val(data.xm);
-                    row.find('td:eq(4)').children('input').val(data.zc);
-                    row.find('td:eq(5)').children('input').val(data.szdw);
+                    row.find('td:eq(4)').children('input').val(data.szdw);
+                    row.find('td:eq(5)').children('input').val(data.zc);
                     row.find('td:eq(6)').children('input').val(data.lxdh);
                     row.find('td:eq(7)').children('input').val(data.email);
                 },
