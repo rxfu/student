@@ -80,11 +80,11 @@ return [
 
 		'sqlsrv'  => [
 			'driver'   => 'sqlsrv',
-			'host'     => env('DB_HOST', 'localhost'),
-			'port'     => env('DB_PORT', '1433'),
-			'database' => env('DB_DATABASE', 'forge'),
-			'username' => env('DB_USERNAME', 'forge'),
-			'password' => env('DB_PASSWORD', ''),
+			'host'     => '202.193.162.31',
+			'port'     => '1433',
+			'database' => 'Cwcmid',
+			'username' => 'cwc_mid',
+			'password' => 'CWC111mid',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 		],
