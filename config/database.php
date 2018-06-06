@@ -80,10 +80,10 @@ return [
 
 		'sqlsrv'  => [
 			'driver'   => 'sqlsrv',
-			'host'     => '202.193.162.31',
+			'host'     => 'finance',
 			'port'     => '1433',
 			'database' => 'Cwcmid',
-			'username' => 'cwc_mid',
+			'username' => 'CwcMid',
 			'password' => 'CWC111mid',
 			'charset'  => 'utf8',
 			'prefix'   => '',
