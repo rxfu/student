@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
-    <xs:documentation source="https://phpunit.de/manual/7.0/en/appendixes.configuration.html">
-      This Schema file defines the rules by which the XML configuration file of PHPUnit 7.0 may be structured.
+    <xs:documentation source="https://phpunit.de/documentation.html">
+      This Schema file defines the rules by which the XML configuration file of PHPUnit 7.2 may be structured.
     </xs:documentation>
-    <xs:appinfo source="https://phpunit.de/manual/7.0/en/appendixes.configuration.html"/>
+    <xs:appinfo source="https://phpunit.de/documentation.html"/>
   </xs:annotation>
   <xs:element name="phpunit" type="phpUnitType">
     <xs:annotation>
@@ -50,6 +50,11 @@
       <xs:element name="group" type="xs:string" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="extensionsType">
+    <xs:sequence>
+      <xs:element name="extension" type="objectType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="listenersType">
     <xs:sequence>
       <xs:element name="listener" type="objectType" maxOccurs="unbounded"/>
@@ -85,6 +90,7 @@
       <xs:element name="object" type="objectType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="file" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="directory" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="boolean" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:group>
   <xs:group name="argumentChoice">
@@ -97,6 +103,7 @@
       <xs:element name="object" type="objectType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="file" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="directory" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="boolean" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
     </xs:choice>
   </xs:group>
   <xs:simpleType name="columnsType">
@@ -157,6 +164,13 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:simpleType name="executionOrderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="default"/>
+      <xs:enumeration value="reverse"/>
+      <xs:enumeration value="random"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="fileFilterType">
     <xs:simpleContent>
       <xs:extension base="xs:anyURI">
@@ -209,8 +223,9 @@
     <xs:attribute name="convertErrorsToExceptions" type="xs:boolean" default="true"/>
     <xs:attribute name="convertNoticesToExceptions" type="xs:boolean" default="true"/>
     <xs:attribute name="convertWarningsToExceptions" type="xs:boolean" default="true"/>
+    <xs:attribute name="disableCodeCoverageIgnore" type="xs:boolean" default="false"/>
     <xs:attribute name="forceCoversAnnotation" type="xs:boolean" default="false"/>
-    <xs:attribute name="printerClass" type="xs:string" default="PHPUnit_TextUI_ResultPrinter"/>
+    <xs:attribute name="printerClass" type="xs:string" default="PHPUnit\TextUI\ResultPrinter"/>
     <xs:attribute name="printerFile" type="xs:anyURI"/>
     <xs:attribute name="processIsolation" type="xs:boolean" default="false"/>
     <xs:attribute name="stopOnError" type="xs:boolean" default="false"/>
@@ -232,7 +247,7 @@
     <xs:attribute name="timeoutForSmallTests" type="xs:integer" default="1"/>
     <xs:attribute name="timeoutForMediumTests" type="xs:integer" default="10"/>
     <xs:attribute name="timeoutForLargeTests" type="xs:integer" default="60"/>
-    <xs:attribute name="testSuiteLoaderClass" type="xs:string" default="PHPUnit_Runner_StandardTestSuiteLoader"/>
+    <xs:attribute name="testSuiteLoaderClass" type="xs:string" default="PHPUnit\Runner\StandardTestSuiteLoader"/>
     <xs:attribute name="testSuiteLoaderFile" type="xs:anyURI"/>
     <xs:attribute name="defaultTestSuite" type="xs:string" default=""/>
     <xs:attribute name="verbose" type="xs:boolean" default="false"/>
@@ -240,6 +255,8 @@
     <xs:attribute name="reverseDefectList" type="xs:boolean" default="false"/>
     <xs:attribute name="registerMockObjectsFromTestArgumentsRecursively" type="xs:boolean" default="false"/>
     <xs:attribute name="extensionsDirectory" type="xs:string"/>
+    <xs:attribute name="executionOrder" type="executionOrderType" default="default"/>
+    <xs:attribute name="resolveDependencies" type="xs:boolean" default="false"/>
   </xs:attributeGroup>
   <xs:group name="configGroup">
     <xs:all>
@@ -248,6 +265,7 @@
       <xs:element name="testdoxGroups" type="groupsType" minOccurs="0"/>
       <xs:element name="filter" type="filtersType" minOccurs="0"/>
       <xs:element name="logging" type="loggersType" minOccurs="0"/>
+      <xs:element name="extensions" type="extensionsType" minOccurs="0"/>
       <xs:element name="listeners" type="listenersType" minOccurs="0"/>
       <xs:element name="php" type="phpType" minOccurs="0"/>
     </xs:all>

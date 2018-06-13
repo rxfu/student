@@ -11,10 +11,11 @@ namespace PHPUnit\Util;
 
 use DOMElement;
 use DOMXPath;
-use File_Iterator_Facade;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestSuite;
+use PHPUnit\Runner\TestSuiteSorter;
 use PHPUnit\TextUI\ResultPrinter;
+use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
 /**
  * Wrapper for the PHPUnit XML configuration file.
@@ -34,6 +35,7 @@ use PHPUnit\TextUI\ResultPrinter;
  *          convertErrorsToExceptions="true"
  *          convertNoticesToExceptions="true"
  *          convertWarningsToExceptions="true"
+ *          disableCodeCoverageIgnore="false"
  *          forceCoversAnnotation="false"
  *          processIsolation="false"
  *          stopOnError="false"
@@ -61,7 +63,9 @@ use PHPUnit\TextUI\ResultPrinter;
  *          timeoutForLargeTests="60"
  *          verbose="false"
  *          reverseDefectList="false"
- *          registerMockObjectsFromTestArgumentsRecursively="false">
+ *          registerMockObjectsFromTestArgumentsRecursively="false"
+ *          executionOrder="default"
+ *          resolveDependencies="false">
  *   <testsuites>
  *     <testsuite name="My Test Suite">
  *       <directory suffix="Test.php" phpVersion="5.3.0" phpVersionOperator=">=">/path/to/files</directory>
@@ -123,7 +127,6 @@ use PHPUnit\TextUI\ResultPrinter;
  *     <log type="coverage-html" target="/tmp/report" lowUpperBound="50" highLowerBound="90"/>
  *     <log type="coverage-clover" target="/tmp/clover.xml"/>
  *     <log type="coverage-crap4j" target="/tmp/crap.xml" threshold="30"/>
- *     <log type="json" target="/tmp/logfile.json"/>
  *     <log type="plain" target="/tmp/logfile.txt"/>
  *     <log type="teamcity" target="/tmp/logfile.txt"/>
  *     <log type="junit" target="/tmp/logfile.xml"/>
@@ -151,6 +154,11 @@ use PHPUnit\TextUI\ResultPrinter;
 final class Configuration
 {
     /**
+     * @var self[]
+     */
+    private static $instances = [];
+
+    /**
      * @var \DOMDocument
      */
     private $document;
@@ -166,39 +174,14 @@ final class Configuration
     private $filename;
 
     /**
-     * @var self[]
+     * @var \LibXMLError[]
      */
-    private static $instances = [];
-
-    /**
-     * Loads a PHPUnit configuration file.
-     *
-     * @param string $filename
-     *
-     * @throws Exception
-     */
-    private function __construct(string $filename)
-    {
-        $this->filename = $filename;
-        $this->document = Xml::loadFile($filename, false, true, true);
-        $this->xpath    = new DOMXPath($this->document);
-    }
-
-    /**
-     * @codeCoverageIgnore
-     */
-    private function __clone()
-    {
-    }
+    private $errors = [];
 
     /**
      * Returns a PHPUnit configuration object.
      *
-     * @param string $filename
-     *
      * @throws Exception
-     *
-     * @return Configuration
      */
     public static function getInstance(string $filename): self
     {
@@ -222,19 +205,81 @@ final class Configuration
     }
 
     /**
-     * Returns the real path to the configuration file.
+     * Loads a PHPUnit configuration file.
      *
-     * @return string
+     * @throws Exception
+     */
+    private function __construct(string $filename)
+    {
+        $this->filename = $filename;
+        $this->document = Xml::loadFile($filename, false, true, true);
+        $this->xpath    = new DOMXPath($this->document);
+
+        $this->validateConfigurationAgainstSchema();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    private function __clone()
+    {
+    }
+
+    public function hasValidationErrors(): bool
+    {
+        return \count($this->errors) > 0;
+    }
+
+    public function getValidationErrors(): array
+    {
+        $result = [];
+
+        foreach ($this->errors as $error) {
+            if (!isset($result[$error->line])) {
+                $result[$error->line] = [];
+            }
+            $result[$error->line][] = \trim($error->message);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the real path to the configuration file.
      */
     public function getFilename(): string
     {
         return $this->filename;
     }
 
+    public function getExtensionConfiguration(): array
+    {
+        $result = [];
+
+        foreach ($this->xpath->query('extensions/extension') as $extension) {
+            /** @var DOMElement $extension */
+            $class     = (string) $extension->getAttribute('class');
+            $file      = '';
+            $arguments = $this->getConfigurationArguments($extension->childNodes);
+
+            if ($extension->getAttribute('file')) {
+                $file = $this->toAbsolutePath(
+                    (string) $extension->getAttribute('file'),
+                    true
+                );
+            }
+            $result[] = [
+                'class'     => $class,
+                'file'      => $file,
+                'arguments' => $arguments
+            ];
+        }
+
+        return $result;
+    }
+
     /**
      * Returns the configuration for SUT filtering.
-     *
-     * @return array
      */
     public function getFilterConfiguration(): array
     {
@@ -301,8 +346,6 @@ final class Configuration
 
     /**
      * Returns the configuration for groups.
-     *
-     * @return array
      */
     public function getGroupConfiguration(): array
     {
@@ -311,8 +354,6 @@ final class Configuration
 
     /**
      * Returns the configuration for testdox groups.
-     *
-     * @return array
      */
     public function getTestdoxGroupConfiguration(): array
     {
@@ -321,8 +362,6 @@ final class Configuration
 
     /**
      * Returns the configuration for listeners.
-     *
-     * @return array
      */
     public function getListenerConfiguration(): array
     {
@@ -332,35 +371,13 @@ final class Configuration
             /** @var DOMElement $listener */
             $class     = (string) $listener->getAttribute('class');
             $file      = '';
-            $arguments = [];
+            $arguments = $this->getConfigurationArguments($listener->childNodes);
 
             if ($listener->getAttribute('file')) {
                 $file = $this->toAbsolutePath(
                     (string) $listener->getAttribute('file'),
                     true
                 );
-            }
-
-            foreach ($listener->childNodes as $node) {
-                if (!$node instanceof DOMElement) {
-                    continue;
-                }
-
-                if ($node->tagName !== 'arguments') {
-                    continue;
-                }
-
-                foreach ($node->childNodes as $argument) {
-                    if (!$argument instanceof DOMElement) {
-                        continue;
-                    }
-
-                    if ($argument->tagName === 'file' || $argument->tagName === 'directory') {
-                        $arguments[] = $this->toAbsolutePath((string) $argument->textContent);
-                    } else {
-                        $arguments[] = Xml::xmlToVariable($argument);
-                    }
-                }
             }
 
             $result[] = [
@@ -375,8 +392,6 @@ final class Configuration
 
     /**
      * Returns the logging configuration.
-     *
-     * @return array
      */
     public function getLoggingConfiguration(): array
     {
@@ -421,6 +436,7 @@ final class Configuration
                         false
                     );
                 }
+
                 if ($log->hasAttribute('showOnlySummary')) {
                     $result['coverageTextShowOnlySummary'] = $this->getBoolean(
                         (string) $log->getAttribute('showOnlySummary'),
@@ -437,8 +453,6 @@ final class Configuration
 
     /**
      * Returns the PHP configuration.
-     *
-     * @return array
      */
     public function getPHPConfiguration(): array
     {
@@ -588,8 +602,6 @@ final class Configuration
 
     /**
      * Returns the PHPUnit configuration.
-     *
-     * @return array
      */
     public function getPHPUnitConfiguration(): array
     {
@@ -894,17 +906,38 @@ final class Configuration
             );
         }
 
+        if ($root->hasAttribute('executionOrder')) {
+            switch ((string) $root->getAttribute('executionOrder')) {
+                case 'random':
+                    $result['executionOrder'] = TestSuiteSorter::ORDER_RANDOMIZED;
+
+                    break;
+
+                case 'reverse':
+                    $result['executionOrder'] = TestSuiteSorter::ORDER_REVERSED;
+
+                    break;
+
+                default:
+                    $result['executionOrder'] = TestSuiteSorter::ORDER_DEFAULT;
+
+            }
+        }
+
+        if ($root->hasAttribute('resolveDependencies')) {
+            $result['resolveDependencies'] = $this->getBoolean(
+                (string) $root->getAttribute('resolveDependencies'),
+                false
+            );
+        }
+
         return $result;
     }
 
     /**
      * Returns the test suite configuration.
      *
-     * @param string $testSuiteFilter
-     *
      * @throws Exception
-     *
-     * @return TestSuite
      */
     public function getTestSuiteConfiguration(string $testSuiteFilter = ''): TestSuite
     {
@@ -931,8 +964,6 @@ final class Configuration
 
     /**
      * Returns the test suite names from the configuration.
-     *
-     * @return array
      */
     public function getTestSuiteNames(): array
     {
@@ -946,13 +977,59 @@ final class Configuration
         return $names;
     }
 
+    private function validateConfigurationAgainstSchema(): void
+    {
+        $original    = \libxml_use_internal_errors(true);
+        $xsdFilename = __DIR__ . '/../../phpunit.xsd';
+
+        if (\defined('__PHPUNIT_PHAR_ROOT__')) {
+            $xsdFilename =  __PHPUNIT_PHAR_ROOT__ . '/phpunit.xsd';
+        }
+
+        $this->document->schemaValidate($xsdFilename);
+        $this->errors = \libxml_get_errors();
+        \libxml_use_internal_errors($original);
+    }
+
     /**
-     * @param DOMElement $testSuiteNode
-     * @param string     $testSuiteFilter
-     *
+     * Collects and returns the configuration arguments from the PHPUnit
+     * XML configuration
+     */
+    private function getConfigurationArguments(\DOMNodeList $nodes): array
+    {
+        $arguments = [];
+
+        if ($nodes->length === 0) {
+            return $arguments;
+        }
+
+        foreach ($nodes as $node) {
+            if (!$node instanceof DOMElement) {
+                continue;
+            }
+
+            if ($node->tagName !== 'arguments') {
+                continue;
+            }
+
+            foreach ($node->childNodes as $argument) {
+                if (!$argument instanceof DOMElement) {
+                    continue;
+                }
+
+                if ($argument->tagName === 'file' || $argument->tagName === 'directory') {
+                    $arguments[] = $this->toAbsolutePath((string) $argument->textContent);
+                } else {
+                    $arguments[] = Xml::xmlToVariable($argument);
+                }
+            }
+        }
+
+        return $arguments;
+    }
+
+    /**
      * @throws \PHPUnit\Framework\Exception
-     *
-     * @return TestSuite
      */
     private function getTestSuite(DOMElement $testSuiteNode, string $testSuiteFilter = ''): TestSuite
     {
@@ -968,12 +1045,13 @@ final class Configuration
 
         foreach ($testSuiteNode->getElementsByTagName('exclude') as $excludeNode) {
             $excludeFile = (string) $excludeNode->textContent;
+
             if ($excludeFile) {
                 $exclude[] = $this->toAbsolutePath($excludeFile);
             }
         }
 
-        $fileIteratorFacade = new File_Iterator_Facade;
+        $fileIteratorFacade = new FileIteratorFacade;
         $testSuiteFilter    = $testSuiteFilter ? \explode(',', $testSuiteFilter) : [];
 
         foreach ($testSuiteNode->getElementsByTagName('directory') as $directoryNode) {
@@ -1088,13 +1166,7 @@ final class Configuration
         return $default;
     }
 
-    /**
-     * @param string $value
-     * @param int    $default
-     *
-     * @return int
-     */
-    private function getInteger(string $value, $default): int
+    private function getInteger(string $value, int $default): int
     {
         if (\is_numeric($value)) {
             return (int) $value;
@@ -1103,11 +1175,6 @@ final class Configuration
         return $default;
     }
 
-    /**
-     * @param string $query
-     *
-     * @return array
-     */
     private function readFilterDirectories(string $query): array
     {
         $directories = [];
@@ -1148,8 +1215,6 @@ final class Configuration
     }
 
     /**
-     * @param string $query
-     *
      * @return string[]
      */
     private function readFilterFiles(string $query): array

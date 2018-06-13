@@ -190,9 +190,15 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     {
         $class = static::class;
 
+        $booted = [];
+
         foreach (class_uses_recursive($class) as $trait) {
-            if (method_exists($class, $method = 'boot'.class_basename($trait))) {
+            $method = 'boot'.class_basename($trait);
+
+            if (method_exists($class, $method) && ! in_array($method, $booted)) {
                 forward_static_call([$class, $method]);
+
+                $booted[] = $method;
             }
         }
     }
@@ -405,16 +411,16 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     {
         $relations = is_string($relations) ? func_get_args() : $relations;
 
-        return $this->load(array_filter($relations, function ($relation) {
-            return ! $this->relationLoaded($relation);
-        }));
+        $this->newCollection([$this])->loadMissing($relations);
+
+        return $this;
     }
 
     /**
      * Increment a column's value by a given amount.
      *
      * @param  string  $column
-     * @param  int  $amount
+     * @param  float|int  $amount
      * @param  array  $extra
      * @return int
      */
@@ -427,7 +433,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      * Decrement a column's value by a given amount.
      *
      * @param  string  $column
-     * @param  int  $amount
+     * @param  float|int  $amount
      * @param  array  $extra
      * @return int
      */
@@ -440,7 +446,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      * Run the increment or decrement method on the model.
      *
      * @param  string  $column
-     * @param  int  $amount
+     * @param  float|int  $amount
      * @param  array  $extra
      * @param  string  $method
      * @return int
@@ -464,7 +470,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      * Increment the underlying attribute value and sync with original.
      *
      * @param  string  $column
-     * @param  int  $amount
+     * @param  float|int  $amount
      * @param  array  $extra
      * @param  string  $method
      * @return void
@@ -530,7 +536,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function save(array $options = [])
     {
-        $query = $this->newQueryWithoutScopes();
+        $query = $this->newModelQuery();
 
         // If the "saving" event returns false we'll bail out of the save and return
         // false, indicating that the save failed. This provides a chance for any
@@ -815,7 +821,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     protected function performDeleteOnModel()
     {
-        $this->setKeysForSaveQuery($this->newQueryWithoutScopes())->delete();
+        $this->setKeysForSaveQuery($this->newModelQuery())->delete();
 
         $this->exists = false;
     }
@@ -838,6 +844,18 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function newQuery()
     {
         return $this->registerGlobalScopes($this->newQueryWithoutScopes());
+    }
+
+    /**
+     * Get a new query builder that doesn't have any global scopes or eager loading.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function newModelQuery()
+    {
+        return $this->newEloquentBuilder(
+            $this->newBaseQueryBuilder()
+        )->setModel($this);
     }
 
     /**
@@ -874,12 +892,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function newQueryWithoutScopes()
     {
-        $builder = $this->newEloquentBuilder($this->newBaseQueryBuilder());
-
-        // Once we have the query builders, we will set the model instances so the
-        // builder can easily access any information it may need from the model
-        // while it is constructing and executing various queries against it.
-        return $builder->setModel($this)
+        return $this->newModelQuery()
                     ->with($this->with)
                     ->withCount($this->withCount);
     }
@@ -892,9 +905,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function newQueryWithoutScope($scope)
     {
-        $builder = $this->newQuery();
-
-        return $builder->withoutGlobalScope($scope);
+        return $this->newQuery()->withoutGlobalScope($scope);
     }
 
     /**

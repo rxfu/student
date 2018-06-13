@@ -318,11 +318,13 @@ class FilesystemManager implements FactoryContract
      *
      * @param  string  $name
      * @param  mixed  $disk
-     * @return void
+     * @return $this
      */
     public function set($name, $disk)
     {
         $this->disks[$name] = $disk;
+
+        return $this;
     }
 
     /**
@@ -354,6 +356,21 @@ class FilesystemManager implements FactoryContract
     public function getDefaultCloudDriver()
     {
         return $this->app['config']['filesystems.cloud'];
+    }
+
+    /**
+     * Unset the given disk instances.
+     *
+     * @param  array|string  $disk
+     * @return $this
+     */
+    public function forgetDisk($disk)
+    {
+        foreach ((array) $disk as $diskName) {
+            unset($this->disks[$diskName]);
+        }
+
+        return $this;
     }
 
     /**

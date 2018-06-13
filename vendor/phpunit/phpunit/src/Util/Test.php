@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\Util;
 
-use Iterator;
 use PharIo\Version\VersionConstraintParser;
 use PHPUnit\Framework\CodeCoverageException;
 use PHPUnit\Framework\Exception;
@@ -123,9 +122,6 @@ final class Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     *
      * @throws CodeCoverageException
      *
      * @return array|bool
@@ -137,7 +133,7 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class']['coversNothing']) || isset($annotations['method']['coversNothing'])) {
+        if (self::shouldCoversAnnotationBeUsed($annotations) === false) {
             return false;
         }
 
@@ -147,12 +143,7 @@ final class Test
     /**
      * Returns lines of code specified with the @uses annotation.
      *
-     * @param string $className
-     * @param string $methodName
-     *
      * @throws CodeCoverageException
-     *
-     * @return array
      */
     public static function getLinesToBeUsed(string $className, string $methodName): array
     {
@@ -162,12 +153,7 @@ final class Test
     /**
      * Returns the requirements for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
      * @throws Warning
-     *
-     * @return array
      */
     public static function getRequirements(string $className, string $methodName): array
     {
@@ -245,9 +231,6 @@ final class Test
     /**
      * Returns the missing requirements for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
      * @throws Warning
      *
      * @return string[]
@@ -299,6 +282,7 @@ final class Test
 
         if (!empty($required['OS'])) {
             $requiredOsPattern = \sprintf('/%s/i', \addcslashes($required['OS'], '/'));
+
             if (!\preg_match($requiredOsPattern, PHP_OS)) {
                 $missing[] = \sprintf('Operating system matching %s is required.', $requiredOsPattern);
             }
@@ -358,9 +342,6 @@ final class Test
     /**
      * Returns the expected exception for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
      * @return array|false
      */
     public static function getExpectedException(string $className, ?string $methodName)
@@ -419,13 +400,7 @@ final class Test
     /**
      * Returns the provided data for a method.
      *
-     * @param string $className
-     * @param string $methodName
-     *
      * @throws Exception
-     *
-     * @return array When a data provider is specified and exists
-     *               null  When no data provider is specified
      */
     public static function getProvidedData(string $className, string $methodName): ?array
     {
@@ -459,12 +434,7 @@ final class Test
     }
 
     /**
-     * @param string $docComment full docComment string
-     *
-     * @throws Exception when @testWith annotation is defined but cannot be parsed
-     *
-     * @return null|array array when @testWith annotation is defined,
-     *                    null when @testWith annotation is omitted
+     * @throws Exception
      */
     public static function getDataFromTestWithAnnotation(string $docComment): ?array
     {
@@ -542,12 +512,6 @@ final class Test
         ];
     }
 
-    /**
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array
-     */
     public static function getInlineAnnotations(string $className, string $methodName): array
     {
         $method      = new ReflectionMethod($className, $methodName);
@@ -572,11 +536,6 @@ final class Test
         return $annotations;
     }
 
-    /**
-     * @param string $docBlock
-     *
-     * @return array
-     */
     public static function parseAnnotations(string $docBlock): array
     {
         $annotations = [];
@@ -594,14 +553,6 @@ final class Test
         return $annotations;
     }
 
-    /**
-     * Returns the backup settings for a test.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array<string, null|bool>
-     */
     public static function getBackupSettings(string $className, string $methodName): array
     {
         return [
@@ -618,14 +569,6 @@ final class Test
         ];
     }
 
-    /**
-     * Returns the dependencies for a test class or method.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array
-     */
     public static function getDependencies(string $className, string $methodName): array
     {
         $annotations = self::parseTestMethodAnnotations(
@@ -649,14 +592,6 @@ final class Test
         return \array_unique($dependencies);
     }
 
-    /**
-     * Returns the error handler settings for a test.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return ?bool
-     */
     public static function getErrorHandlerSettings(string $className, ?string $methodName): ?bool
     {
         return self::getBooleanAnnotationSetting(
@@ -666,14 +601,6 @@ final class Test
         );
     }
 
-    /**
-     * Returns the groups for a test class or method.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array
-     */
     public static function getGroups(string $className, ?string $methodName = ''): array
     {
         $annotations = self::parseTestMethodAnnotations(
@@ -718,14 +645,6 @@ final class Test
         return \array_unique($groups);
     }
 
-    /**
-     * Returns the size of the test.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return int
-     */
     public static function getSize(string $className, ?string $methodName): int
     {
         $groups = \array_flip(self::getGroups($className, $methodName));
@@ -745,14 +664,6 @@ final class Test
         return self::UNKNOWN;
     }
 
-    /**
-     * Returns the process isolation settings for a test.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return bool
-     */
     public static function getProcessIsolationSettings(string $className, string $methodName): bool
     {
         $annotations = self::parseTestMethodAnnotations(
@@ -773,14 +684,6 @@ final class Test
         return isset($annotations['class']['runClassInSeparateProcess']);
     }
 
-    /**
-     * Returns the preserve global state settings for a test.
-     *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return ?bool
-     */
     public static function getPreserveGlobalStateSettings(string $className, string $methodName): ?bool
     {
         return self::getBooleanAnnotationSetting(
@@ -790,11 +693,6 @@ final class Test
         );
     }
 
-    /**
-     * @param string $className
-     *
-     * @return array
-     */
     public static function getHookMethods(string $className): array
     {
         if (!\class_exists($className, false)) {
@@ -838,13 +736,7 @@ final class Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     * @param string $mode
-     *
      * @throws CodeCoverageException
-     *
-     * @return array
      */
     private static function getLinesToBeCoveredOrUsed(string $className, string $methodName, string $mode): array
     {
@@ -905,10 +797,6 @@ final class Test
      * Constants are specified using a starting '@'. For example: @ClassName::CONST_NAME
      *
      * If the constant is not found the string is used as is to ensure maximum BC.
-     *
-     * @param string $message
-     *
-     * @return string
      */
     private static function parseAnnotationContent(string $message): string
     {
@@ -921,13 +809,6 @@ final class Test
 
     /**
      * Returns the provided data for a method.
-     *
-     * @param string $docComment
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array|Iterator when a data provider is specified and exists
-     *                        null           when no data provider is specified
      */
     private static function getDataFromDataProviderAnnotation(string $docComment, string $className, string $methodName): ?iterable
     {
@@ -1020,16 +901,6 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class'][$settingName])) {
-            if ($annotations['class'][$settingName][0] === 'enabled') {
-                return true;
-            }
-
-            if ($annotations['class'][$settingName][0] === 'disabled') {
-                return false;
-            }
-        }
-
         if (isset($annotations['method'][$settingName])) {
             if ($annotations['method'][$settingName][0] === 'enabled') {
                 return true;
@@ -1040,15 +911,21 @@ final class Test
             }
         }
 
+        if (isset($annotations['class'][$settingName])) {
+            if ($annotations['class'][$settingName][0] === 'enabled') {
+                return true;
+            }
+
+            if ($annotations['class'][$settingName][0] === 'disabled') {
+                return false;
+            }
+        }
+
         return null;
     }
 
     /**
-     * @param string $element
-     *
      * @throws InvalidCoversTargetException
-     *
-     * @return array
      */
     private static function resolveElementToReflectionObjects(string $element): array
     {
@@ -1159,11 +1036,6 @@ final class Test
         return $codeToCoverList;
     }
 
-    /**
-     * @param array $reflectors
-     *
-     * @return array
-     */
     private static function resolveReflectionObjectsToLines(array $reflectors): array
     {
         $result = [];
@@ -1212,8 +1084,6 @@ final class Test
      * Trims any extensions from version string that follows after
      * the <major>.<minor>[.<patch>] format
      *
-     * @param string $version
-     *
      * @return mixed
      */
     private static function sanitizeVersionNumber(string $version)
@@ -1223,5 +1093,22 @@ final class Test
             '$1',
             $version
         );
+    }
+
+    private static function shouldCoversAnnotationBeUsed(array $annotations): bool
+    {
+        if (isset($annotations['method']['coversNothing'])) {
+            return false;
+        }
+
+        if (isset($annotations['method']['covers'])) {
+            return true;
+        }
+
+        if (isset($annotations['class']['coversNothing'])) {
+            return false;
+        }
+
+        return true;
     }
 }
