@@ -723,8 +723,30 @@ class SelcourseController extends Controller {
 			->selectable($campus)
 			->get();
 
+		$limit_ratio  = 1;
+		$limit_course = -1;
+		if (in_array($type, array_keys(config('constants.course.general')))) {
+			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
+
+				// 未在时间限制表中配置，默认不允许选通识素质课
+				$now   = Carbon::now();
+				$limit = Lmtgeneral::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->orderBy('kssj', 'desc')
+					->first();
+
+				$limit_course = $limit->ms;
+				$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
+			}
+		}
+
 		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) use ($type) {
+			->addColumn('action', function ($course) use ($type, $limit_ratio) {
 				$same = Selcourse::whereXh(Auth::user()->xh)
 					->whereNd(session('year'))
 					->whereXq(session('term'))
@@ -744,7 +766,7 @@ class SelcourseController extends Controller {
 					return '<div class="text-danger">已选同号课程</div>';
 				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
 					return '<div class="text-danger">前修课未修读</div>';
-				} elseif ($course->rs >= $course->zrs) {
+				} elseif ($course->rs >= $course->zrs * $limit_ratio) {
 					return '<div class="text-danger">人数已满</div>';
 				} else {
 					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
@@ -778,6 +800,9 @@ class SelcourseController extends Controller {
 				}
 
 				return $course->rs;
+			})
+			->editColumn('zrs', function ($course) use ($type, $limit_ratio) {
+				return $course->zrs * $limit_ratio;
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
