@@ -474,6 +474,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'App\\Models\\Idtype' => __DIR__ . '/../..' . '/app/Models/Idtype.php',
         'App\\Models\\Lmtcount' => __DIR__ . '/../..' . '/app/Models/Lmtcount.php',
         'App\\Models\\Lmtgeneral' => __DIR__ . '/../..' . '/app/Models/Lmtgeneral.php',
+        'App\\Models\\Lmtsport' => __DIR__ . '/../..' . '/app/Models/Lmtsport.php',
         'App\\Models\\Lmttime' => __DIR__ . '/../..' . '/app/Models/Lmttime.php',
         'App\\Models\\Major' => __DIR__ . '/../..' . '/app/Models/Major.php',
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',

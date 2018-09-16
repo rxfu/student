@@ -75,6 +75,7 @@ return array(
     'App\\Models\\Idtype' => $baseDir . '/app/Models/Idtype.php',
     'App\\Models\\Lmtcount' => $baseDir . '/app/Models/Lmtcount.php',
     'App\\Models\\Lmtgeneral' => $baseDir . '/app/Models/Lmtgeneral.php',
+    'App\\Models\\Lmtsport' => $baseDir . '/app/Models/Lmtsport.php',
     'App\\Models\\Lmttime' => $baseDir . '/app/Models/Lmttime.php',
     'App\\Models\\Major' => $baseDir . '/app/Models/Major.php',
     'App\\Models\\Message' => $baseDir . '/app/Models/Message.php',

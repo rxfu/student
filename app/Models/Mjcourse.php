@@ -312,4 +312,49 @@ class Mjcourse extends Model {
 			->orderBy('pk_kczy.kcxh');
 	}
 
+	/**
+	 * 扩展查询：用于获取可选课程列表，统计数据没有专业
+	 * @author FuRongxin
+	 * @date    2018-09-16
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   string $campus 校区号
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectableNoSpecial($query, $campus) {
+		$campus = ('unknown' == $campus) ? '' : $campus;
+		return $query->join('jx_jxjh', function ($join) {
+			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
+				->on('pk_kczy.nj', '=', 'jx_jxjh.nj')
+				->on('pk_kczy.zsjj', '=', 'jx_jxjh.zsjj');
+		})
+			->join('zd_khfs', 'jx_jxjh.kh', '=', 'zd_khfs.dm')
+			->join('jx_kc', 'jx_jxjh.kch', '=', 'jx_kc.kch')
+			->join('pk_kb', function ($join) {
+				$join->on('pk_kczy.nd', '=', 'pk_kb.nd')
+					->on('pk_kczy.xq', '=', 'pk_kb.xq')
+					->on('pk_kczy.kcxh', '=', 'pk_kb.kcxh');
+			})
+			->join('pk_js', 'pk_kb.jsgh', '=', 'pk_js.jsgh')
+			->join('jx_zy', 'pk_kczy.zy', '=', 'jx_zy.zy')
+			->join('xt_department', 'jx_zy.xy', '=', 'xt_department.dw')
+			->leftJoin('xk_tj', function ($join) {
+				$join->on('pk_kczy.kcxh', '=', 'xk_tj.kcxh');
+			})
+			->where('pk_kb.xqh', '=', $campus)
+			->whereRaw('t_jx_jxjh.kch = substring(t_pk_kczy.kcxh, 3, 8)')
+			->where('pk_kczy.nd', '=', session('year'))
+			->where('pk_kczy.xq', '=', session('term'))
+			->where('pk_kczy.zsjj', '=', session('season'))
+			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'jx_zy.mc', 'xt_department.mc')
+			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'jx_zy.mc AS zymc', 'xt_department.mc AS xymc')
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksz), \',\') AS kszs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsz), \',\') AS jszs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.ksj), \',\') AS ksjs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.jsj), \',\') AS jsjs'))
+			->addSelect(DB::raw('array_to_string(array_agg(t_pk_js.xm), \',\') AS jsxms'))
+			->orderBy('pk_kczy.kcxh');
+	}
+
 }
