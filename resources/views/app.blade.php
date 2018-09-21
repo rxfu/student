@@ -87,7 +87,7 @@
                 <aside class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul id="side-menu" class="nav">
-                            @if ($is_fresh)
+                            @if ($is_fresh = false)
                                 <li>
                                     <a href="{{ route('fresh.edit', $user->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>

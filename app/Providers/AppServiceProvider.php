@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Dcxmxt;
-use App\Models\Fresh;
 use App\Models\Profile;
 use App\Models\Setting;
 use Auth;
@@ -20,11 +19,15 @@ class AppServiceProvider extends ServiceProvider {
 	public function boot() {
 		View::composer('app', function ($view) {
 
+			/**
+			 * 2018-09-21：应教务处要求关闭新生检测
+			 */
 			// 是否新生
+			/*
 			if ($is_fresh = Fresh::whereXh(Auth::user()->xh)->exists()) {
 				$user = Fresh::find(Auth::user()->xh);
 			}
-
+			*/
 			// 是否在校生
 			if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
 				$user = Profile::find(Auth::user()->xh);
@@ -53,8 +56,7 @@ class AppServiceProvider extends ServiceProvider {
 			// 2018-03-28：应教务处要求添加
 			$allowed_dcxm = Dcxmxt::find('XT_KG')->value;
 
-			$view->with('is_fresh', $is_fresh)
-				->with('is_student', $is_student)
+			$view->with('is_student', $is_student)
 				->with('user', $user)
 				->with('is_newer', $is_newer)
 				->with('allowed_select', $allowed_select)
