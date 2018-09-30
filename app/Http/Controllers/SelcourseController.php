@@ -85,7 +85,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.index')->withTitle(session('year') . '年度' . Term::find(session('term'))->mc . '学期选课课程列表')->withCourses($courses);
+		return view('selcourse.index')->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课课程列表')->withCourses($courses);
 	}
 
 	/**
@@ -177,7 +177,7 @@ class SelcourseController extends Controller {
 		}
 
 		return view('selcourse.timetable')
-			->withTitle(session('year') . '年度' . Term::find(session('term'))->mc . '学期课程表')
+			->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期课程表')
 			->withSubtitle('<span class="text-danger">（当前课程表有时候存在显示误差，仅供参考，具体课程时间以已选课程列表为准）</span>')
 			->withCourses($courses)
 			->withPeriods($periods);

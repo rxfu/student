@@ -60,4 +60,16 @@ class Helper {
 	public static function isCourseType($kcxh, $type) {
 		return str_is($type . '*', $kcxh);
 	}
+
+	/**
+	 * 将系统年度设置转换为学年度设置
+	 * @author FuRongxin
+	 * @date    2018-09-30
+	 * @version 2.3
+	 * @param   string $year 系统年度
+	 * @return  string 学年度
+	 */
+	public static function getAcademicYear($year) {
+		return $year . '~' . ($year + 1);
+	}
 }

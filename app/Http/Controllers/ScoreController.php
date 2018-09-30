@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Course;
 use App\Models\Dtscore;
 use App\Models\Exscore;
@@ -64,6 +65,9 @@ class ScoreController extends Controller {
 			->orderBy('kch', 'asc');
 
 		return Datatables::of($scores)
+			->editColumn('nd', function ($score) {
+				return Helper::getAcademicYear($score->nd);
+			})
 			->editColumn('kcmc', function ($score) {
 				return '<a href="' . url('score', $score->kch) . '">' . $score->course->kcmc . '</a>';
 			})
