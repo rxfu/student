@@ -392,7 +392,7 @@ class SelcourseController extends Controller {
 			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
 			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
 			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请交清费用再进行选课');
+				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 			}
 		}
 
@@ -692,7 +692,7 @@ class SelcourseController extends Controller {
 			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
 			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
 			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请交清费用再进行选课');
+				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 			}
 		}
 
