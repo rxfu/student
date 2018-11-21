@@ -518,7 +518,10 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			$selcourse        = new Selcourse;
+			$selcourse = new Selcourse;
+
+			// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
+			$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
 			$selcourse->xh    = Auth::user()->xh;
 			$selcourse->xm    = Auth::user()->profile->xm;
 			$selcourse->nd    = $course->nd;
@@ -532,7 +535,6 @@ class SelcourseController extends Controller {
 			$selcourse->xf    = $course->plan->zxf;
 			$selcourse->sf    = config('constants.status.enable');
 			$selcourse->zg    = $course->bz;
-			$selcourse->cx    = config('constants.status.disable');
 			$selcourse->bz    = config('constants.status.disable');
 			$selcourse->sj    = Carbon::now();
 			$selcourse->kkxy  = $course->kkxy;
@@ -664,6 +666,24 @@ class SelcourseController extends Controller {
 		}
 
 		return request()->ajax() ? response()->json($limits) : $limits;
+	}
+
+	/**
+	 * 重修课程检测
+	 * @author FuRongxin
+	 * @date    2018-11-21
+	 * @version 2.3
+	 * @param   string $kcxh 12位课程序号
+	 * @return  array 重修课程返回true，否则返回false
+	 */
+	public function checkretake($kcxh) {
+		$exists = Selcourse::whereKch(Helper::getCno($kcxh))
+			->where('nd', '<>', session('year'))
+			->where('xq', '<>', session('term'))
+			->whereXh(Auth::user()->xh)
+			->exists();
+
+		return request()->ajax() ? response()->json(['retake' => $exists]) : $exists;
 	}
 
 	/**
