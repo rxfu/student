@@ -19,7 +19,7 @@
                             @foreach ($exams as $exam)
                             <tr>
                                 <td>{{ $exam->bmsj }}</td>
-                                <td>{{ count($exam->type) ? $exam->type->ksmc : '' }}</td>
+                                <td>{{ is_null($exam->type) ? '' : $exam->type->ksmc }}</td>
                                 <td>{{ $exam->campus->mc }}</td>
                                 <td>{{ $exam->kssj }}</td>
                             </tr>

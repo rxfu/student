@@ -2,35 +2,35 @@
 
 namespace App\Events;
 
-use App\Events\Event;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-/**
- * 修改密码事件
- *
- * @author FuRongxin
- * @date 2016-01-15
- * @version 2.0
- */
-class PasswordChange extends Event {
+class PasswordChange
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	use SerializesModels;
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
 
-	/**
-	 * Create a new event instance.
-	 *
-	 * @return void
-	 */
-	public function __construct() {
-		//
-	}
-
-	/**
-	 * Get the channels the event should be broadcast on.
-	 *
-	 * @return array
-	 */
-	public function broadcastOn() {
-		return [];
-	}
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('channel-name');
+    }
 }

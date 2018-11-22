@@ -21,6 +21,8 @@ class Profile extends Model {
 
 	public $timestamps = false;
 
+	protected $connection = 'pgsql';
+
 	/**
 	 * 学号
 	 * @author FuRongxin

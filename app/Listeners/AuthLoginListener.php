@@ -51,7 +51,7 @@ class AuthLoginListener {
 			'major'  => Auth::user()->profile->zy,
 		]);
 
-		$log       = new Slog;
+		$log       = new Slog();
 		$log->ip   = request()->ip();
 		$log->czlx = 'login';
 		$log->save();

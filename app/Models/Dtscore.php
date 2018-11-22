@@ -103,7 +103,7 @@ class Dtscore extends Model {
 	public function scopeDetailScore($query, $user, $kch) {
 		$lstKcxh = Task::whereKch($kch)
 			->distinct('kcxh')
-			->lists('kcxh');
+			->pluck('kcxh');
 
 		// 提交状态为3的成绩方可显示
 		return $query->whereXh($user->xh)

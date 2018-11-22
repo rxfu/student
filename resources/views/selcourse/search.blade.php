@@ -188,7 +188,7 @@
                         'async': false,
                         'url': '{!! url('application/is_selected') !!}/' + $(this).attr('data-course'),
                         'success': function(data) {
-                            if (true == data) {
+                            if (0 < data) {
                                 alert('已选课程中发现您已修读该课程，需要重修请在提示结束后申请重修。');
                                 bSelected = false;
                             } else {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Broadcast;
 use App\Models\Cfxx;
 use App\Models\Setting;
@@ -27,7 +28,7 @@ class HomeController extends Controller {
 	 */
 	public function index() {
 		$is_open    = (config('constants.status.enable') == Setting::find('XK_KG')->value) ? '开放' : '关闭';
-		$message    = '现在' . $is_open . session('year') . '年度' . Term::find(session('term'))->mc . '学期选课';
+		$message    = '现在' . $is_open . Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课';
 		$broadcasts = Broadcast::whereId('xt_web')->get();
 		$cfxxs      = Cfxx::with('profile', 'jg')->whereXh(Auth::user()->xh)->get();
 		$title      = '综合管理系统';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Course;
 use App\Models\Dtscore;
 use App\Models\Exscore;
@@ -64,12 +65,16 @@ class ScoreController extends Controller {
 			->orderBy('kch', 'asc');
 
 		return Datatables::of($scores)
+			->editColumn('nd', function ($score) {
+				return Helper::getAcademicYear($score->nd);
+			})
 			->editColumn('kcmc', function ($score) {
 				return '<a href="' . url('score', $score->kch) . '">' . $score->course->kcmc . '</a>';
 			})
 			->setRowClass(function ($score) {
 				return $score->cj < config('constants.score.passline') ? 'danger' : '';
 			})
+			->escapeColumns(['*'])
 			->make(true);
 	}
 
@@ -157,7 +162,17 @@ class ScoreController extends Controller {
 	private function _arrangeScores($scores) {
 		$ratios = [];
 		foreach ($scores as $score) {
-			if (count($score->task)) {
+			if (is_null($score->task)) {
+				$ratios['000'] = [
+					['id' => '1', 'name' => '成绩1'],
+					['id' => '2', 'name' => '成绩2'],
+					['id' => '3', 'name' => '成绩3'],
+					['id' => '4', 'name' => '成绩4'],
+					['id' => '5', 'name' => '成绩5'],
+					['id' => '6', 'name' => '成绩6'],
+				];
+				$ratios['000']['score'][] = $score;
+			} else {
 				if (!array_key_exists($score->task->cjfs, $ratios)) {
 					$items = Ratio::whereFs($score->task->cjfs)->orderBy('id')->get();
 					foreach ($items as $ratio) {
@@ -169,16 +184,6 @@ class ScoreController extends Controller {
 					}
 				}
 				$ratios[$score->task->cjfs]['score'][] = $score;
-			} else {
-				$ratios['000'] = [
-					['id' => '1', 'name' => '成绩1'],
-					['id' => '2', 'name' => '成绩2'],
-					['id' => '3', 'name' => '成绩3'],
-					['id' => '4', 'name' => '成绩4'],
-					['id' => '5', 'name' => '成绩5'],
-					['id' => '6', 'name' => '成绩6'],
-				];
-				$ratios['000']['score'][] = $score;
 			}
 		}
 		ksort($ratios);
