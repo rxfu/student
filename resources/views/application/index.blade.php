@@ -47,7 +47,7 @@
                                 <td>{{ App\Models\Course::find(App\Http\Helper::getCno($app->kcxh))->kcmc }}</td>
                                 <td>{{ $app->xf }}</td>
                                 <td>{{ $app->ynd }}</td>
-                                <td>{{ count($app->oterm) ? $app->oterm->mc : '' }}</td>
+                                <td>{{ is_null($app->oterm) ? '' : $app->oterm->mc }}</td>
                                 <td>{{ $app->ykcxh }}</td>
                                 <td>{{ App\Models\Course::find(App\Http\Helper::getCno($app->ykcxh))->kcmc }}</td>
                                 <td>{{ $app->yxf }}</td>

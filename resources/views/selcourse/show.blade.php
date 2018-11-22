@@ -147,6 +147,20 @@ $(function() {
 						}
 					}
 				});
+
+				$.ajax({
+					'async': false,
+					'url': '{!! url('selcourse/checkretake') !!}/' + $(this).attr('data-id'),
+					'success': function(data) {
+						if (true == data.retake) {
+							if (confirm('这门课程之前已经修过，再选属于重修，确定选课吗？')) {
+								bSave = true;
+							} else {
+								bSave = false;
+							}
+						}
+					}
+				});
 			}
 		}
 

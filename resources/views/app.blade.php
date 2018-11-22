@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="{{ asset('css/formValidation.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-switch.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
         <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/dataTables.bootstrap.min.css') }}">
@@ -20,6 +22,7 @@
         <link rel="stylesheet" href="{{ asset('css/sb-admin-2.css') }}">
         <link rel="stylesheet" href="{{ asset('css/timeline.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        @stack('styles')
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
         <!--[if lt IE 9]>
@@ -70,7 +73,11 @@
                             @endif
                             <li><a href="{{ url('password/change') }}"><i class="fa fa-unlock fa-fw"></i> 修改密码</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
+                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="post" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
                         </ul>
                     </li>
                 </ul>
@@ -80,7 +87,7 @@
                 <aside class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul id="side-menu" class="nav">
-                            @if ($is_fresh)
+                            @if ($is_fresh = false)
                                 <li>
                                     <a href="{{ route('fresh.edit', $user->xh) }}"><i class="fa fa-ticket fa-fw"></i> 新生信息填写</a>
                                 </li>
@@ -217,6 +224,20 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
+                            @if ($allowed_dcxm)
+                                <li>
+                                    <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{ url('dcxm/list') }}">项目列表</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url('dcxm/xmxx') }}">项目申请</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                            @endif
                             <!--li>
                                 <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
@@ -283,7 +304,7 @@
                                 <!-- /.nav-second-level -->
                             </li>
                             <li>
-                                <a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                             </li>
                         </ul>
                         <!-- /#side-menu -->
@@ -380,7 +401,9 @@
         <script src="{{ asset('js/language/zh_CN.js') }}"></script>
         <script src="{{ asset('js/bootstrap-paginator.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
-        <script src="{{ asset('js/bootstrap-switch.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-switch.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-datepicker.zh-CN.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-typeahead.js') }}"></script>
         <script src="{{ asset('js/jquery.placeholder.js') }}"></script>
         <script src="{{ asset('js/jquery.stacktable.js') }}"></script>

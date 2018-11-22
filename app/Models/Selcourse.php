@@ -41,13 +41,13 @@ class Selcourse extends Model {
 					->first();
 			}
 
-			if (count($count)) {
-				$count->rs += 1;
-			} else {
+			if (is_null($count)) {
 				$count       = new Count;
 				$count->kcxh = $course->kcxh;
 				$count->zy   = $isPubSport ? '' : $course->zy;
 				$count->rs   = 1;
+			} else {
+				$count->rs += 1;
 			}
 
 			$count->save();
@@ -71,13 +71,13 @@ class Selcourse extends Model {
 					->first();
 			}
 
-			if (count($count)) {
-				$count->rs -= 1;
-			} else {
+			if (is_null($count)) {
 				$count       = new Count;
 				$count->kcxh = $course->kcxh;
 				$count->zy   = $isPubSport ? '' : $course->zy;
 				$count->rs   = 0;
+			} else {
+				$count->rs -= 1;
 			}
 
 			$count->save();

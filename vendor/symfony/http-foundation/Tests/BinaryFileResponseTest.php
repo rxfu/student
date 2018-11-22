@@ -12,6 +12,7 @@
 namespace Symfony\Component\HttpFoundation\Tests;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Tests\File\FakeFile;
@@ -31,7 +32,7 @@ class BinaryFileResponseTest extends ResponseTestCase
         $response = BinaryFileResponse::create($file, 404, array(), true, ResponseHeaderBag::DISPOSITION_INLINE);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertFalse($response->headers->has('ETag'));
-        $this->assertEquals('inline; filename="README.md"', $response->headers->get('Content-Disposition'));
+        $this->assertEquals('inline; filename=README.md', $response->headers->get('Content-Disposition'));
     }
 
     public function testConstructWithNonAsciiFilename()
@@ -65,7 +66,18 @@ class BinaryFileResponseTest extends ResponseTestCase
         $response = new BinaryFileResponse(__FILE__);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'föö.html');
 
-        $this->assertSame('attachment; filename="f__.html"; filename*=utf-8\'\'f%C3%B6%C3%B6.html', $response->headers->get('Content-Disposition'));
+        $this->assertSame('attachment; filename=f__.html; filename*=utf-8\'\'f%C3%B6%C3%B6.html', $response->headers->get('Content-Disposition'));
+    }
+
+    public function testSetContentDispositionGeneratesSafeFallbackFilenameForWronglyEncodedFilename()
+    {
+        $response = new BinaryFileResponse(__FILE__);
+
+        $iso88591EncodedFilename = utf8_decode('föö.html');
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $iso88591EncodedFilename);
+
+        // the parameter filename* is invalid in this case (rawurldecode('f%F6%F6') does not provide a UTF-8 string but an ISO-8859-1 encoded one)
+        $this->assertSame('attachment; filename=f__.html; filename*=utf-8\'\'f%F6%F6.html', $response->headers->get('Content-Disposition'));
     }
 
     /**
@@ -97,6 +109,7 @@ class BinaryFileResponseTest extends ResponseTestCase
 
         $this->assertEquals(206, $response->getStatusCode());
         $this->assertEquals($responseRange, $response->headers->get('Content-Range'));
+        $this->assertSame($length, $response->headers->get('Content-Length'));
     }
 
     /**
@@ -193,6 +206,19 @@ class BinaryFileResponseTest extends ResponseTestCase
             array('bytes=20-10'),
             array('bytes=50-40'),
         );
+    }
+
+    public function testUnpreparedResponseSendsFullFile()
+    {
+        $response = BinaryFileResponse::create(__DIR__.'/File/Fixtures/test.gif', 200);
+
+        $data = file_get_contents(__DIR__.'/File/Fixtures/test.gif');
+
+        $this->expectOutputString($data);
+        $response = clone $response;
+        $response->sendContent();
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -311,8 +337,18 @@ class BinaryFileResponseTest extends ResponseTestCase
     {
         return array(
             array('/var/www/var/www/files/foo.txt', '/var/www/=/files/', '/files/var/www/files/foo.txt'),
-            array('/home/foo/bar.txt', '/var/www/=/files/,/home/foo/=/baz/', '/baz/bar.txt'),
+            array('/home/Foo/bar.txt', '/var/www/=/files/,/home/Foo/=/baz/', '/baz/bar.txt'),
+            array('/home/Foo/bar.txt', '"/var/www/"="/files/", "/home/Foo/"="/baz/"', '/baz/bar.txt'),
         );
+    }
+
+    public function testStream()
+    {
+        $request = Request::create('/');
+        $response = new BinaryFileResponse(new Stream(__DIR__.'/../README.md'), 200, array('Content-Type' => 'text/plain'));
+        $response->prepare($request);
+
+        $this->assertNull($response->headers->get('Content-Length'));
     }
 
     protected function provideResponse()

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Campus;
+use App\Models\Charge;
 use App\Models\Cntgeneral;
 use App\Models\Count;
 use App\Models\Department;
 use App\Models\Lmtgeneral;
+use App\Models\Lmtsport;
 use App\Models\Lmttime;
 use App\Models\Major;
 use App\Models\Mjcourse;
@@ -17,10 +19,12 @@ use App\Models\Profile;
 use App\Models\Pubsport;
 use App\Models\Selcourse;
 use App\Models\Setting;
+use App\Models\Term;
 use App\Models\Timetable;
 use App\Models\Unpaid;
 use Auth;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
@@ -76,12 +80,12 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
 
-		return view('selcourse.index')->withTitle('当前选课课程列表')->withCourses($courses);
+		return view('selcourse.index')->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课课程列表')->withCourses($courses);
 	}
 
 	/**
@@ -167,13 +171,13 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
 
 		return view('selcourse.timetable')
-			->withTitle('当前课程表')
+			->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期课程表')
 			->withSubtitle('<span class="text-danger">（当前课程表有时候存在显示误差，仅供参考，具体课程时间以已选课程列表为准）</span>')
 			->withCourses($courses)
 			->withPeriods($periods);
@@ -211,7 +215,7 @@ class SelcourseController extends Controller {
 					'jsj'  => $timetable->jsj,
 					'js'   => $timetable->classroom->mc,
 					'jsxm' => $timetable->teacher->xm,
-					'zc'   => count($timetable->teacher->position) ? $timetable->teacher->position->mc : '',
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
 			}
 		}
@@ -302,17 +306,11 @@ class SelcourseController extends Controller {
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
-			->exceptGeneral();
-
-		// 2017-06-15：当是本年级时，排除本专业课程
-		if (session('grade') == $inputs['nj']) {
-			$courses = $courses->exceptCurrentMajor();
-		}
-
-		// 2017-06-15：当是本专业时，排除本年级课程
-		if (session('major') == $inputs['zy']) {
-			$courses = $courses->exceptCurrentGrade();
-		}
+			->exceptGeneral()
+			->where(function ($query) {
+				$query->where('pk_kczy.nj', '<>', session('grade'))
+					->orWhere('pk_kczy.zy', '<>', session('major'));
+			});
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
@@ -365,15 +363,17 @@ class SelcourseController extends Controller {
 			});
 		}
 
-		return $datatable->make(true);
+		return $datatable->escapeColumns(['*'])->make(true);
 	}
 
 	/**
 	 * 保存所选课程
 	 * 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
+	 * 2018-09-12：应教务处要求，修改为公体课选课单独限制
+	 *
 	 * @author FuRongxin
-	 * @date 2017-06-15
-	 * @version 2.2.1
+	 * @date 2018-09-12
+	 * @version 2.3
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
@@ -387,7 +387,13 @@ class SelcourseController extends Controller {
 		}
 
 		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
-			abort(403, '请交清费用再进行选课');
+
+			// 2018-06-06：应教务处要求增加财务处欠费名单检测
+			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
+				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+			}
 		}
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
@@ -460,6 +466,28 @@ class SelcourseController extends Controller {
 						}
 					}
 				}
+			} elseif ('pubsport' == $request->input('type')) {
+				if (config('constants.status.enable') == Setting::find('XK_GTXZ')->value) {
+					$profile = Profile::whereXh(Auth::user()->xh)
+						->select('nj', 'xz')
+						->firstOrFail();
+
+					// 未在时间限制表中配置，默认不允许选通识素质课
+					$now   = Carbon::now();
+					$limit = Lmtsport::whereNj($profile->nj)
+						->whereXz($profile->xz)
+						->where('kssj', '<', $now)
+						->where('jssj', '>', $now)
+						->orderBy('kssj', 'desc')
+						->first();
+
+					if (!$limit) {
+						abort(403, '现在未到公体课选课时间，不允许选课');
+					}
+
+					$limit_course = $limit->ms;
+					$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
+				}
 			} else {
 				$limit_ratio = 1;
 			}
@@ -472,7 +500,7 @@ class SelcourseController extends Controller {
 				->firstOrFail();
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
-			$rs     = isset($limit_ratio) ? $limit_ratio * $course->rs : -1;
+			$rs     = (isset($limit_ratio) && (0 <= $limit_ratio)) ? $limit_ratio * $course->rs : -1;
 			$limits = $this->checkcourse($inputs['type'], $course->kcxh, $course->zy, $ms, $rs);
 
 			if ($limits['ms']) {
@@ -485,12 +513,15 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			if (Prior::failed(Helper::getCno($course->kcxh), Auth::user())->exists()) {
+			if (Prior::whereKch(Helper::getCno($course->kcxh))->exists() && (!Prior::studied(Helper::getCno($course->kcxh), Auth::user())->exists())) {
 				$request->session()->flash('forbidden', '前修课未修读');
 				return back()->withInput();
 			}
 
-			$selcourse        = new Selcourse;
+			$selcourse = new Selcourse;
+
+			// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
+			$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
 			$selcourse->xh    = Auth::user()->xh;
 			$selcourse->xm    = Auth::user()->profile->xm;
 			$selcourse->nd    = $course->nd;
@@ -504,7 +535,6 @@ class SelcourseController extends Controller {
 			$selcourse->xf    = $course->plan->zxf;
 			$selcourse->sf    = config('constants.status.enable');
 			$selcourse->zg    = $course->bz;
-			$selcourse->cx    = config('constants.status.disable');
 			$selcourse->bz    = config('constants.status.disable');
 			$selcourse->sj    = Carbon::now();
 			$selcourse->kkxy  = $course->kkxy;
@@ -563,9 +593,11 @@ class SelcourseController extends Controller {
 	 * 选课门数和人数限制检测
 	 * 2016-06-16：添加专业号检测
 	 * 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
+	 * 2018-09-12：应教务处要求更改公体选课方式，第一阶段不限制人数，其他阶段限制人数
+	 *
 	 * @author FuRongxin
-	 * @date    2016-09-01
-	 * @version 2.1.2
+	 * @date    2018-09-12
+	 * @version 2.3
 	 * @param   string $type 课程类型
 	 * @param   string $kcxh 12位课程序号
 	 * @param   string $zy 专业号
@@ -600,16 +632,33 @@ class SelcourseController extends Controller {
 					$limits['rs'] = true;
 				}
 			}
-		} else {
+		} elseif (Helper::isCourseType($kcxh, config('constants.course.pubsport.type'))) {
 
 			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
-			if (Helper::isCourseType($kcxh, config('constants.course.pubsport.type'))) {
-				$course = Count::whereKcxh($kcxh)->first();
-			} else {
-				$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			// 2018-09-12：应教务处要求更改公体选课方式，第一阶段不限制人数，其他阶段限制人数
+			if (-1 < $ms) {
+				$count = Selcourse::ofType($type)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereXh(Auth::user()->xh)
+					->count();
+
+				if ($count >= $ms) {
+					$limits['ms'] = true;
+				}
 			}
 
-			$count = isset($course) ? $course->rs : 0;
+			if (-1 < $rs) {
+				$course = Count::whereKcxh($kcxh)->first();
+				$count  = isset($course) ? $course->rs : 0;
+
+				if ($count >= $rs) {
+					$limits['rs'] = true;
+				}
+			}
+		} else {
+			$course = Count::whereKcxh($kcxh)->whereZy($zy)->first();
+			$count  = isset($course) ? $course->rs : 0;
 
 			if ($count >= $rs) {
 				$limits['rs'] = true;
@@ -620,11 +669,31 @@ class SelcourseController extends Controller {
 	}
 
 	/**
+	 * 重修课程检测
+	 * @author FuRongxin
+	 * @date    2018-11-21
+	 * @version 2.3
+	 * @param   string $kcxh 12位课程序号
+	 * @return  array 重修课程返回true，否则返回false
+	 */
+	public function checkretake($kcxh) {
+		$exists = Selcourse::whereKch(Helper::getCno($kcxh))
+			->where('nd', '<>', session('year'))
+			->where('xq', '<>', session('term'))
+			->whereXh(Auth::user()->xh)
+			->exists();
+
+		return request()->ajax() ? response()->json(['retake' => $exists]) : $exists;
+	}
+
+	/**
 	 * 显示可选课程列表
 	 * 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
+	 * 2018-09-12：应教务处要求，修改为公体课选课单独限制
+	 *
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2018-09-12
+	 * @version 2.3
 	 * @param   string $type 课程类型
 	 * @return  \Illuminate\Http\Response 可选课程列表
 	 */
@@ -638,7 +707,13 @@ class SelcourseController extends Controller {
 		}
 
 		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
-			abort(403, '请交清费用再进行选课');
+
+			// 2018-06-06：应教务处要求增加财务处欠费名单检测
+			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
+				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+			}
 		}
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
@@ -684,6 +759,26 @@ class SelcourseController extends Controller {
 			}
 
 			$type_name = config('constants.course.general.' . $type . '.name');
+		} elseif ('pubsport' == $type) {
+			if (config('constants.status.enable') == Setting::find('XK_GTXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
+
+				// 未在时间限制表中配置，默认不允许选公体课
+				$now    = Carbon::now();
+				$exists = Lmtsport::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->exists();
+
+				if (!$exists) {
+					abort(403, '现在未到公体课选课时间，不允许选课');
+				}
+			}
+
+			$type_name = config('constants.course.general.' . $type . '.name');
 		}
 
 		$type_name = isset($type_name) ? $type_name : config('constants.course.' . $type . '.name');
@@ -710,12 +805,58 @@ class SelcourseController extends Controller {
 	 * @return  JSON 可选课程列表
 	 */
 	public function listing($type, $campus) {
-		$courses = Mjcourse::ofType($type)
-			->selectable($campus)
-			->get();
+		if ('pubsport' == $type) {
+			$courses = Mjcourse::ofType($type)
+				->selectableNoSpecial($campus)
+				->get();
+		} else {
+			$courses = Mjcourse::ofType($type)
+				->selectable($campus)
+				->get();
+		}
+
+		$limit_ratio  = 1;
+		$limit_course = -1;
+		if (in_array($type, array_keys(config('constants.course.general')))) {
+			if (config('constants.status.enable') == Setting::find('XK_TSXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
+
+				// 未在时间限制表中配置，默认不允许选通识素质课
+				$now   = Carbon::now();
+				$limit = Lmtgeneral::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->orderBy('kssj', 'desc')
+					->first();
+
+				$limit_course = $limit->ms;
+				$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
+			}
+		} elseif ('pubsport' == $type) {
+			if (config('constants.status.enable') == Setting::find('XK_GTXZ')->value) {
+				$profile = Profile::whereXh(Auth::user()->xh)
+					->select('nj', 'xz')
+					->firstOrFail();
+
+				// 未在时间限制表中配置，默认不允许选公体课
+				$now   = Carbon::now();
+				$limit = Lmtsport::whereNj($profile->nj)
+					->whereXz($profile->xz)
+					->where('kssj', '<', $now)
+					->where('jssj', '>', $now)
+					->orderBy('kssj', 'desc')
+					->first();
+
+				$limit_course = $limit->ms;
+				$limit_ratio  = 0 < $limit->bl ? $limit->bl / 100 : $limit->bl;
+			}
+		}
 
 		$datatable = Datatables::of($courses)
-			->addColumn('action', function ($course) use ($type) {
+			->addColumn('action', function ($course) use ($type, $limit_ratio) {
 				$same = Selcourse::whereXh(Auth::user()->xh)
 					->whereNd(session('year'))
 					->whereXq(session('term'))
@@ -733,9 +874,9 @@ class SelcourseController extends Controller {
 					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif ($same) {
 					return '<div class="text-danger">已选同号课程</div>';
-				} elseif (Prior::failed($course->kch, Auth::user())->exists()) {
+				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
 					return '<div class="text-danger">前修课未修读</div>';
-				} elseif ($course->rs >= $course->zrs) {
+				} elseif (0 <= $limit_ratio && ($course->rs >= $course->zrs * $limit_ratio)) {
 					return '<div class="text-danger">人数已满</div>';
 				} else {
 					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
@@ -769,6 +910,9 @@ class SelcourseController extends Controller {
 				}
 
 				return $course->rs;
+			})
+			->editColumn('zrs', function ($course) use ($type, $limit_ratio) {
+				return 0 > $limit_ratio ? '无限制' : $course->zrs * $limit_ratio;
 			});
 
 		for ($i = 1; $i <= 7; ++$i) {
@@ -795,7 +939,7 @@ class SelcourseController extends Controller {
 			});
 		}
 
-		return $datatable->make(true);
+		return $datatable->escapeColumns(['*'])->make(true);
 	}
 
 	/**

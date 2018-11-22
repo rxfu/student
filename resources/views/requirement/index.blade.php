@@ -21,8 +21,10 @@
                                         <th rowspan="{{ count($items) }}" class="active text-center">
                                             @if ('B' == $property)
                                                 必修学分数
-                                            @else
+                                            @elseif ('X' == $property)
                                                 选修学分数
+                                            @else
+                                                计划外学分
                                             @endif
                                         </th>
                                     @endif
@@ -35,9 +37,9 @@
                                     @if ($credit == reset($items))
                                         <td rowspan="{{ count($items) }}" class="success text-center">{{ array_sum(array_pluck($items, 'studied')) }}</td>
                                     @endif
-                                    <td class="danger text-center">{{ isset($credit['studied']) ? $credit['graduation'] - $credit['studied'] : $credit['graduation'] }}</td>
+                                    <td class="danger text-center">{{ isset($credit['studied']) ? max($credit['graduation'] - $credit['studied'], 0) : $credit['graduation'] }}</td>
                                     @if ($credit == reset($items))
-                                        <td rowspan="{{ count($items) }}" class="danger text-center">{{ array_sum(array_pluck($items, 'graduation')) - array_sum(array_pluck($items, 'studied')) }}</td>
+                                        <td rowspan="{{ count($items) }}" class="danger text-center">{{ max(array_sum(array_pluck($items, 'graduation')) - array_sum(array_pluck($items, 'studied')), 0) }}</td>
                                     @endif
                                     <td class="info text-center">{{ isset($credit['selected']) ? $credit['selected'] : 0 }}</td>
                                     @if ($credit == reset($items))

@@ -70,6 +70,7 @@ return [
 		'path'   => [
 			'portrait' => 'portraits/', // 考试照片路径
 			'photo'    => 'photos/', // 学你照片路径
+			'dcxm'     => 'dcxm/', // 大创项目证明材料路径
 		],
 
 		// 图片参数

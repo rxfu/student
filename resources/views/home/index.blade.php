@@ -29,21 +29,19 @@
                             <th>处分日期</th>
                             <th>处分文号</th>
                             <th>处分文件名</th>
-                            <th>处分说明</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($cfxxs as $cfxx)
                             <tr>
                                 <td>{{ $cfxx->xh }}</td>
-                                <td>{{ $cfxx->profile->xm }}</td>
-                                <td>{{ $cfxx->profile->party->mc }}</td>
-                                <td>{{ $cfxx->jg->mc }}</td>
+                                <td>{{ is_null($cfxx->profile) ? '' : $cfxx->profile->xm }}</td>
+                                <td>{{ is_null($cfxx->profile->party) ? '' : $cfxx->profile->party->mc }}</td>
+                                <td>{{ is_null($cfxx->jg) ? '' : $cfxx->jg->mc }}</td>
                                 <td></td>
                                 <td>{{ $cfxx->cfrq }}</td>
                                 <td>{{ $cfxx->cfwh }}</td>
                                 <td>{{ $cfxx->cfwjmc }}</td>
-                                <td>{{ $cfxx->cfsm }}</td>
                             </tr>
                         @endforeach
                     </tbody>
