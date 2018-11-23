@@ -249,32 +249,17 @@
                                     </li>
                                 </ul>
                             </li-->
-                            <!--li>
-                                <a href="#"><i class="fa fa-apple fa-fw"></i> 学分申请<span class="fa arrow"></span></a>
+                            <li>
+                                <a href="#"><i class="fa fa-apple fa-fw"></i> 学分转换<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">课程转换申请<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                <a href="#">课程转换</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">申请进度</a>
-                                            </li>
-                                        </ul>
+                                        <a href="{{ url('xfzh/apply') }}">学分转换申请</a>
                                     </li>
                                     <li>
-                                        <a href="#">创新学分申请<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                <a href="#">学科竞赛获奖</a>
-                                                <a href="#">发表科研论文</a>
-                                                <a href="#">专利授权</a>
-                                            </li>
-                                        </ul>
+                                        <a href="{{ url('xfzh/list') }}">申请进度</a>
                                     </li>
                                 </ul>
-                            </li-->
+                            </li>
                             <!--li>
                                 <a href="#"><i class="fa fa-university fa-fw"></i> 教室管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">

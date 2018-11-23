@@ -87,6 +87,10 @@ Route::middleware('auth')->group(function () {
 	Route::get('dcxm/xmcy', 'DcxmController@getStudent');
 	Route::get('dcxm/zdjs', 'DcxmController@getTeacher');
 
+	Route::get('xfzh/list', 'XfzhController@list');
+	Route::get('xfzh/create', 'XfzhController@create');
+	Route::post('xfzh/store', 'XfzhController@store');
+
 	Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 	Route::get('password/change', 'Auth\PasswordController@showChangeForm');
 	Route::put('password/change', 'Auth\PasswordController@change');
