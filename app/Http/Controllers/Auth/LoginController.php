@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fresh;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -77,6 +76,7 @@ class LoginController extends Controller {
 	 * @return mixed
 	 */
 	protected function authenticated(Request $request, $user) {
-		return Fresh::whereXh($user->xh)->exists();
+		// return Fresh::whereXh($user->xh)->exists();
+		return false;
 	}
 }
