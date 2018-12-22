@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "583138acefcac0188c071d555d37dcd1",
+    "content-hash": "bfcc2b43401a11ebdb2d448bc65e4915",
     "packages": [
         {
             "name": "barryvdh/laravel-snappy",
@@ -1293,6 +1293,73 @@
                 "mathematics"
             ],
             "time": "2018-10-13T23:28:42+00:00"
+        },
+        {
+            "name": "mews/captcha",
+            "version": "2.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mewebstudio/captcha.git",
+                "reference": "df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mewebstudio/captcha/zipball/df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa",
+                "reference": "df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "illuminate/config": "~5.0",
+                "illuminate/filesystem": "~5.0",
+                "illuminate/hashing": "~5.0",
+                "illuminate/support": "~5.0",
+                "intervention/image": "~2.2",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.1"
+            },
+            "type": "package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mews\\Captcha\\CaptchaServiceProvider"
+                    ],
+                    "aliases": {
+                        "Captcha": "Mews\\Captcha\\Facades\\Captcha"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mews\\Captcha\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muharrem ERİN",
+                    "email": "me@mewebstudio.com",
+                    "homepage": "https://github.com/mewebstudio",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel 5 Captcha Package",
+            "homepage": "https://github.com/mewebstudio/captcha",
+            "keywords": [
+                "captcha",
+                "laravel5 Captcha",
+                "laravel5 Security"
+            ],
+            "time": "2018-11-15T00:54:41+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3042,16 +3109,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v8.11.0",
+            "version": "v8.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "f9a9714918037c5b92645a7beb63370db0ecc172"
+                "reference": "3d7f05687069d90ca5dc3e75bf269e13eecccc76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/f9a9714918037c5b92645a7beb63370db0ecc172",
-                "reference": "f9a9714918037c5b92645a7beb63370db0ecc172",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/3d7f05687069d90ca5dc3e75bf269e13eecccc76",
+                "reference": "3d7f05687069d90ca5dc3e75bf269e13eecccc76",
                 "shasum": ""
             },
             "require": {
@@ -3109,7 +3176,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2018-11-20T04:34:22+00:00"
+            "time": "2018-11-23T08:05:22+00:00"
         }
     ],
     "packages-dev": [

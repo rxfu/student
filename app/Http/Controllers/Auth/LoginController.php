@@ -79,4 +79,21 @@ class LoginController extends Controller {
 		// return Fresh::whereXh($user->xh)->exists();
 		return false;
 	}
+
+	/**
+	 * Validate the user login request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return void
+	 */
+	protected function validateLogin(Request $request) {
+		$this->validate($request, [
+			$this->username() => 'required|string',
+			'password'        => 'required|string',
+			'captcha'         => 'required|captcha',
+		], [
+			'captcha.required' => '请填写验证码',
+			'captcha.captcha'  => '验证码错误',
+		]);
+	}
 }

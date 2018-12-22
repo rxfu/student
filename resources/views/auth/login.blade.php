@@ -82,6 +82,15 @@
 				                            </div>
 				                        </div>
 				                        <div class="form-group">
+				                            <label for="captcha" class="col-sm-3 control-label">验证码</label>
+				                            <div class="col-sm-4">
+				                                <input type="text" name="captcha" id="captcha" placeholder="验证码" class="form-control" required>
+				                            </div>
+				                            <div class="col-sm-5">
+				                            	<img src="{{ captcha_src() }}" style="cursor:pointer" onclick="this.src='{{ captcha_src() }}' + Math.random()">
+				                            </div>
+				                        </div>
+				                        <div class="form-group">
 				                            <div class="col-sm-9 col-sm-offset-3">
 				                                <button type="submit" class="btn btn-lg btn-success btn-block">登录</button>
 				                            </div>

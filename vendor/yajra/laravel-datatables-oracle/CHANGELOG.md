@@ -8,6 +8,20 @@
 
 ### [Unreleased]
 
+### [v8.13.1] - 2018-11-23
+
+- Revert v8.12.0 changes.
+
+### [v8.13.0] - 2018-11-23
+
+- Only escape callable output of add and edit column. [#1852], credits to [@sharifzadesina]
+- Fix adding of index column bug introduced by [#1852]. [#1915]
+- Add tests for [#1852].
+
+### [v8.12.0] - 2018-11-23
+
+- Skipped, bad tagging!
+
 ### [v8.11.0] - 2018-11-20
 
 - Use skipTotalRecords as it better describe what the function does. [#1912]
@@ -253,7 +267,9 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.1...8.0
+[v8.13.1]: https://github.com/yajra/laravel-datatables/compare/v8.13.0...v8.13.1
+[v8.13.0]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...v8.13.0
 [v8.11.0]: https://github.com/yajra/laravel-datatables/compare/v8.10.0...v8.11.0
 [v8.10.0]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...v8.10.0
 [v8.9.2]: https://github.com/yajra/laravel-datatables/compare/v8.9.1...v8.9.2
@@ -337,6 +353,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1882]: https://github.com/yajra/laravel-datatables/pull/1882
 [#1911]: https://github.com/yajra/laravel-datatables/pull/1911
 [#1912]: https://github.com/yajra/laravel-datatables/pull/1912
+[#1852]: https://github.com/yajra/laravel-datatables/pull/1852
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
