@@ -678,9 +678,8 @@ class SelcourseController extends Controller {
 	 */
 	public function checkretake($kcxh) {
 		$exists = Selcourse::whereKch(Helper::getCno($kcxh))
-			->where('nd', '<>', session('year'))
-			->where('xq', '<>', session('term'))
 			->whereXh(Auth::user()->xh)
+			->whereRaw('NOT(nd = ? AND xq = ?)', [session('year'), session('term')])
 			->exists();
 
 		return request()->ajax() ? response()->json(['retake' => $exists]) : $exists;
