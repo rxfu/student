@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreFmxxRequest;
 use App\Models\Fmxx;
-use App\Requests\StoreFmxxRequest;
 
 class FmxxController extends Controller {
 

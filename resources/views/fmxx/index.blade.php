@@ -44,7 +44,7 @@
                         <div class="form-group">
                             <label for="rxrq" class="col-md-3 control-label">入学日期</label>
                             <div class="col-md-8">
-                                <input type="text" id="rxrq" name="rxrq" class="form-control" value="{{ Auth::user()->profile->rxrq }}" readonly>
+                                <input type="text" id="rxrq" name="rxrq" class="form-control" value="{{ str_replace('-', '', Auth::user()->profile->rxrq) }}" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -53,13 +53,13 @@
                                 <input type="text" id="xjzt" name="xjzt" class="form-control" value="{{ Auth::user()->profile->status->mc }}" readonly>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('fmxm1') ? ' has-error' : '' }}">
                             <label for="fmxm1" class="col-md-3 control-label">父母或监护人姓名1</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm1" name="fmxm1" class="form-control{{ $errors->has('fmxm1') ? ' has-error' : '' }}" placeholder="父母或监护人姓名1">
+                                <input type="text" id="fmxm1" name="fmxm1" class="form-control" placeholder="父母或监护人姓名1">
 
                                 @if ($errors->has('fmxm1'))
-                                    <span class="invalid-feedback" role="alert">
+                                    <span class="help-block" role="alert">
                                         <strong>{{ $errors->first('fmxm1') }}</strong>
                                     </span>
                                 @endif
@@ -75,25 +75,25 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('fmzjhm1') ? ' has-error' : '' }}">
                             <label for="fmzjhm1" class="col-md-3 control-label">父母或监护人证件号码1</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control{{ $errors->has('fmzjhm1') ? ' has-error' : '' }}" placeholder="父母或监护人证件号码1">
+                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control" placeholder="父母或监护人证件号码1">
 
                                 @if ($errors->has('fmzjhm1'))
-                                    <span class="invalid-feedback" role="alert">
+                                    <span class="help-block" role="alert">
                                         <strong>{{ $errors->first('fmzjhm1') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('fmxm2') ? ' has-error' : '' }}">
                             <label for="fmxm2" class="col-md-3 control-label">父母或监护人姓名2</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm2" name="fmxm2" class="form-control{{ $errors->has('fmxm2') ? ' has-error' : '' }}" placeholder="父母或监护人姓名2">
+                                <input type="text" id="fmxm2" name="fmxm2" class="form-control" placeholder="父母或监护人姓名2">
 
                                 @if ($errors->has('fmxm2'))
-                                    <span class="invalid-feedback" role="alert">
+                                    <span class="help-block" role="alert">
                                         <strong>{{ $errors->first('fmxm2') }}</strong>
                                     </span>
                                 @endif
@@ -109,13 +109,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('fmzjhm2') ? ' has-error' : '' }}">
                             <label for="fmzjhm2" class="col-md-3 control-label">父母或监护人证件号码2</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control{{ $errors->has('fmzjhm2') ? ' has-error' : '' }}" placeholder="父母或监护人证件号码2">
+                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control" placeholder="父母或监护人证件号码2">
 
                                 @if ($errors->has('fmzjhm2'))
-                                    <span class="invalid-feedback" role="alert">
+                                    <span class="help-block" role="alert">
                                         <strong>{{ $errors->first('fmzjhm2') }}</strong>
                                     </span>
                                 @endif

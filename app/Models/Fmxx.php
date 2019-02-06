@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fmxx extends Model {
 
-	public $table = 'xs_fmxx';
+	protected $table = 'xs_fmxx';
+
+	protected $primaryKey = 'xh';
+
+	public $incrementing = false;
+
+	public $timestamps = false;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\Idnumber;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreParentRequest extends FormRequest {
+class StoreFmxxRequest extends FormRequest {
 
 	/**
 	 * Determine if the user is authorized to make this request.
