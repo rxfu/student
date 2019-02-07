@@ -15,6 +15,7 @@ class FmxxController extends Controller {
 	 */
 	public function index() {
 		$types = [
+			'',
 			'1-居民身份证',
 			'6-香港特区护照/身份证明',
 			'7-澳门特区护照/身份证明',
@@ -33,6 +34,6 @@ class FmxxController extends Controller {
 		$student->fill($request->all());
 		$student->save();
 
-		return redirect('/parent');
+		return redirect('/home');
 	}
 }
