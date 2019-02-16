@@ -80,13 +80,11 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->sfsh    = config('constants.status.disable');
-			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->cjsj    = Carbon::now();
 			$xmxx->xy      = Auth::user()->profile->xy;
 			$xmxx->nd      = Carbon::now()->year;
 
-			$begdate    = Carbon::create(null, 4, 20);
+			$begdate    = config('constants.dcxm.begdate');
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
@@ -100,6 +98,7 @@ class DcxmController extends Controller {
 					$member       = new Dcxmcy;
 					$member->xh   = $inputs['xh'][$key];
 					$member->xm   = $inputs['cyxm'][$key];
+					$member->xb   = $inputs['xb'][$key];
 					$member->nj   = $inputs['nj'][$key];
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
@@ -181,11 +180,9 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->sfsh    = config('constants.status.disable');
-			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->gxsj    = Carbon::now();
 
-			$begdate    = Carbon::create(null, 4, 20);
+			$begdate    = config('constants.dcxm.begdate');
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
@@ -208,6 +205,7 @@ class DcxmController extends Controller {
 
 					$member->xh   = $inputs['xh'][$key];
 					$member->xm   = $inputs['cyxm'][$key];
+					$member->xb   = $inputs['xb'][$key];
 					$member->nj   = $inputs['nj'][$key];
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
@@ -304,6 +302,10 @@ class DcxmController extends Controller {
 	 */
 	public function postApplication(Request $request, $id) {
 		if ($request->isMethod('post')) {
+			$this->validate($request, [
+				'xmjj' => 'max:200']
+			);
+
 			$project = Dcxmxx::whereId($id)
 				->whereXh(Auth::user()->xh);
 
@@ -317,7 +319,7 @@ class DcxmController extends Controller {
 				}
 
 				$xmsq->xm_id = $project->id;
-				$xmsq->xmjj  = $request->xmjj;
+				$xmsq->xmjj  = str_replace("\r\n", '<br>', $request->xmjj);
 				$xmsq->sqly  = $request->sqly;
 				$xmsq->xmfa  = $request->xmfa;
 				$xmsq->tscx  = $request->tscx;
@@ -414,6 +416,7 @@ class DcxmController extends Controller {
 			$student = [
 				'xh'   => '',
 				'xm'   => '',
+				'xb'   => '',
 				'nj'   => '',
 				'szyx' => '',
 				'lxdh' => '',
@@ -423,6 +426,7 @@ class DcxmController extends Controller {
 
 				$student['xh']   = $profile->xh;
 				$student['xm']   = $profile->xm;
+				$student['xb']   = $profile->gender->mc;
 				$student['nj']   = $profile->nj;
 				$student['szyx'] = $profile->college->mc;
 				$student['lxdh'] = $profile->lxdh;

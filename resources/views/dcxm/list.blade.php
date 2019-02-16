@@ -17,6 +17,9 @@
                                 <th class="active">项目类别</th>
                                 <th class="active">所属学科</th>
                                 <th class="active">申请时间</th>
+                                <th class="active">导师意见</th>
+                                <th class="active">学院意见</th>
+                                <th class="active">学校意见</th>
                                 <th class="active">操作</th>
                             </tr>
                         </thead>
@@ -30,6 +33,9 @@
                                 <td>{{ $project->category->mc }}</td>
                                 <td>{{ $project->subject->mc }}</td>
                                 <td>{{ date('Y-m-d', strtotime($project->cjsj)) }}</td>
+                                <td>{{ is_null($project->jssfty) ? '' : ($project->jssfty ? '同意' : '不同意') }}</td>
+                                <td>{{ is_null($project->xysfty) ? '' : ($project->xysfty ? '同意' : '不同意') }}</td>
+                                <td>{{ is_null($project->xxsfty) ? '' : ($project->xxsfty ? '同意' : '不同意') }}</td>
                                 <td>
                                     <a href="{{ url('dcxm/xmsq/' . $project->id) }}" title="填写申报书" role="button" class="btn btn-success">填写申报书</a>
                                     <!--a href="#" title="填写任务书" role="button" class="btn btn-info">填写任务书</a-->

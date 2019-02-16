@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 /**
  * 常用系统参数
  *
@@ -224,5 +226,12 @@ return [
 			'type' => 'TB14',
 			'name' => '公共体育课程',
 		],
+	],
+
+	/**
+	 * 大创项目代码
+	 */
+	'dcxm'        => [
+		'begdate' => Carbon::create(null, 5, 1),
 	],
 ];
