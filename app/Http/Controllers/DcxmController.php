@@ -52,6 +52,12 @@ class DcxmController extends Controller {
 	 * @return  \Illuminate\Http\Response 大创项目基本信息
 	 */
 	public function getInfo() {
+		if (Dcxmxx::whereXh(Auth::user()->xh)->whereNd(Carbon::now()->year)->exists()) {
+			return redirect('dcxm/list')->withStatus('当前年度你已经申请主持一个项目了，不允许再主持项目。');
+		} elseif (Dcxmcy::whereXh(Auth::user()->xh)->whereNd(Carbon::now()->year)->count() >= 2) {
+			return redirect('dcxm/list')->withStatus('当前年度你已经达到可申请项目上限，不可以再申请项目了哦！');
+		}
+
 		$categories = Dcxmlb::orderBy('dm')->get();
 		$subjects   = Dcyjxk::orderBy('dm')->get();
 		$title      = '项目申请';
@@ -105,6 +111,7 @@ class DcxmController extends Controller {
 					$member->fg   = $inputs['fg'][$key];
 					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
+					$member->nd   = Carbon::now()->year;
 
 					$members[] = $member;
 				}
@@ -124,6 +131,7 @@ class DcxmController extends Controller {
 					$tutor->email = $inputs['email'][$key];
 					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
+					$tutor->nd    = Carbon::now()->year;
 
 					$tutors[] = $tutor;
 				}
@@ -212,6 +220,7 @@ class DcxmController extends Controller {
 					$member->fg   = $inputs['fg'][$key];
 					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
+					$member->nd   = Carbon::now()->year;
 
 					$members[] = $member;
 				}
@@ -240,6 +249,7 @@ class DcxmController extends Controller {
 					$tutor->email = $inputs['email'][$key];
 					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
+					$tutor->nd    = Carbon::now()->year;
 
 					$tutors[] = $tutor;
 				}
