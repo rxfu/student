@@ -253,7 +253,7 @@
                                 <a href="#"><i class="fa fa-apple fa-fw"></i> 学分转换<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="{{ url('xfzh/apply') }}">学分转换申请</a>
+                                        <a href="{{ url('xfzh/create') }}">学分转换申请</a>
                                     </li>
                                     <li>
                                         <a href="{{ url('xfzh/list') }}">申请进度</a>
