@@ -90,7 +90,7 @@ Route::middleware('auth', App\Http\Middleware\CheckFmxx::class)->group(function 
 	Route::get('xfzh/list', 'XfzhController@list');
 	Route::get('xfzh/create', 'XfzhController@create');
 	Route::post('xfzh/store', 'XfzhController@store');
-	Route::post('xfzh/delete/{id}', 'XfzhController@delete');
+	Route::delete('xfzh/delete/{id}', 'XfzhController@delete');
 
 	Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 	Route::get('password/change', 'Auth\PasswordController@showChangeForm');

@@ -13,7 +13,6 @@
                                 <th class="active" rowspan="2">申请时间</th>
                                 <th class="active" colspan="6">转换前</th>
                                 <th class="active" colspan="6">转换后</th>
-                                <th class="active" rowspan="2">审核意见</th>
                                 <th class="active" rowspan="2">申请状态</th>
                             </tr>
                             <tr>
@@ -33,17 +32,67 @@
                         </thead>
                         <tbody>
                             @foreach ($items as $item)
-                            <tr>
-                                <td>
-                                	@if (0 == $item->zt)
-                                		<form id="deleteForm" name="deleteForm" action="{{ url('xfzh/delete', $item->id) }}" method="post" role="form">
-                                			{!! method_field('delete') !!}
-                                			{!! csrf_field() !!}
-                                			<button type="submit" class="btn btn-danger">撤销申请</button>
-                                		</form>
-                                	@endif
-                                </td>
-                            </tr>
+                                @php
+                                    $rows = $item->courses->count() ? $item->courses->count() : 1;
+                                @endphp
+                                @foreach ($item->courses as $course)
+                                    @if ($loop->first)
+                                        <tr rowspan="{{ $rows }}">
+                                            <td rowspan="{{ $rows }}">
+                                            	@if (0 == $item->zt)
+                                            		<form id="deleteForm" name="deleteForm" action="{{ url('xfzh/delete', $item->id) }}" method="post" role="form">
+                                            			{!! method_field('delete') !!}
+                                            			{!! csrf_field() !!}
+                                            			<button type="submit" class="btn btn-danger">撤销申请</button>
+                                            		</form>
+                                            	@endif
+                                            </td>
+                                            <td rowspan="{{ $rows }}">{{ $item->sqsj }}</td>
+                                    @else
+                                        <tr>
+                                    @endif
+                                    <td>{{ $course->qkch }}</td>
+                                    <td>{{ $course->qkcmc }}</td>
+                                    <td>{{ is_null($course->qplatform) ? '' : $course->qplatform->mc }}</td>
+                                    <td>{{ is_null($course->qproperty) ? '' : $course->qproperty->mc }}</td>
+                                    <td>{{ $course->qxf }}</td>
+                                    <td>{{ $course->qcj }}</td>
+                                    @if ($loop->first)
+                                        <td rowspan="{{ $rows }}">{{ $course->kch }}</td>
+                                        <td rowspan="{{ $rows }}">{{ $course->kcmc }}</td>
+                                        <td rowspan="{{ $rows }}">{{ $course->platform->mc }}</td>
+                                        <td rowspan="{{ $rows }}">{{ $course->property->mc }}</td>
+                                        <td rowspan="{{ $rows }}">{{ $course->xf }}</td>
+                                        <td rowspan="{{ $rows }}">{{ $course->cj }}</td>
+                                        <td rowspan="{{ $rows }}">
+                                            @switch($item->zt)
+                                                @case(0)
+                                                    待审核
+                                                    @break
+
+                                                @case(1)
+                                                    学院审核未通过
+                                                    @break
+
+                                                @case(2)
+                                                    学院审核已通过
+                                                    @break
+
+                                                @case(3)
+                                                    教务处审核未通过
+                                                    @break
+
+                                                @case(4)
+                                                    教务处审核已通过
+                                                    @break
+
+                                                @default
+                                                         已提交
+                                            @endswitch
+                                        </td>
+                                    @endif
+                                    </tr>
+                                @endforeach
                             @endforeach
                         </tbody>
                     </table>

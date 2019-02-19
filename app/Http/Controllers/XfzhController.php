@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\Score;
+use App\Models\Xfzhkc;
 use App\Models\Xfzhsq;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class XfzhController extends Controller {
@@ -48,10 +50,88 @@ class XfzhController extends Controller {
 	}
 
 	public function store(Request $request) {
+		if ($request->isMethod('post')) {
+			$this->validate($request, [
+				'xnqkch'  => 'required_without_all:xwqkcmc,xwqcj',
+				'xwqkcmc' => 'required_without:xnqkch',
+				'xwqcj'   => 'required_without:xnqkch',
+				'kch'     => 'required',
+			]);
+			dd($request->all());
+			$zhsq       = new Xfzhsq;
+			$zhsq->xh   = Auth::user()->xh;
+			$zhsq->xm   = Auth::user()->profile->xm;
+			$zhsq->sqsj = Carbon::now();
+			$zhsq->zt   = 0;
+			$zhsq->save();
 
+			$kch  = $request->input('kch');
+			$plan = Plan::with('course')
+				->whereZy(Auth::user()->profile->zy)
+				->whereNj(Auth::user()->profile->nj)
+				->whereZsjj(Auth::user()->profile->zsjj)
+				->whereKch($kch)
+				->firstOrFail();
+
+			if ($request->has('xnqkch')) {
+				foreach ($request->input('xnqkch') as $qkch) {
+					$score = Score::with('course')
+						->whereXh(Auth::user()->xh)
+						->whereKch($qkch)
+						->firstOrFail();
+
+					$course        = new Xfzhkc;
+					$course->qkch  = $qkch;
+					$course->qkcmc = $score->course->kcmc;
+					$course->qpt   = $score->pt;
+					$course->qxz   = $score->kcxz;
+					$course->qxf   = $score->xf;
+					$course->qcj   = $score->cj;
+
+					$course->kch  = $kch;
+					$course->kcmc = $plan->course->kcmc;
+					$course->pt   = $plan->pt;
+					$course->xz   = $plan->xz;
+
+					$course->sfxw = 0;
+
+					$zhsq->courses()->save($course);
+				}
+			} else {
+				if ($request->has('xwqkcmc')) {
+					$names  = $request->input('xwqkcmc');
+					$scores = $request->input('xwqcj');
+
+					for ($i = 0; $i < count($names); ++$i) {
+						if (!is_null($names[$i]) && !is_null($scores[$i])) {
+							$course        = new Xfzhkc;
+							$course->qkcmc = $names[$i];
+							$course->qcj   = $scores[$i];
+
+							$course->kch  = $kch;
+							$course->kcmc = $plan->course->kcmc;
+							$course->pt   = $plan->pt;
+							$course->xz   = $plan->xz;
+
+							$course->sfxw = 1;
+
+							$zhsq->courses()->save($course);
+						}
+					}
+				}
+			}
+
+			return redirect('xfzh/list')->withStatus('学分转换申请成功');
+		}
 	}
 
 	public function delete(Request $request, $id) {
+		if ($request->isMethod('delete')) {
+			$zhsq = Xfzhsq::findOrFail($id);
 
+			$zhsq->delete();
+
+			return back()->withStatus('撤销学分转换申请成功');
+		}
 	}
 }
