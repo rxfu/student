@@ -132,28 +132,17 @@ $(function() {
         $(this).tab('show');
     });
 
-    $('input[name="xnqkch[]"]').click(function() {
-        var checked = $('input[name="xnqkch[]"]:checked');
+    $('input[name="xnqkch[]"]').prop('disabled', false);
+    $('input[name="xwqkcmc[]"], input[name="xwqcj[]"]').prop('disabled', true);
 
-        if (checked.length != 0) {
-            $('input[name="xwqkcmc[]"]').prop('disabled', true);
-            $('input[name="xwqcj[]"]').prop('disabled', true);
-        } else {
-            $('input[name="xwqkcmc[]"]').prop('disabled', false);
-            $('input[name="xwqcj[]"]').prop('disabled', false);
-        }
+    $('#xfzh-tab a[href="#in-school"]').on('shown.bs.tab', function(e) {
+        $('input[name="xnqkch[]"]').prop('disabled', false);
+        $('input[name="xwqkcmc[]"], input[name="xwqcj[]"]').prop('disabled', true);
     });
 
-    $('input[name="xwqkcmc[]"], input[name="xwqcj[]"]').change(function() {
-        var disabled = false;
-
-        $('input[name="xwqkcmc[]"], input[name="xwqcj[]"]').each(function() {
-            if ($(this).val().trim() != '') {
-                disabled = true;
-            }
-        });
-
-        $('input[name="xnqkch[]"]').prop('disabled', disabled);
+    $('#xfzh-tab a[href="#out-school"]').on('shown.bs.tab', function(e) {
+        $('input[name="xnqkch[]"]').prop('disabled', true);
+        $('input[name="xwqkcmc[]"], input[name="xwqcj[]"]').prop('disabled', false);
     });
 });
 </script>

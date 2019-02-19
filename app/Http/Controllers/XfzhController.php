@@ -57,13 +57,6 @@ class XfzhController extends Controller {
 				'xwqcj'   => 'required_without:xnqkch',
 				'kch'     => 'required',
 			]);
-			dd($request->all());
-			$zhsq       = new Xfzhsq;
-			$zhsq->xh   = Auth::user()->xh;
-			$zhsq->xm   = Auth::user()->profile->xm;
-			$zhsq->sqsj = Carbon::now();
-			$zhsq->zt   = 0;
-			$zhsq->save();
 
 			$kch  = $request->input('kch');
 			$plan = Plan::with('course')
@@ -74,7 +67,38 @@ class XfzhController extends Controller {
 				->firstOrFail();
 
 			if ($request->has('xnqkch')) {
-				foreach ($request->input('xnqkch') as $qkch) {
+				$qkchs  = $request->input('xnqkch');
+				$exists = Score::whereXh(Auth::user()->xh)
+					->whereIn('kch', $qkchs)
+					->wherePt($plan->pt)
+					->whereKcxz($plan->xz)
+					->exists();
+
+				if ($exists) {
+					return back()->withStatus('课程平台和性质都相同，不可以申请学分转换');
+				}
+			}
+
+			if ($request->has('xwqkcmc') && $request->has('xwqcj')) {
+				$names  = $request->input('xwqkcmc');
+				$scores = $request->input('xwqcj');
+
+				for ($i = 0; $i < count($names); ++$i) {
+					if (!is_null($names[$i]) && is_null($scores[$i]) || is_null($names[$i]) && !is_null($scores[$i])) {
+						return back()->withStatus('课程名称和成绩填写不一致，不可以申请学分转换');
+					}
+				}
+			}
+
+			$zhsq       = new Xfzhsq;
+			$zhsq->xh   = Auth::user()->xh;
+			$zhsq->xm   = Auth::user()->profile->xm;
+			$zhsq->sqsj = Carbon::now();
+			$zhsq->zt   = 0;
+			$zhsq->save();
+
+			if ($request->has('xnqkch')) {
+				foreach ($qkchs as $qkch) {
 					$score = Score::with('course')
 						->whereXh(Auth::user()->xh)
 						->whereKch($qkch)
@@ -97,26 +121,21 @@ class XfzhController extends Controller {
 
 					$zhsq->courses()->save($course);
 				}
-			} else {
-				if ($request->has('xwqkcmc')) {
-					$names  = $request->input('xwqkcmc');
-					$scores = $request->input('xwqcj');
+			} elseif ($request->has('xwqkcmc') && $request->has('xwqcj')) {
+				for ($i = 0; $i < count($names); ++$i) {
+					if (!is_null($names[$i]) && !is_null($scores[$i])) {
+						$course        = new Xfzhkc;
+						$course->qkcmc = $names[$i];
+						$course->qcj   = $scores[$i];
 
-					for ($i = 0; $i < count($names); ++$i) {
-						if (!is_null($names[$i]) && !is_null($scores[$i])) {
-							$course        = new Xfzhkc;
-							$course->qkcmc = $names[$i];
-							$course->qcj   = $scores[$i];
+						$course->kch  = $kch;
+						$course->kcmc = $plan->course->kcmc;
+						$course->pt   = $plan->pt;
+						$course->xz   = $plan->xz;
 
-							$course->kch  = $kch;
-							$course->kcmc = $plan->course->kcmc;
-							$course->pt   = $plan->pt;
-							$course->xz   = $plan->xz;
+						$course->sfxw = 1;
 
-							$course->sfxw = 1;
-
-							$zhsq->courses()->save($course);
-						}
+						$zhsq->courses()->save($course);
 					}
 				}
 			}
