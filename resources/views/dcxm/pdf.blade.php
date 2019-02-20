@@ -277,7 +277,7 @@
                     <tr>
                         <td colspan="3">
                             <h4>一、项目简介（200字左右）</h4>
-                            {!! $project->application->xmjj !!}
+                            {{ $project->application->xmjj }}
                         </td>
                     </tr>
                     <tr>

@@ -329,7 +329,7 @@ class DcxmController extends Controller {
 				}
 
 				$xmsq->xm_id = $project->id;
-				$xmsq->xmjj  = str_replace("\r\n", '<br>', $request->xmjj);
+				$xmsq->xmjj  = $request->xmjj;
 				$xmsq->sqly  = $request->sqly;
 				$xmsq->xmfa  = $request->xmfa;
 				$xmsq->tscx  = $request->tscx;
