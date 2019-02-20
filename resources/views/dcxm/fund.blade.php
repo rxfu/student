@@ -71,7 +71,11 @@
                                 <th>
                                     <span id="total">{{ $total }}</span>
                                 </th>
-                                <td></td>
+                                <td>
+                                    @if (!is_null($project->jf) && ($project->jf != 0))
+                                        预算经费：{{ $project->jf }} 元
+                                    @endif
+                                </td>
                                 <td></td>
                             </tr>
                         </tbody>

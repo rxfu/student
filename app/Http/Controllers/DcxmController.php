@@ -6,6 +6,7 @@ use App\Models\Dcxmcy;
 use App\Models\Dcxmjf;
 use App\Models\Dcxmlb;
 use App\Models\Dcxmsq;
+use App\Models\Dcxmxt;
 use App\Models\Dcxmxx;
 use App\Models\Dcyjxk;
 use App\Models\Dczdjs;
@@ -38,9 +39,10 @@ class DcxmController extends Controller {
 		$projects = Dcxmxx::whereXh(Auth::user()->xh)
 			->orderBy('cjsj', 'desc')
 			->get();
-		$title = '项目申请列表';
+		$editFund = (Dcxmxt::find('JF_KG')->value == 1);
+		$title    = '项目申请列表';
 
-		return view('dcxm.list', compact('title', 'projects'));
+		return view('dcxm.list', compact('title', 'projects', 'editFund'));
 	}
 
 	/**
@@ -382,11 +384,17 @@ class DcxmController extends Controller {
 				'yt.*'   => 'required|string',
 			]);
 
-			$inputs = $request->all();
-
+			$inputs  = $request->all();
 			$project = Dcxmxx::findOrFail($id);
 			$funds   = Dcxmjf::whereXmId($project->id)->get();
-			$delIds  = array_diff($funds->pluck('id')->all(), $inputs['jfid']);
+
+			if ((Dcxmxt::find('JF_KG')->value == 1) && ($project->xxsfty == 1)) {
+				if (array_sum($inputs['je']) > $project->jf) {
+					return back()->withStatus('填写经费超出预算，请重新填写');
+				}
+			}
+
+			$delIds = array_diff($funds->pluck('id')->all(), $inputs['jfid']);
 			Dcxmjf::destroy($delIds);
 
 			foreach ($inputs['je'] as $key => $value) {
