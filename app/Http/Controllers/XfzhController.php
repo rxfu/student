@@ -28,11 +28,13 @@ class XfzhController extends Controller {
 				$query->from('xk_xfzhkc')
 					->join('xk_xfzhsq', function ($join) {
 						$join->on('appid', '=', 'xk_xfzhsq.id')
-							->whereZt(0)
-							->orWhere('zt', '=', 2)
-							->orWhere('zt', '=', 4);
+							->whereXh(Auth::user()->xh)
+							->where(function ($query) {
+								$query->where('zt', 0)
+									->orWhere('zt', 2)
+									->orWhere('zt', 4);
+							});
 					})
-					->whereXh(Auth::user()->xh)
 					->select('qkch');
 			})
 			->get();
