@@ -23,8 +23,12 @@ class StoreFmxxRequest extends FormRequest {
 	 */
 	public function rules() {
 		return [
+			'fmxm1'   => 'required_with:fmzjhm1',
+			'fmxm2'   => 'required_with:fmzjhm2',
 			'fmzjhm1' => 'required_with:fmxm1',
 			'fmzjhm2' => 'required_with:fmxm2',
+			'fmzjlx1' => 'required_with:fmxm1,fmzjhm1',
+			'fmzjlx2' => 'required_with:fmxm2,fmzjhm2',
 		];
 	}
 
@@ -35,8 +39,12 @@ class StoreFmxxRequest extends FormRequest {
 	 */
 	public function messages() {
 		return [
-			'fmzjhm1.required_with' => '非在职学生必须填写父母或监护人证件号码',
-			'fmzjhm2.required_with' => '非在职学生必须填写父母或监护人证件号码',
+			'fmxm1.required_with'   => '须填写父母或监护人1姓名',
+			'fmxm2.required_with'   => '须填写父母或监护人2姓名',
+			'fmzjhm1.required_with' => '须填写父母或监护人1身份证件号码',
+			'fmzjhm2.required_with' => '须填写父母或监护人2身份证件号码',
+			'fmzjlx1.required_with' => '须选择父母或监护人1身份证件类型',
+			'fmzjlx2.required_with' => '须选择父母或监护人2身份证件类型',
 		];
 	}
 

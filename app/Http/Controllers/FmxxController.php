@@ -24,7 +24,7 @@ class FmxxController extends Controller {
 			'A-护照',
 			'C-港澳台居民居住证',
 		];
-		$title = '父母监控人信息录入';
+		$title = '个人信息核对及父母或监护人信息填报';
 
 		return view('fmxx.index', compact('types', 'title'));
 	}

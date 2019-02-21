@@ -5,7 +5,9 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-title">请{{ Auth::user()->profile->xm }}同学输入监护人信息</div>
+                <div class="panel-title text-center">
+                    <strong>请{{ Auth::user()->profile->xm }}同学核对个人信息并填报父母或监护人信息</strong>
+                </div>
             </div>
             <div class="panel-body">
                 <form role="form" id="fmxxForm" name="fmxxForm" class="form-horizontal" method="POST" action="{{ url('/parent') }}" aria-label="监护人信息录入">
@@ -38,7 +40,7 @@
                         <div class="form-group">
                             <label for="sfzz" class="col-md-3 control-label">是否在职</label>
                             <div class="col-md-8">
-                                否
+                                <div class="form-control-static">否</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -54,9 +56,9 @@
                             </div>
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('fmxm1') ? ' has-error' : '' }}">
-                            <label for="fmxm1" class="col-md-3 control-label">父母或监护人姓名1</label>
+                            <label for="fmxm1" class="col-md-3 control-label">父母或监护人1姓名</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm1" name="fmxm1" class="form-control" placeholder="父母或监护人姓名1" value="{{ old('fmxm1') }}">
+                                <input type="text" id="fmxm1" name="fmxm1" class="form-control" placeholder="父母或监护人1姓名" value="{{ old('fmxm1') }}">
 
                                 @if ($errors->has('fmxm1'))
                                     <span class="help-block" role="alert">
@@ -65,20 +67,26 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fmzjlx1" class="col-md-3 control-label">父母或监护人证件类型1</label>
+                        <div class="form-group has-feedback{{ $errors->has('fmzjlx1') ? ' has-error' : '' }}">
+                            <label for="fmzjlx1" class="col-md-3 control-label">父母或监护人1身份证件类型</label>
                             <div class="col-md-8">
                                 <select id="fmzjlx1" name="fmzjlx1" class="form-control">
                                     @foreach ($types as $type)
-                                        <option value="{{ $type }}">{{ empty($type) ? '无' : $type }}</option>
+                                        <option value="{{ $type }}"{{ $type == old('fmzjlx1') ? ' selected' : '' }}>{{ empty($type) ? '' : $type }}</option>
                                     @endforeach
                                 </select>
+
+                                @if ($errors->has('fmzjlx1'))
+                                    <span class="help-block" role="alert">
+                                        <strong>{{ $errors->first('fmzjlx1') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('fmzjhm1') ? ' has-error' : '' }}">
-                            <label for="fmzjhm1" class="col-md-3 control-label">父母或监护人证件号码1</label>
+                            <label for="fmzjhm1" class="col-md-3 control-label">父母或监护人1身份证件号码</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control" placeholder="父母或监护人证件号码1" value="{{ old('fmzjhm1') }}">
+                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control" placeholder="父母或监护人1身份证件号码" value="{{ old('fmzjhm1') }}">
 
                                 @if ($errors->has('fmzjhm1'))
                                     <span class="help-block" role="alert">
@@ -88,9 +96,9 @@
                             </div>
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('fmxm2') ? ' has-error' : '' }}">
-                            <label for="fmxm2" class="col-md-3 control-label">父母或监护人姓名2</label>
+                            <label for="fmxm2" class="col-md-3 control-label">父母或监护人2姓名</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm2" name="fmxm2" class="form-control" placeholder="父母或监护人姓名2" value="{{ old('fmxm2') }}">
+                                <input type="text" id="fmxm2" name="fmxm2" class="form-control" placeholder="父母或监护人2姓名" value="{{ old('fmxm2') }}">
 
                                 @if ($errors->has('fmxm2'))
                                     <span class="help-block" role="alert">
@@ -99,20 +107,26 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fmzjlx2" class="col-md-3 control-label">父母或监护人证件类型2</label>
+                        <div class="form-group has-feedback{{ $errors->has('fmzjlx2') ? ' has-error' : '' }}">
+                            <label for="fmzjlx2" class="col-md-3 control-label">父母或监护人2身份证件类型</label>
                             <div class="col-md-8">
                                 <select id="fmzjlx2" name="fmzjlx2" class="form-control">
                                     @foreach ($types as $type)
-                                        <option value="{{ $type }}">{{ empty($type) ? '无' : $type }}</option>
+                                        <option value="{{ $type }}"{{ $type == old('fmzjlx2') ? ' selected' : '' }}>{{ empty($type) ? '' : $type }}</option>
                                     @endforeach
                                 </select>
+
+                                @if ($errors->has('fmzjlx2'))
+                                    <span class="help-block" role="alert">
+                                        <strong>{{ $errors->first('fmzjlx2') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('fmzjhm2') ? ' has-error' : '' }}">
-                            <label for="fmzjhm2" class="col-md-3 control-label">父母或监护人证件号码2</label>
+                            <label for="fmzjhm2" class="col-md-3 control-label">父母或监护人2身份证件号码</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control" placeholder="父母或监护人证件号码2" value="{{ old('fmzjhm2') }}">
+                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control" placeholder="父母或监护人2身份证件号码" value="{{ old('fmzjhm2') }}">
 
                                 @if ($errors->has('fmzjhm2'))
                                     <span class="help-block" role="alert">
@@ -129,7 +143,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-3">
-                                <button type="submit" class="btn btn-primary">确定</button>
+                                <button type="submit" class="btn btn-primary">确认提交</button>
                             </div>
                         </div>
                     </fieldset>
