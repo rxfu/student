@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFmxxRequest;
 use App\Models\Fmxx;
+use Auth;
 
 class FmxxController extends Controller {
 
@@ -24,15 +25,23 @@ class FmxxController extends Controller {
 			'A-护照',
 			'C-港澳台居民居住证',
 		];
-		$title = '个人信息核对及父母或监护人信息填报';
+		$title  = '个人信息核对及父母或监护人信息填报';
+		$parent = Fmxx::find(Auth::user()->xh);
 
-		return view('fmxx.index', compact('types', 'title'));
+		return view('fmxx.index', compact('types', 'title', 'parent'));
 	}
 
 	public function parent(StoreFmxxRequest $request) {
-		$student = new Fmxx;
-		$student->fill($request->all());
-		$student->save();
+		if ($request->isMethod('post')) {
+			if (Fmxx::whereXh(Auth::user()->xh)->exists()) {
+				$student = Fmxx::findOrFail(Auth::user()->xh);
+			} else {
+				$student = new Fmxx;
+			}
+
+			$student->fill($request->all());
+			$student->save();
+		}
 
 		return redirect('/home');
 	}
