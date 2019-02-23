@@ -29,7 +29,11 @@ class AppServiceProvider extends ServiceProvider {
 			}
 			*/
 			// 是否在校生
-			if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
+			// 2019-02-23：教务处要求取消学籍状态认证
+			// if ($is_student = Profile::whereXh(Auth::user()->xh)->whereXjzt(config('constants.school.student'))->exists()) {
+			// 	$user = Profile::find(Auth::user()->xh);
+			// }
+			if ($is_student = Profile::whereXh(Auth::user()->xh)->exists()) {
 				$user = Profile::find(Auth::user()->xh);
 			}
 
