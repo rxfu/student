@@ -23,7 +23,7 @@ class StoreFmxxRequest extends FormRequest {
 	 */
 	public function rules() {
 		return [
-			'fmxm1'   => 'required_with:fmzjhm1',
+			'fmxm1'   => 'required_with:fmzjhm1|required_if:sfty,1',
 			'fmxm2'   => 'required_with:fmzjhm2',
 			'fmzjhm1' => 'required_with:fmxm1',
 			'fmzjhm2' => 'required_with:fmxm2',
@@ -47,6 +47,7 @@ class StoreFmxxRequest extends FormRequest {
 			'fmzjlx1.required_with' => '须选择父母或监护人1身份证件类型',
 			'fmzjlx2.required_with' => '须选择父母或监护人2身份证件类型',
 			'sfty.required'         => '必须勾选其中一项',
+			'fmxm1.required_if'     => '须填写父母或监护人1姓名',
 		];
 	}
 

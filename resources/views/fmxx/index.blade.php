@@ -58,7 +58,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmxm1') ? ' has-error' : '' }}">
                             <label for="fmxm1" class="col-md-3 control-label">父母或监护人1姓名</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm1" name="fmxm1" class="form-control" placeholder="父母或监护人1姓名" value="{{ is_null($parent) ? '' : $parent->fmxm1 }}">
+                                <input type="text" id="fmxm1" name="fmxm1" class="form-control" placeholder="父母或监护人1姓名" value="{{ is_null($parent) ? '' : $parent->fmxm1 }}"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
 
                                 @if ($errors->has('fmxm1'))
                                     <span class="help-block" role="alert">
@@ -70,7 +70,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmzjlx1') ? ' has-error' : '' }}">
                             <label for="fmzjlx1" class="col-md-3 control-label">父母或监护人1身份证件类型</label>
                             <div class="col-md-8">
-                                <select id="fmzjlx1" name="fmzjlx1" class="form-control">
+                                <select id="fmzjlx1" name="fmzjlx1" class="form-control"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
                                     @foreach ($types as $type)
                                         <option value="{{ $type }}"{{ is_null($parent) ? '' : ($type == $parent->fmzjlx1 ? ' selected' : '') }}>{{ empty($type) ? '' : $type }}</option>
                                     @endforeach
@@ -86,7 +86,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmzjhm1') ? ' has-error' : '' }}">
                             <label for="fmzjhm1" class="col-md-3 control-label">父母或监护人1身份证件号码</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control" placeholder="父母或监护人1身份证件号码" value="{{ is_null($parent) ? '' : $parent->fmzjhm1 }}">
+                                <input type="text" id="fmzjhm1" name="fmzjhm1" class="form-control" placeholder="父母或监护人1身份证件号码" value="{{ is_null($parent) ? '' : $parent->fmzjhm1 }}"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
 
                                 @if ($errors->has('fmzjhm1'))
                                     <span class="help-block" role="alert">
@@ -98,7 +98,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmxm2') ? ' has-error' : '' }}">
                             <label for="fmxm2" class="col-md-3 control-label">父母或监护人2姓名</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmxm2" name="fmxm2" class="form-control" placeholder="父母或监护人2姓名" value="{{ is_null($parent) ? '' : $parent->fmxm2 }}">
+                                <input type="text" id="fmxm2" name="fmxm2" class="form-control" placeholder="父母或监护人2姓名" value="{{ is_null($parent) ? '' : $parent->fmxm2 }}"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
 
                                 @if ($errors->has('fmxm2'))
                                     <span class="help-block" role="alert">
@@ -110,7 +110,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmzjlx2') ? ' has-error' : '' }}">
                             <label for="fmzjlx2" class="col-md-3 control-label">父母或监护人2身份证件类型</label>
                             <div class="col-md-8">
-                                <select id="fmzjlx2" name="fmzjlx2" class="form-control">
+                                <select id="fmzjlx2" name="fmzjlx2" class="form-control"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
                                     @foreach ($types as $type)
                                         <option value="{{ $type }}"{{ is_null($parent) ? '' : ($type == $parent->fmzjlx2 ? ' selected' : '') }}>{{ empty($type) ? '' : $type }}</option>
                                     @endforeach
@@ -126,7 +126,7 @@
                         <div class="form-group has-feedback{{ $errors->has('fmzjhm2') ? ' has-error' : '' }}">
                             <label for="fmzjhm2" class="col-md-3 control-label">父母或监护人2身份证件号码</label>
                             <div class="col-md-8">
-                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control" placeholder="父母或监护人2身份证件号码" value="{{ is_null($parent) ? '' : $parent->fmzjhm2 }}">
+                                <input type="text" id="fmzjhm2" name="fmzjhm2" class="form-control" placeholder="父母或监护人2身份证件号码" value="{{ is_null($parent) ? '' : $parent->fmzjhm2 }}"{{ is_null($parent) ? '' : ($parent->sfty == '0' ? ' readonly' : '') }}>
 
                                 @if ($errors->has('fmzjhm2'))
                                     <span class="help-block" role="alert">
@@ -173,3 +173,17 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(function() {
+        $('input[name="sfty"]').change(function() {
+            if ($(this).val() == '0') {
+                $('#fmxm1, #fmzjlx1, #fmzjhm1, #fmxm2, #fmzjlx2, #fmzjhm2').val('').attr('readonly', 'readonly')
+            } else {
+                $('#fmxm1, #fmzjlx1, #fmzjhm1, #fmxm2, #fmzjlx2, #fmzjhm2').removeAttr('readonly')
+            }
+        });
+    })
+</script>
+@endpush

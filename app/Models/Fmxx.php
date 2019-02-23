@@ -22,4 +22,12 @@ class Fmxx extends Model {
 	protected $fillable = [
 		'xh', 'xm', 'zjlx', 'zjhm', 'rxrq', 'xjzt', 'fmxm1', 'fmzjlx1', 'fmzjhm1', 'fmxm2', 'fmzjlx2', 'fmzjhm2', 'bz', 'sfty',
 	];
+
+	public function setFmzjhm1Attribute($value) {
+		$this->attributes['fmzjhm1'] = strtoupper($value);
+	}
+
+	public function setFmzjhm2Attribute($value) {
+		$this->attributes['fmzjhm2'] = strtoupper($value);
+	}
 }
