@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-title text-center">
-                    <strong>请{{ Auth::user()->profile->xm }}同学核对个人信息并填报父母或监护人信息</strong>
+                    <strong>请{{ Auth::user()->profile->xm }}同学核对个人信息并自愿填报父母或监护人信息</strong>
                 </div>
             </div>
             <div class="panel-body">
@@ -138,7 +138,27 @@
                         <div class="form-group">
                             <label for="bz" class="col-md-3 control-label">备注</label>
                             <div class="col-md-8">
-                                <textarea id="bz" name="bz" class="form-control" placeholder="备注" rows="10">{{ old('bz') }}</textarea>
+                                <textarea id="bz" name="bz" class="form-control" placeholder="备注" rows="5">{{ old('bz') }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback{{ $errors->has('sfty') ? ' has-error' : '' }}"">
+                            <div class="col-md-8 col-md-offset-3">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="sfty" value="1"{{ is_null($parent) ? '' : ($parent->sfty === '1' ? ' checked' : '') }}> 1.本人承诺以上所填报信息真实有效。
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="sfty" value="0"{{ is_null($parent) ? '' : ($parent->sfty === '0' ? ' checked' : '') }}> 2.本人自愿放弃填报父母或监护人的信息。
+                                    </label>
+                                </div>
+
+                                @if ($errors->has('sfty'))
+                                    <span class="help-block" role="alert">
+                                        <strong>{{ $errors->first('sfty') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group">

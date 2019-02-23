@@ -29,6 +29,7 @@ class StoreFmxxRequest extends FormRequest {
 			'fmzjhm2' => 'required_with:fmxm2',
 			'fmzjlx1' => 'required_with:fmxm1,fmzjhm1',
 			'fmzjlx2' => 'required_with:fmxm2,fmzjhm2',
+			'sfty'    => 'required',
 		];
 	}
 
@@ -45,6 +46,7 @@ class StoreFmxxRequest extends FormRequest {
 			'fmzjhm2.required_with' => '须填写父母或监护人2身份证件号码',
 			'fmzjlx1.required_with' => '须选择父母或监护人1身份证件类型',
 			'fmzjlx2.required_with' => '须选择父母或监护人2身份证件类型',
+			'sfty.required'         => '必须勾选其中一项',
 		];
 	}
 
