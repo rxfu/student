@@ -93,9 +93,9 @@
                                 </li>
                             @endif
                             @if ($is_student)
-                            <li>
+                            <!--li>
                                 <a href="{{ url('/parent') }}"><i class="fa fa-ticket fa-fw"></i> 父母或监护人信息填报</a>
-                            </li>
+                            </li-->
                             <li>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>
                             </li>

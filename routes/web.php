@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::auth();
 
-Route::middleware('auth', App\Http\Middleware\CheckFmxx::class)->group(function () {
+Route::middleware('auth')->group(function () {
 	Route::resource('home', 'HomeController', ['only' => ['index']]);
 	Route::resource('requirement', 'RequirementController', ['only' => ['index']]);
 	Route::resource('fresh', 'FreshController', ['only' => ['edit', 'update']]);
@@ -96,8 +96,9 @@ Route::middleware('auth', App\Http\Middleware\CheckFmxx::class)->group(function 
 	Route::get('password/change', 'Auth\PasswordController@showChangeForm');
 	Route::put('password/change', 'Auth\PasswordController@change');
 });
-
+/*
 Route::middleware('auth')->group(function () {
 	Route::get('/parent', 'FmxxController@index')->name('fmxx');
 	Route::post('/parent', 'FmxxController@parent');
 });
+*/
