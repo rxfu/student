@@ -154,21 +154,12 @@
                             @endif
                             @if (isset($project->members[$i]))
                                 <?php $member = $project->members[$i];?>
-                                @if ($member->sfbx)
-                                    <td class="text-center">{{ $member->profile->xm }}</td>
-                                    <td class="text-center">{{ $member->profile->nj }}</td>
-                                    <td class="text-center">{{ $member->profile->college->mc }}</td>
-                                    <td class="text-center">{{ $member->profile->xh }}</td>
-                                    <td class="text-center">{{ $member->profile->lxdh }}</td>
-                                    <td class="text-center">{{ $member->fg }}</td>
-                                @else
-                                    <td class="text-center">{{ $member->xm }}</td>
-                                    <td class="text-center">{{ $member->nj }}</td>
-                                    <td class="text-center">{{ $member->szyx }}</td>
-                                    <td class="text-center">{{ $member->xh }}</td>
-                                    <td class="text-center">{{ $member->lxdh }}</td>
-                                    <td class="text-center">{{ $member->fg }}</td>
-                                @endif
+                                <td class="text-center">{{ $member->xm }}</td>
+                                <td class="text-center">{{ $member->nj }}</td>
+                                <td class="text-center">{{ $member->szyx }}</td>
+                                <td class="text-center">{{ $member->xh }}</td>
+                                <td class="text-center">{{ $member->lxdh }}</td>
+                                <td class="text-center">{{ $member->fg }}</td>
                             @else
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
@@ -188,19 +179,19 @@
                                     <td rowspan="6">校内指导教师</td>
                                 @endif
                                 <td>姓名</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->xm }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->xm }}</td>
                                 <td>职务/职称</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->position->mc }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->zc }}</td>
                             </tr>
                             <tr>
                                 <td colspan="2">所在单位</td>
-                                <td colspan="4" class="text-center">{{ $tutor->teacher->department->mc }}</td>
+                                <td colspan="4" class="text-center">{{ $tutor->szdw }}</td>
                             </tr>
                             <tr>
                                 <td colspan="2">联系电话</td>
-                                <td class="text-center">{{ $tutor->teacher->lxdh }}</td>
+                                <td class="text-center">{{ $tutor->lxdh }}</td>
                                 <td>Email</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->email }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->email }}</td>
                             </tr>
                         @else
                             <tr>
