@@ -13,6 +13,7 @@
                         <thead>
                             <tr>
                                 <th class="active">项目编号</th>
+                                <th class="active">年度</th>
                                 <th class="active">项目名称</th>
                                 <th class="active">项目类别</th>
                                 <th class="active">所属学科</th>
@@ -27,13 +28,14 @@
                             @foreach ($projects as $project)
                             <tr>
                             	<td>{{ $project->xmbh }}</td>
+                                <td>{{ $project->nd }}</td>
                                 <td>{{ $project->xmmc }}</td>
                                 <td>{{ $project->category->mc }}</td>
                                 <td>{{ $project->subject->mc }}</td>
                                 <td>{{ date('Y-m-d', strtotime($project->cjsj)) }}</td>
-                                <td>{{ is_null($project->jssfty) ? '' : ($project->jssfty ? '同意' : '不同意') }}</td>
-                                <td>{{ is_null($project->xysfty) ? '' : ($project->xysfty ? '同意' : '不同意') }}</td>
-                                <td>{{ is_null($project->xxsfty) ? '' : ($project->xxsfty ? '同意' : '不同意') }}</td>
+                                <td>{{ (0 == strlen($project->jssfty)) ? '' : ($project->jssfty ? '同意' : '不同意') }}</td>
+                                <td>{{ (0 == strlen($project->xysfty)) ? '' : ($project->xysfty ? '同意' : '不同意') }}</td>
+                                <td>{{ (0 == strlen($project->xxsfty)) ? '' : ($project->xxsfty ? '同意' : '不同意') }}</td>
                                 <td>
                                     @if ($project->jssfty != 1)
                                         <a href="{{ url('dcxm/xmxx/' . $project->id . '/edit') }}" title="修改项目信息" role="button" class="btn btn-primary">修改项目信息</a>
