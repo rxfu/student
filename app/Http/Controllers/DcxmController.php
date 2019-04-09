@@ -525,10 +525,10 @@ class DcxmController extends Controller {
 
 		return PDF::loadView('dcxm.pdf', compact('title', 'project'))
 			->setPaper('a4')
-			->setOption('margin-top', '3.7cm')
-			->setOption('margin-bottom', '3.5cm')
-			->setOption('margin-left', '2.8cm')
-			->setOption('margin-right', '2.6cm')
+			->setOption('margin-top', '1.5cm')
+			->setOption('margin-bottom', '1.5cm')
+			->setOption('margin-left', '2.3cm')
+			->setOption('margin-right', '2.3cm')
 			->inline($project->student->xh . '.pdf');
 	}
 

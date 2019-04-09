@@ -70,6 +70,9 @@
             <article class="page">
                 <div class="space-line">&nbsp;</div>
                 <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
 
                 <header class="row">
                     <div class="col-sm-12">
@@ -84,7 +87,7 @@
                 <div class="space-line">&nbsp;</div>
 
                 <div class="row">
-                    <div class="col-xs-8 col-xs-offset-2 text-center">
+                    <div class="col-xs-8 col-xs-offset-3 text-center">
                         <h3 class="text-left">项目名称：{{ $project->xmmc }}</h3>
                         <h3 class="text-left">项目类别：{{ $project->category->mc }}</h3>
                         <h3 class="text-left">项目负责人：{{ $project->student->xm }}</h3>
@@ -107,6 +110,9 @@
             </article>
 
             <article class="page">
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                
                 <header class="row">
                     <div class="col-sm-12">
                         <h2 class="text-center">填写须知</h2>
@@ -147,10 +153,10 @@
                         <td class="text-center">联系电话</td>
                         <td class="text-center">项目中的分工</td>
                     </tr>
-                    @for ($i = 0; $i < 5; $i++)
+                    @for ($i = 0; $i < 10; $i++)
                         <tr>
                             @if (1 == $i)
-                                <td rowspan="4">项目组成员</td>
+                                <td rowspan="9">项目组成员</td>
                             @endif
                             @if (isset($project->members[$i]))
                                 <?php $member = $project->members[$i];?>
