@@ -24,9 +24,9 @@
                             @foreach ($courses as $course)
                             <tr>
                                 <td>{{ $course->kcxh }}</td>
-                                <td>{{ $course->task->kch }}</td>
-                                <td>{{ $course->task->course->kcmc }}</td>
-                                <td>{{ $course->task->course->kcywmc }}</td>
+                                <td>{{ $course->plan->kch }}</td>
+                                <td>{{ $course->plan->course->kcmc }}</td>
+                                <td>{{ $course->plan->course->kcywmc }}</td>
                                 <td>{{ $course->platform->mc }}</td>
                                 <td>{{ $course->property->mc }}</td>
                                 <td>{{ $course->plan->llxs + $course->plan->syxs }}</td>

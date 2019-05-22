@@ -94,11 +94,11 @@ class RequirementController extends Controller {
 
 		foreach ($studied as $item) {
 			if (isset($credits['B'][$item->pt . $item->kcxz]) || isset($credits['X'][$item->pt . $item->kcxz]) || isset($credits['O'][$item->pt . $item->kcxz])) {
-				if ('B' == $item->kcxz) {
-					$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
+				if (isset($credits['O'][$item->pt . $item->kcxz])) {
+					$credits['O'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 				} else {
-					if (isset($credits['O'][$item->pt . $item->kcxz])) {
-						$credits['O'][$item->pt . $item->kcxz]['studied'] += $item->xf;
+					if ('B' == $item->kcxz) {
+						$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 					} else {
 						$credits['X'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 					}
