@@ -38,7 +38,7 @@
                                 <td>{{ is_null($cfxx->profile) ? '' : $cfxx->profile->xm }}</td>
                                 <td>{{ is_null($cfxx->profile->party) ? '' : $cfxx->profile->party->mc }}</td>
                                 <td>{{ is_null($cfxx->jg) ? '' : $cfxx->jg->mc }}</td>
-                                <td></td>
+                                <td>{{ $cfxx->cfqx }}</td>
                                 <td>{{ $cfxx->cfrq }}</td>
                                 <td>{{ $cfxx->cfwh }}</td>
                                 <td>{{ $cfxx->cfwjmc }}</td>
