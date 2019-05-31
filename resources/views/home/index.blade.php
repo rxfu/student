@@ -41,7 +41,7 @@
                                 <td>{{ is_null($cfxx->jg) ? '' : $cfxx->jg->mc }}</td>
                                 <td>{{ $cfxx->cfqx }}</td>
                                 <td>{{ $cfxx->cfrq->format('Y-m-d') }}</td>
-                                <td>{{ $cfxx->cfrq->addMonth($cfxx->cfqx)->format('Y-m-d') }}</td>
+                                <td>{{ $cfxx->cfrq->addMonth($cfxx->cfqx)->subDays(1)->format('Y-m-d') }}</td>
                                 <td>{{ $cfxx->cfwh }}</td>
                                 <td>{{ $cfxx->cfwjmc }}</td>
                             </tr>
