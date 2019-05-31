@@ -51,7 +51,7 @@
                         根据《广西师范大学学生违纪处分办法》第八条规定，处分可按期或提前解除，请在处分期满前一星期将《广西师范大学学生解除处分申请表》及相关材料交到教务处学籍管理科。联系电话：07735845849
                     </li>
                     <li>
-                        《广西师范大学学生解除处分申请表》下载地址：<a href="http://www.dean.gxnu.edu.cn/?p=3563">http://www.dean.gxnu.edu.cn/?p=3563</a>
+                        《广西师范大学学生解除处分申请表》下载地址：<a href="http://www.dean.gxnu.edu.cn/2018/0613/c3234a60145/page.htm">http://www.dean.gxnu.edu.cn/2018/0613/c3234a60145/page.htm</a>
                     </li>
                 </ul>
             @endif
