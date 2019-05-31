@@ -27,6 +27,7 @@
                             <th>处分种类</th>
                             <th>处分期限</th>
                             <th>处分日期</th>
+                            <th>处分到期日</th>
                             <th>处分文号</th>
                             <th>处分文件名</th>
                         </tr>
@@ -39,7 +40,8 @@
                                 <td>{{ is_null($cfxx->profile->party) ? '' : $cfxx->profile->party->mc }}</td>
                                 <td>{{ is_null($cfxx->jg) ? '' : $cfxx->jg->mc }}</td>
                                 <td>{{ $cfxx->cfqx }}</td>
-                                <td>{{ $cfxx->cfrq }}</td>
+                                <td>{{ $cfxx->cfrq->format('Y-m-d') }}</td>
+                                <td>{{ $cfxx->cfrq->addMonth($cfxx->cfqx)->format('Y-m-d') }}</td>
                                 <td>{{ $cfxx->cfwh }}</td>
                                 <td>{{ $cfxx->cfwjmc }}</td>
                             </tr>

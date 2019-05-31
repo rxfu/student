@@ -21,6 +21,10 @@ class Cfxx extends Model {
 
 	public $timestamps = false;
 
+	protected $dates = [
+		'cfrq',
+	];
+
 	/**
 	 * 处分结果
 	 * @author FuRongxin
