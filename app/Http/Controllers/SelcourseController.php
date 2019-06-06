@@ -111,7 +111,7 @@ class SelcourseController extends Controller {
 		foreach ($selcourses as $selcourse) {
 
 			// 获取课程时间
-			foreach ($selcourse->timetables as $timetable) {
+			foreach ($selcourse->timetables()->orderBy('ksj')->get() as $timetable) {
 
 				// 课程时间没有冲突
 				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
@@ -149,11 +149,15 @@ class SelcourseController extends Controller {
 									$courses[$timetable->ksj][$timetable->zc]['rend']     = min($timetable->jsj, $course['jsj']);
 
 									// 修改冲突课程结束行数
-									$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+									if ($timetable->ksj != $i) {
+										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+									}
 
 									// 设置新行
-									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'];
-									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
+									if ($courses[$timetable->ksj][$timetable->zc]['rend'] != $course['jsj']) {
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'] + 1;
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
+									}
 								}
 							}
 						}
