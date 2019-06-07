@@ -116,7 +116,7 @@ class SelcourseController extends Controller {
 				// 课程时间没有冲突
 				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
 				$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
-				$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+				$courses[$timetable->ksj][$timetable->zc]['rend']     = max($courses[$timetable->ksj][$timetable->zc]['rend'], $timetable->jsj);
 
 				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
 					$courses[$i][$timetable->zc]['rend'] = $courses[$i][$timetable->zc]['rbeg'] - 1;
