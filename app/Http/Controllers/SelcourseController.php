@@ -150,7 +150,7 @@ class SelcourseController extends Controller {
 
 									// 修改冲突课程结束行数
 									if ($timetable->ksj != $i) {
-										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj -1;
 									}
 
 									// 设置新行
