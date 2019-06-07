@@ -150,11 +150,12 @@ class SelcourseController extends Controller {
 
 									// 修改冲突课程结束行数
 									if ($timetable->ksj != $i) {
-										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj -1;
+										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj - 1;
 									}
 
 									// 设置新行
-									if ($courses[$timetable->ksj][$timetable->zc]['rend'] != $course['jsj']) {
+									if ($timetable->jsj != $course['jsj']) {
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['conflict'] = false;
 										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'] + 1;
 										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
 									}
