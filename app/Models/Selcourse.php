@@ -277,4 +277,40 @@ class Selcourse extends Model {
 		return $query->whereXh($user->xh)
 			->whereKch($kch);
 	}
+
+	/**
+	 * 扩展查询，用于获取所有已选课程列表
+	 * @author FuRongxin
+	 * @date    2019-06-13
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectedAllCourses($query, $user) {
+		return $query->with([
+			'timetables'                  => function ($query) {
+				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh')
+					->orderBy('ksj', 'asc')
+					->orderBy('zc', 'asc')
+					->orderBy('ksz', 'asc');
+			},
+			'timetables.classroom'        => function ($query) {
+				$query->select('jsh', 'mc');
+			},
+			'timetables.campus'           => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'timetables.teacher'          => function ($query) {
+				$query->select('jsgh', 'xm', 'zc');
+			},
+			'timetables.teacher.position' => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'course'                      => function ($query) {
+				$query->select('kch', 'kcmc');
+			},
+		])
+			->whereXh($user->xh);
+	}
 }

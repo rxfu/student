@@ -51,12 +51,16 @@ class SelcourseController extends Controller {
 	/**
 	 * 显示学生选课信息列表
 	 * @author FuRongxin
-	 * @date    2016-02-15
-	 * @version 2.0
+	 * @date    2019-06-13
+	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
 	public function index() {
-		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+		$selcourses = Selcourse::with('term')
+						->selectedAllCourses(Auth::user())
+						->orderBy('nd', 'desc')
+						->orderBy('xq', 'desc')
+						->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
@@ -65,6 +69,8 @@ class SelcourseController extends Controller {
 				// 生成课程序号为索引的课程信息数组
 				if (!isset($courses[$selcourse->kcxh])) {
 					$courses[$selcourse->kcxh] = [
+						'nd'   => Helper::getAcademicYear($selcourse->nd) . '学年度',
+						'xq'   => $selcourse->term->mc . '学期',
 						'kcxh' => $selcourse->kcxh,
 						'kcmc' => $selcourse->course->kcmc,
 						'xf'   => $selcourse->xf,
@@ -85,7 +91,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.index')->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课课程列表')->withCourses($courses);
+		return view('selcourse.index')->withTitle('已选课程列表')->withCourses($courses);
 	}
 
 	/**
