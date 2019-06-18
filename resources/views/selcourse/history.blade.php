@@ -4,14 +4,13 @@
 <section class="row">
     <div class="col-sm-12">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-title">生成时间：{{ date('Y-m-d H:i:s') }}</div>
-            </div>
             <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th class="active">学年度</th>
+                                <th class="active">学期</th>
                                 <th class="active">课程代码</th>
                                 <th class="active">课程名称</th>
                                 <th class="active">学分</th>
@@ -27,6 +26,8 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th>学年度</th>
+                                <th>学期</th>
                                 <th>课程代码</th>
                                 <th>课程名称</th>
                                 <th>学分</th>
@@ -43,6 +44,8 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
+                                    <td>{{ $course['nd'] }}</td>
+                                    <td>{{ $course['xq'] }}</td>
                                 	<td>{{ $course['kcxh'] }}</td>
                                 	<td>{{ $course['kcmc'] }}</td>
                                 	<td>{{ $course['xf'] }}</td>
@@ -67,7 +70,6 @@
                     </table>
                 </div>
             </div>
-            <div class="panel-footer">生成时间：{{ date('Y-m-d H:i:s') }}</div>
         </div>
     </div>
 </section>

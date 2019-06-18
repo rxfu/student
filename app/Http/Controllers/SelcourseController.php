@@ -57,14 +57,56 @@ class SelcourseController extends Controller {
 	 */
 	public function index() {
 		$selcourses = Selcourse::with('term')
-						->selectedAllCourses(Auth::user())
+						->selectedCourses(Auth::user())
+						->get();
+		$courses    = [];
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->timetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				// 在课程信息数组下生成周次为索引的课程时间数组
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.index')->withTitle(Helper::getAcademicYear($selcourse->nd) . '学年度' . $selcourse->term->mc . '学期' . '已选课程列表')->withCourses($courses);
+	}
+
+	/**
+	 * 显示学生历史选课信息列表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 选课信息列表
+	 */
+	public function history() {
+		$selcourses = Selcourse::with('term')
+						->selectedHistoryCourses(Auth::user())
 						->orderBy('nd', 'desc')
 						->orderBy('xq', 'desc')
 						->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
-			foreach ($selcourse->timetables as $timetable) {
+			foreach ($selcourse->historyTimetables as $timetable) {
 
 				// 生成课程序号为索引的课程信息数组
 				if (!isset($courses[$selcourse->kcxh])) {
@@ -91,7 +133,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.index')->withTitle('已选课程列表')->withCourses($courses);
+		return view('selcourse.history')->withTitle('历史课程列表')->withCourses($courses);
 	}
 
 	/**

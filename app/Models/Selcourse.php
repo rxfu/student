@@ -149,6 +149,19 @@ class Selcourse extends Model {
 	}
 
 	/**
+	 * 历史排课表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function historyTimetables() {
+		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->whereNd($this->nd)
+			->whereXq($this->xq);
+	}
+
+	/**
 	 * 扩展查询，用于获取已选课程学分
 	 * @author FuRongxin
 	 * @date    2016-01-23
@@ -279,15 +292,15 @@ class Selcourse extends Model {
 	}
 
 	/**
-	 * 扩展查询，用于获取所有已选课程列表
+	 * 扩展查询，用于获取历史已选课程列表
 	 * @author FuRongxin
-	 * @date    2019-06-13
+	 * @date    2019-06-18
 	 * @version 2.3
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @param   object $user 用户对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeSelectedAllCourses($query, $user) {
+	public function scopeSelectedHistoryCourses($query, $user) {
 		return $query->with([
 			'timetables'                  => function ($query) {
 				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh')
@@ -311,6 +324,8 @@ class Selcourse extends Model {
 				$query->select('kch', 'kcmc');
 			},
 		])
-			->whereXh($user->xh);
+			->whereXh($user->xh)
+			->where('nd', '<>', session('year'))
+			->where('xq', '<>', session('term'));
 	}
 }
