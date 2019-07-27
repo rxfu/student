@@ -278,9 +278,10 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 显示课程检索表单
+	 * 2019-07-27：增加过滤留学生课程，留学生专业代码以“L”开头
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
@@ -316,6 +317,7 @@ class SelcourseController extends Controller {
 
 		$majors = Major::whereZt(config('constants.status.enable'))
 			->where('mc', '<>', '')
+			->where('zy', 'not like', 'L%')
 			->select('zy', 'mc', 'xy')
 			->orderBy('zy')
 			->get();
@@ -338,9 +340,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 检索课程
 	 * 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
+	 * 2019-07-27：增加过滤留学生课程
 	 * @author FuRongxin
-	 * @date    2017-05-16
-	 * @version 2.1.5
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
@@ -355,11 +358,13 @@ class SelcourseController extends Controller {
 		$inputs = $request->all();
 
 		// 2017-06-15：应教务处要求，在检索结果中排除本年级本专业本学期课程
+		// 2019-07-27：增加过滤留学生课程
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
 			->exceptGeneral()
+			->exceptForeignMajor()
 			->where(function ($query) {
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));
