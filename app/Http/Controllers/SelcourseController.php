@@ -400,11 +400,12 @@ class SelcourseController extends Controller {
 		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
 			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			}
+			// DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+			// DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+			// if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
+			// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+			// }
+			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
@@ -719,11 +720,12 @@ class SelcourseController extends Controller {
 		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
 			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			}
+			// DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+			// DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+			// if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
+			// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+			// }
+			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
