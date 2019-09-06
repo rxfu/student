@@ -57,14 +57,56 @@ class SelcourseController extends Controller {
 	 */
 	public function index() {
 		$selcourses = Selcourse::with('term')
-						->selectedAllCourses(Auth::user())
+						->selectedCourses(Auth::user())
+						->get();
+		$courses    = [];
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->timetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				// 在课程信息数组下生成周次为索引的课程时间数组
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.index')->withTitle(Helper::getAcademicYear($selcourse->nd) . '学年度' . $selcourse->term->mc . '学期' . '已选课程列表')->withCourses($courses);
+	}
+
+	/**
+	 * 显示学生历史选课信息列表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 选课信息列表
+	 */
+	public function history() {
+		$selcourses = Selcourse::with('term')
+						->selectedHistoryCourses(Auth::user())
 						->orderBy('nd', 'desc')
 						->orderBy('xq', 'desc')
 						->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
-			foreach ($selcourse->timetables as $timetable) {
+			foreach ($selcourse->historyTimetables as $timetable) {
 
 				// 生成课程序号为索引的课程信息数组
 				if (!isset($courses[$selcourse->kcxh])) {
@@ -91,7 +133,7 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.index')->withTitle('已选课程列表')->withCourses($courses);
+		return view('selcourse.history')->withTitle('历史课程列表')->withCourses($courses);
 	}
 
 	/**
@@ -236,9 +278,10 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 显示课程检索表单
+	 * 2019-07-27：增加过滤留学生课程，留学生专业代码以“L”开头
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
@@ -274,6 +317,7 @@ class SelcourseController extends Controller {
 
 		$majors = Major::whereZt(config('constants.status.enable'))
 			->where('mc', '<>', '')
+			->where('zy', 'not like', 'L%')
 			->select('zy', 'mc', 'xy')
 			->orderBy('zy')
 			->get();
@@ -296,9 +340,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 检索课程
 	 * 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
+	 * 2019-07-27：增加过滤留学生课程
 	 * @author FuRongxin
-	 * @date    2017-05-16
-	 * @version 2.1.5
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
@@ -313,11 +358,13 @@ class SelcourseController extends Controller {
 		$inputs = $request->all();
 
 		// 2017-06-15：应教务处要求，在检索结果中排除本年级本专业本学期课程
+		// 2019-07-27：增加过滤留学生课程
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
 			->exceptGeneral()
+			->exceptForeignMajor()
 			->where(function ($query) {
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));

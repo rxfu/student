@@ -186,7 +186,10 @@
                                         <a href="{{ url('selcourse/timetable') }}">课程表</a>
                                     </li>
                                     <li>
-                                        <a href="{{ url('selcourse') }}">已选课程列表</a>
+                                        <a href="{{ url('selcourse') }}">已选选课列表</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('selcourse/history') }}">历史选课列表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->

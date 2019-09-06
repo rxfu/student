@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 	Route::get('selcourse/search/{campus}', 'SelcourseController@search');
 	Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|public|require|elect|human|nature|art|other');
 	Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other');
+	Route::get('selcourse/history', 'SelcourseController@history');
 	Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store', 'destroy']]);
 
 	Route::get('application/is_selected/{course}', 'ApplicationController@isSelected');

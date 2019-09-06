@@ -267,6 +267,18 @@ class Mjcourse extends Model {
 	}
 
 	/**
+	 * 扩展查询，获取排除留学生专业的课程数据，留学生专业代码以“L”开头
+	 * @author FuRongxin
+	 * @date    2019-07-27
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeExceptForeignMajor($query) {
+		return $query->where('pk_kczy.zy', 'not like', 'L%');
+	}
+
+	/**
 	 * 扩展查询：用于获取可选课程列表
 	 * @author FuRongxin
 	 * @date    2016-03-01
