@@ -179,6 +179,22 @@ class Selcourse extends Model {
 	}
 
 	/**
+	 * 扩展查询，用于获取所有已选且未重修课程学分
+	 * @author FuRongxin
+	 * @date    2019-10-8
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectedUnretakeCredits($query, $user) {
+		return $query->whereXh($user->xh)
+			->whereCx(0)
+			->groupBy('pt', 'xz')
+			->selectRaw('pt, xz, SUM(xf) AS xf');
+	}
+
+	/**
 	 * 扩展查询，用于获取已选课程列表
 	 * @author FuRongxin
 	 * @date    2016-02-16
