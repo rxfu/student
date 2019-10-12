@@ -9,11 +9,11 @@
                     <table class="table table-bordered">
                         <tr>
                             <th colspan="2" class="active text-center">课程平台与性质</th>
-                            <th colspan="2" class="warning text-center">应修读学分数</th>
-                            <th colspan="2" class="success text-center">已获得学分数</th>
-                            <th colspan="2" class="danger text-center">未获得学分数</th>
-                            <th colspan="2" class="info text-center">本次选修学分数</th>
-                            <th colspan="2" class="primary text-center">已选总学分数</th>
+                            <th colspan="2" class="warning text-center">应修学分</th>
+                            <th colspan="2" class="success text-center">已获得学分</th>
+                            <th colspan="2" class="danger text-center">未获得学分</th>
+                            <th colspan="2" class="info text-center">本学期在修学分</th>
+                            <th colspan="2" class="primary text-center">已选课总学分<br>（不包含重修课学分）</th>
                         </tr>
                         @foreach ($credits as $property => $items)
                             @foreach ($items as $key => $credit)
