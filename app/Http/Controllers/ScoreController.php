@@ -121,8 +121,9 @@ class ScoreController extends Controller {
 			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
 
 		// 显示提交状态小于3的补考成绩
+		// 2019-11-09：教务处学籍科要求只显示状态2的成绩作为补缓考待确认成绩
 		$makeup = Muscore::whereXh(Auth::user()->xh)
-			->where('tjzt', '<', config('constants.score.dconfirmed'))
+			->where('tjzt', '=', config('constants.score.confirmed'))
 			->select('xh', 'xm', 'kcxh', 'kcpt', 'kcxz', 'nd', 'xq', 'kh', 'cj1', 'cj2', 'cj3', 'cj4', 'cj5', 'cj6', 'zpcj', 'kszt', 'tjzt');
 
 		$scores = $detail->union($makeup)
