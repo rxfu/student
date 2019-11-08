@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
 use App\Models\Broadcast;
+use App\Models\Bymd;
+use App\Models\Byxwpd;
 use App\Models\Cfxx;
 use App\Models\Setting;
 use App\Models\Term;
@@ -31,8 +33,10 @@ class HomeController extends Controller {
 		$message    = '现在' . $is_open . Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课';
 		$broadcasts = Broadcast::whereId('xt_web')->get();
 		$cfxxs      = Cfxx::with('profile', 'jg')->whereXh(Auth::user()->xh)->get();
+		$bymds      = Bymd::with('byflzd')->whereXh(Auth::user()->xh)->get();
+		$byxwpds    = Byxwpd::whereXh(Auth::user()->xh)->get();
 		$title      = '综合管理系统';
 
-		return view('home.index', compact('title', 'broadcasts', 'message', 'cfxxs'));
+		return view('home.index', compact('title', 'broadcasts', 'message', 'cfxxs', 'bymds', 'byxwpds'));
 	}
 }

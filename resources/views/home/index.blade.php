@@ -57,6 +57,98 @@
                     </li>
                 </ul>
             @endif
+            @if (!$bymds->isEmpty())
+                <table class="table table-striped table-bordered">
+                    <caption>
+                        <h3>毕业情况</h3>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>学号</th>
+                            <th>姓名</th>
+                            <th>审核时间</th>
+                            <th>审核阶段</th>
+                            <th>审核结果</th>
+                            <th>审核不通过原因</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($bymds as $bymd)
+                            <tr>
+                                <td>{{ $bymd->xh }}</td>
+                                <td>{{ $bymd->xm }}</td>
+                                <td>{{ $bymd->pc }}</td>
+                                <td>
+                                    @if (-1 == $bymd->jd)
+                                        预审
+                                    @elseif (0 == $bymd->jd)
+                                        正式审核
+                                    @endif
+                                </td>
+                                <td>{{ $bymd->byflzd->mc }}</td>
+                                <td>{{ $bymd->yy }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+            @if (!$byxwpds->isEmpty())
+                <table class="table table-striped table-bordered">
+                    <caption>
+                        <h3>学位评定情况</h3>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>学号</th>
+                            <th>姓名</th>
+                            <th>审核时间</th>
+                            <th>审核阶段</th>
+                            <th>学院评定意见</th>
+                            <th>教务处评定意见</th>
+                            <th>学校评定意见</th>
+                            <th>审核不通过原因</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($byxwpds as $byxwpd)
+                            <tr>
+                                <td>{{ $byxwpd->xh }}</td>
+                                <td>{{ $byxwpd->xm }}</td>
+                                <td>{{ $byxwpd->pc }}</td>
+                                <td>
+                                    @if (-1 == $byxwpd->jd)
+                                        预审
+                                    @elseif (0 == $byxwpd->jd)
+                                        正式审核
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ('Y' == trim($byxwpd->xjg))
+                                        同意
+                                    @elseif ('N' == trim($byxwpd->xjg))
+                                        不同意
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ('Y' == trim($byxwpd->cjg))
+                                        同意
+                                    @elseif ('N' == trim($byxwpd->cjg))
+                                        不同意
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ('Y' == trim($byxwpd->jg))
+                                        同意
+                                    @elseif ('N' == trim($byxwpd->jg))
+                                        不同意
+                                    @endif
+                                </td>
+                                <td>{{ $bymd->yy }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
     		</div>
     	</div>
     </div>
