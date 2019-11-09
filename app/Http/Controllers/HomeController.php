@@ -33,8 +33,8 @@ class HomeController extends Controller {
 		$message    = '现在' . $is_open . Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课';
 		$broadcasts = Broadcast::whereId('xt_web')->get();
 		$cfxxs      = Cfxx::with('profile', 'jg')->whereXh(Auth::user()->xh)->get();
-		$bymds      = Bymd::with('byflzd')->whereXh(Auth::user()->xh)->get();
-		$byxwpds    = Byxwpd::whereXh(Auth::user()->xh)->get();
+		$bymds      = Bymd::with('byflzd')->whereXh(Auth::user()->xh)->orderBy('pc', 'desc')->get();
+		$byxwpds    = Byxwpd::whereXh(Auth::user()->xh)->orderBy('pc', 'desc')->get();
 		$title      = '综合管理系统';
 
 		return view('home.index', compact('title', 'broadcasts', 'message', 'cfxxs', 'bymds', 'byxwpds'));
