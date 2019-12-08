@@ -67,12 +67,12 @@
   	<div class="modal-dialog">
     	<div class="modal-content">
 			<div class="modal-header">
-	        	<h1 class="modal-title">保存中……</h1>
+	        	<h1 class="modal-title">排队中……</h1>
 	    	</div>
 	      	<div class="modal-body">
 	        	<div class="progress">
 	        		<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-	        			<span class="sr-only">保存中……</span>
+	        			<span class="sr-only">排队中，请稍后……</span>
 	        		</div>
 	        	</div>
 	      	</div>
@@ -86,6 +86,22 @@
 @if (session('forbidden'))
 	alert('{{ session('forbidden') }}');
 @endif
+
+@isset($kcxh)
+	@if (Auth::user()->profile->nj < 2019 && in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY']))
+		if (confirm('你刚才所选的课程序号是 ' + {{ $kcxh }} + ' ，请问是否需要转为TQ类型的课程？是请点击“确定”，否请点击“取消”。')) {
+			$.ajax({
+				'async': false,
+				'url': '{!! url('selcourse/TQTransform') !!}/' + {{ $kcxh }},
+				'success': function(data) {
+					if (0 != data.length) {
+						alert('课程转换成功');
+					}
+				}
+			})
+		}
+	@endif
+@endisset
 
 $(function() {
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {

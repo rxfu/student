@@ -603,7 +603,7 @@ class SelcourseController extends Controller {
 			$selcourse->zy    = $course->zy;
 
 			if ($selcourse->save()) {
-				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
+				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功')->withKcxh($inputs['kcxh']);
 			} else {
 				return back()->withInput()->withStatus('选课失败');
 			}
@@ -1002,27 +1002,6 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id) {
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id) {
-		//
-	}
-
-	/**
 	 * 退选课程
 	 * @author FuRongxin
 	 * @date    2016-02-23
@@ -1039,5 +1018,19 @@ class SelcourseController extends Controller {
 		$course->delete();
 
 		return back()->withStatus('退选课程成功');
+	}
+
+	/**
+	 * TQ课程转换
+	 * @author FuRongxin
+	 * @date    2019-12-08
+	 * @version 2.3
+	 * @param   string $kcxh 12位课程序号
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function TQTransform($kcxh) {
+		if (in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
+			
+		}
 	}
 }

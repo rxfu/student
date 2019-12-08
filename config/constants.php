@@ -32,6 +32,7 @@ return [
 		'cancel' => '取消报名',
 		'apply'  => '选课申请',
 		'revoke' => '撤销申请',
+		'trsfrm' => '课程转换',
 	],
 
 	/**
@@ -202,10 +203,10 @@ return [
 				'type' => 'TY',
 				'name' => '艺术体育通识素质课程',
 			],
-			'other'  => [
+			/*'other'  => [
 				'type' => 'TQ',
 				'name' => '其他专项通识素质课程',
-			],
+			],*/
 		],
 		'others'   => [
 			'type' => 'OTHERS',
