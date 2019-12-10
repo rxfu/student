@@ -22,6 +22,8 @@ use App\Models\Setting;
 use App\Models\Term;
 use App\Models\Timetable;
 use App\Models\Unpaid;
+use App\Models\Xfzhkc;
+use App\Models\Xfzhsq;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -603,7 +605,8 @@ class SelcourseController extends Controller {
 			$selcourse->zy    = $course->zy;
 
 			if ($selcourse->save()) {
-				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功')->withKcxh($inputs['kcxh']);
+				$request->session()->flash('kcxh', $inputs['kcxh']);
+				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
 			} else {
 				return back()->withInput()->withStatus('选课失败');
 			}
@@ -1030,7 +1033,38 @@ class SelcourseController extends Controller {
 	 */
 	public function TQTransform($kcxh) {
 		if (in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
-			
+			$course = Selcourse::whereXh(Auth::user()->xh)
+				->whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereKcxh($kcxh)
+				->firstOrFail();
+			$course->xz = 'Q';
+			$course->save();
+
+			$zhsq       = new Xfzhsq;
+			$zhsq->xh   = Auth::user()->xh;
+			$zhsq->xm   = Auth::user()->profile->xm;
+			$zhsq->sqsj = Carbon::now();
+			$zhsq->zt   = 4;
+			$zhsq->save();
+
+			$xfzhkc        = new Xfzhkc;
+			$xfzhkc->qkch  = $course->kch;
+			$xfzhkc->qkcmc = $course->course->kcmc;
+			$xfzhkc->qpt   = substr($course->kcxh, 0, 1);
+			$xfzhkc->qxz   = substr($course->kcxh, 1, 1);
+			$xfzhkc->qxf   = $course->xf;
+			$xfzhkc->qcj   = 0;
+			$xfzhkc->kch   = $course->kch;
+			$xfzhkc->kcmc  = $course->course->kcmc;
+			$xfzhkc->pt    = $course->pt;
+			$xfzhkc->xz    = $course->xz;
+			$xfzhkc->sfxw  = 0;
+			$zhsq->courses()->save($xfzhkc);
+
+			return request()->ajax() ? response()->json(['result' => true]) : true;
 		}
+
+		return request()->ajax() ? response()->json(['result' => false]) : false;
 	}
 }

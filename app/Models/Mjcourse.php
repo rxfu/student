@@ -203,11 +203,11 @@ class Mjcourse extends Model {
 		case 'art':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Y');
-
+/*
 		case 'other':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Q');
-
+*/
 		case 'pubsport':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'B')
