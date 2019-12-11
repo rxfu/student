@@ -446,16 +446,17 @@ class SelcourseController extends Controller {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
-		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+		// 2019-12-11：应教务处要求直接访问财务处欠费名单
+		// if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
-			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			// DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			// DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			// if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-			// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			// }
+		// 2018-06-06：应教务处要求增加财务处欠费名单检测
+		DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+		DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
 			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
+		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+		// }
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
@@ -767,16 +768,17 @@ class SelcourseController extends Controller {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
-		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+		// 2019-12-11：应教务处要求直接访问财务处欠费名单
+		// if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
-			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			// DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			// DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			// if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-			// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			// }
+		// 2018-06-06：应教务处要求增加财务处欠费名单检测
+		DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+		DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
 			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
+		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+		// }
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {

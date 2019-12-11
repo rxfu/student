@@ -8,9 +8,9 @@ class Charge extends Model {
 
 	protected $connection = 'sqlsrv';
 
-	protected $table = 'VW_Mid_ChargeMid';
+	protected $table = 'VT_FE_StuStandardB';
 
-	protected $primaryKey = 'StudentCode';
+	protected $primaryKey = 'StudentNo';
 
 	public $incrementing = false;
 
