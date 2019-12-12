@@ -151,9 +151,9 @@
                                                     <li>
                                                         <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
                                                     </li>
-                                                    <!--li>
-                                                        <a href="{{ route('selcourse.show','other') }}">其他专项通识素质课程</a>
-                                                    </li-->
+                                                    <li>
+                                                        <a href="{{ route('selcourse.listtq') }}">其他通识素质课程转换</a>
+                                                    </li>
                                                 </ul>
                                                 <!-- /.nav-third-level -->
                                             </li>

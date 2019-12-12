@@ -1106,6 +1106,52 @@ class SelcourseController extends Controller {
 	}
 
 	/**
+	 * TQ课程转换列表
+	 * @author FuRongxin
+	 * @date    2019-12-12
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function listTQTransform() {
+		$title = 'TQ课程转换课程表';
+		$selcourses = Selcourse::selectedCourses(Auth::user())
+			->wherePt('T')
+			->whereIn('xz', ['W', 'I', 'Y', 'Q'])
+			->get();
+		$courses    = [];
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->timetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'pt'   => $selcourse->pt,
+						'xz'   => $selcourse->xz,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				// 在课程信息数组下生成周次为索引的课程时间数组
+				$courses[$selcourse->kcxh][$timetable->zc][] = [
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.tqtransform', compact('title', 'courses'));
+	}
+
+	/**
 	 * TQ课程转换
 	 * @author FuRongxin
 	 * @date    2019-12-08
@@ -1120,21 +1166,21 @@ class SelcourseController extends Controller {
 				->whereXq(session('term'))
 				->whereKcxh($kcxh)
 				->firstOrFail();
-			$course->xz = 'Q';
-			$course->save();
-
-			$zhsq       = new Xfzhsq;
-			$zhsq->xh   = Auth::user()->xh;
-			$zhsq->xm   = Auth::user()->profile->xm;
-			$zhsq->sqsj = Carbon::now();
-			$zhsq->zt   = 4;
-			$zhsq->save();
 
 			$xfzhkc        = new Xfzhkc;
 			$xfzhkc->qkch  = $course->kch;
 			$xfzhkc->qkcmc = $course->course->kcmc;
-			$xfzhkc->qpt   = substr($course->kcxh, 0, 1);
-			$xfzhkc->qxz   = substr($course->kcxh, 1, 1);
+			$xfzhkc->qpt   = $course->pt;
+			$xfzhkc->qxz   = $course->xz;
+
+			if (in_array($course->xz, ['I', 'W', 'Y'])) {
+				$course->xz = 'Q';
+			} else {
+				$course->xz = substr($kcxh, 1, 1);
+			}
+
+			$course->save();
+
 			$xfzhkc->qxf   = $course->xf;
 			$xfzhkc->qcj   = 0;
 			$xfzhkc->kch   = $course->kch;
@@ -1142,11 +1188,18 @@ class SelcourseController extends Controller {
 			$xfzhkc->pt    = $course->pt;
 			$xfzhkc->xz    = $course->xz;
 			$xfzhkc->sfxw  = 0;
+
+			$zhsq       = new Xfzhsq;
+			$zhsq->xh   = Auth::user()->xh;
+			$zhsq->xm   = Auth::user()->profile->xm;
+			$zhsq->sqsj = Carbon::now();
+			$zhsq->zt   = 4;
+			$zhsq->save();
 			$zhsq->courses()->save($xfzhkc);
 
-			return request()->ajax() ? response()->json(['result' => true]) : true;
+			return back()->withStatus('TQ课程转换成功');
 		}
 
-		return request()->ajax() ? response()->json(['result' => false]) : false;
+		return back()->withStatus('TQ课程转换失败');
 	}
 }

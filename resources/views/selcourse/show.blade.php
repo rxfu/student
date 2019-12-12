@@ -86,7 +86,7 @@
 @if (session('forbidden'))
 	alert('{{ session('forbidden') }}');
 @endif
-
+/*
 @if (session('kcxh'))
 	@if (Auth::user()->profile->nj < 2019 && in_array(substr(session('kcxh'), 0, 2), ['TI', 'TW', 'TY']))
 	$(window).load(function() {
@@ -106,7 +106,7 @@
 	})
 	@endif
 @endif
-
+*/
 $(function() {
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({

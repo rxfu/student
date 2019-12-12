@@ -47,7 +47,8 @@ Route::middleware('auth')->group(function () {
 	Route::get('score/exam', 'ScoreController@exam');
 	Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
 
-	Route::get('selcourse/TQTransform/{course}', 'SelcourseController@TQTransform');
+	Route::get('selcourse/TQTransform', 'SelcourseController@listTQTransform')->name('selcourse.listtq');
+	Route::post('selcourse/TQTransform/{course}', 'SelcourseController@TQTransform')->name('selcourse.tqtransform');
 	Route::get('selcourse/checktime/{course}', 'SelcourseController@checktime');
 	Route::get('selcourse/checkretake/{course}', 'SelcourseController@checkretake');
 	Route::get('selcourse/deletable', 'SelcourseController@deletable');
