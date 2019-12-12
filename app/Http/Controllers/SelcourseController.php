@@ -1114,37 +1114,41 @@ class SelcourseController extends Controller {
 	 */
 	public function listTQTransform() {
 		$title = 'TQ课程转换课程表';
-		$selcourses = Selcourse::selectedCourses(Auth::user())
-			->wherePt('T')
-			->whereIn('xz', ['W', 'I', 'Y', 'Q'])
-			->get();
-		$courses    = [];
 
-		foreach ($selcourses as $selcourse) {
-			foreach ($selcourse->timetables as $timetable) {
-
-				// 生成课程序号为索引的课程信息数组
-				if (!isset($courses[$selcourse->kcxh])) {
-					$courses[$selcourse->kcxh] = [
-						'kcxh' => $selcourse->kcxh,
-						'kcmc' => $selcourse->course->kcmc,
-						'pt'   => $selcourse->pt,
-						'xz'   => $selcourse->xz,
-						'xf'   => $selcourse->xf,
-						'xqh'  => $timetable->campus->mc,
+		$courses   = [];
+		if (Auth::user()->profile->nj < 2019) {
+			$selcourses = Selcourse::selectedCourses(Auth::user())
+				->wherePt('T')
+				->whereIn('xz', ['W', 'I', 'Y', 'Q'])
+				->get();
+	
+			foreach ($selcourses as $selcourse) {
+				foreach ($selcourse->timetables as $timetable) {
+	
+					// 生成课程序号为索引的课程信息数组
+					if (!isset($courses[$selcourse->kcxh])) {
+						$courses[$selcourse->kcxh] = [
+							'kcxh' => $selcourse->kcxh,
+							'kcmc' => $selcourse->course->kcmc,
+							'pt'   => $selcourse->pt,
+							'xz'   => $selcourse->xz,
+							'xf'   => $selcourse->xf,
+							'xqh'  => $timetable->campus->mc,
+							'cx'   => $this->checkretake($selcourse->kcxh),
+						];
+					}
+	
+					// 在课程信息数组下生成周次为索引的课程时间数组
+					$courses[$selcourse->kcxh][$timetable->zc][] = [
+						'ksz'  => $timetable->ksz,
+						'jsz'  => $timetable->jsz,
+						'ksj'  => $timetable->ksj,
+						'jsj'  => $timetable->jsj,
+						'js'   => $timetable->classroom->mc,
+						'jsxm' => $timetable->teacher->xm,
+						'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 					];
 				}
-
-				// 在课程信息数组下生成周次为索引的课程时间数组
-				$courses[$selcourse->kcxh][$timetable->zc][] = [
-					'ksz'  => $timetable->ksz,
-					'jsz'  => $timetable->jsz,
-					'ksj'  => $timetable->ksj,
-					'jsj'  => $timetable->jsj,
-					'js'   => $timetable->classroom->mc,
-					'jsxm' => $timetable->teacher->xm,
-					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
-				];
 			}
 		}
 
@@ -1160,7 +1164,7 @@ class SelcourseController extends Controller {
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
 	public function TQTransform($kcxh) {
-		if (in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
+		if (Auth::user()->profile->nj < 2019 && in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
 			$course = Selcourse::whereXh(Auth::user()->xh)
 				->whereNd(session('year'))
 				->whereXq(session('term'))

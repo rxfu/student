@@ -44,13 +44,19 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
-                                    <td>
+                                    <td align="center">
                                         <form id="transForm" name="transForm" action="{{ route('selcourse.tqtransform', $course['kcxh'])}}" method="post" role="form">
                                             {!! csrf_field() !!}
-                                            @if ($course['xz'] == 'Q')
-                                                <button type="submit" class="btn btn-info">转回为T{{ substr($course['kcxh'], 1, 1) }}</button>
+                                            @if ($course['cx'])
+                                                <span class="text-danger">
+                                                    <strong>重修课程<br>不可转换</strong>
+                                                </span>
                                             @else
-                                                <button type="submit" class="btn btn-warning">转换为TQ</button>
+                                                @if ($course['xz'] == 'Q')
+                                                    <button type="submit" class="btn btn-info">转回为T{{ substr($course['kcxh'], 1, 1) }}</button>
+                                                @else
+                                                    <button type="submit" class="btn btn-warning">转换为TQ</button>
+                                                @endif
                                             @endif
                                         </form>
                                     </td>
