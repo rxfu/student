@@ -27,6 +27,7 @@ use App\Models\Xfzhsq;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
@@ -581,62 +582,70 @@ class SelcourseController extends Controller {
 			}
 
 			// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
-			$type = $inputs['type'];
-			DB::transaction(function () use ($course, $type) {
+			try {
+				DB::transaction(function () use ($course) {
 
-				// 增加选课统计表数据自增1
-				$count = Count::whereKcxh($course->kcxh);
+					// 增加选课统计表数据自增1
+					$count = Count::whereKcxh($course->kcxh);
 
-				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
-					$count = $count->whereZy($course->zy);
-				}
+					if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+						$count = $count->whereZy($course->zy);
+					}
 
-				$count = $count->lockForUpdate()->first();
+					$count = $count->lockForUpdate()->first();
 
-				if (is_null($count)) {
-					$count       = new Count;
-					$count->kcxh = $course->kcxh;
-					$count->zy   = $isPubSport ? '' : $course->zy;
-					$count->rs   = 1;
-				} else {
-					$count->increment('rs');
-				}
+					if (is_null($count)) {
+						$count       = new Count;
+						$count->kcxh = $course->kcxh;
+						$count->zy   = $isPubSport ? '' : $course->zy;
+						$count->rs   = 1;
+					} else {
+						if ($count->rs < $course->rs) {
+							$count->increment('rs');
+						} else {
+							throw new Excepiton('选课人数已满，请选其他课程');
+						}
+					}
 
-				$count->save();
+					$count->saveOrFail();
 
-				// 保存选课数据
-				$selcourse = new Selcourse;
+					// 保存选课数据
+					$selcourse = new Selcourse;
 
-				// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
-				$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
-				$selcourse->xh    = Auth::user()->xh;
-				$selcourse->xm    = Auth::user()->profile->xm;
-				$selcourse->nd    = $course->nd;
-				$selcourse->xq    = $course->xq;
-				$selcourse->kcxh  = $course->kcxh;
-				$selcourse->kch   = Helper::getCno($course->kcxh);
-				$selcourse->pt    = $course->pt;
-				$selcourse->xz    = $course->xz;
-				$selcourse->xl    = $course->xl;
-				$selcourse->jsgh  = $course->task->jsgh;
-				$selcourse->xf    = $course->plan->zxf;
-				$selcourse->sf    = config('constants.status.enable');
-				$selcourse->zg    = $course->bz;
-				$selcourse->bz    = config('constants.status.disable');
-				$selcourse->sj    = Carbon::now();
-				$selcourse->kkxy  = $course->kkxy;
-				$selcourse->qz    = 0;
-				$selcourse->tdkch = '';
-				$selcourse->tdyy  = '';
-				$selcourse->zy    = $course->zy;
+					// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
+					$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
+					$selcourse->xh    = Auth::user()->xh;
+					$selcourse->xm    = Auth::user()->profile->xm;
+					$selcourse->nd    = $course->nd;
+					$selcourse->xq    = $course->xq;
+					$selcourse->kcxh  = $course->kcxh;
+					$selcourse->kch   = Helper::getCno($course->kcxh);
+					$selcourse->pt    = $course->pt;
+					$selcourse->xz    = $course->xz;
+					$selcourse->xl    = $course->xl;
+					$selcourse->jsgh  = $course->task->jsgh;
+					$selcourse->xf    = $course->plan->zxf;
+					$selcourse->sf    = config('constants.status.enable');
+					$selcourse->zg    = $course->bz;
+					$selcourse->bz    = config('constants.status.disable');
+					$selcourse->sj    = Carbon::now();
+					$selcourse->kkxy  = $course->kkxy;
+					$selcourse->qz    = 0;
+					$selcourse->tdkch = '';
+					$selcourse->tdyy  = '';
+					$selcourse->zy    = $course->zy;
+					$selcourse->saveOrFail();
+				});
+			} catch (QueryException $e) {
+				return back()->withInput()->withStatus('选课失败');
+			} catch (Exception $e) {
+				$request->session()->flash('forbidden', $e->getMessage());
+				return back()->withInput();
+			}
 
-				if ($selcourse->save()) {
-					request()->session()->flash('kcxh', $course->kcxh);
-					return redirect()->route('selcourse.show', $type)->withStatus('选课成功');
-				} else {
-					return back()->withInput()->withStatus('选课失败');
-				}
-			});
+			request()->session()->flash('kcxh', $course->kcxh);
+			return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
+
 		}
 	}
 
@@ -1049,38 +1058,51 @@ class SelcourseController extends Controller {
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
-		DB::transaction(function () use ($course) {
+		try {
+			DB::transaction(function () use ($course) {
 
-			// 增加选课统计表数据自增1
-			$count = Count::whereKcxh($course->kcxh);
+				// 增加选课统计表数据自增1
+				$count = Count::whereKcxh($course->kcxh);
 
-			if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
-				$count = $count->whereZy($course->zy);
-			}
+				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+					$count = $count->whereZy($course->zy);
+				}
 
-			$count = $count->lockForUpdate()->first();
+				$count = $count->lockForUpdate()->first();
 
-			if (is_null($count)) {
-				$count       = new Count;
-				$count->kcxh = $course->kcxh;
-				$count->zy   = $isPubSport ? '' : $course->zy;
-				$count->rs   = 1;
-			} else {
-				$count->decrement('rs');
-			}
+				if (is_null($count)) {
+					$count       = new Count;
+					$count->kcxh = $course->kcxh;
+					$count->zy   = $isPubSport ? '' : $course->zy;
+					$count->rs   = 1;
+				} else {
+					if ($count->rs > 0) {
+						$count->decrement('rs');
+					} else {
+						throw new Excepiton('选课人数为零，无法退选课程');
+					}
+				}
 
-			$count->save();
+				$count->save();
 
-			// 删除选课数据
-			$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
-				->whereNd(session('year'))
-				->whereXq(session('term'))
-				->whereKcxh($course->kcxh)
-				->firstOrFail();
-			$deletingCourse->delete();
+				// 删除选课数据
+				$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKcxh($course->kcxh)
+					->firstOrFail();
+				$deletingCourse->delete();
 
-			return back()->withStatus('退选课程成功');
-		});
+				return back()->withStatus('退选课程成功');
+			});
+		} catch (QueryException $e) {
+			return back()->wihtInput()->withStatus('退选课程失败');
+		} catch (Exception $e) {
+			$request->session()->flash('forbidden', $e->getMessage());
+			return back()->withInput();
+		}
+
+		return back()->withStatus('退选课程成功');
 	}
 
 	/**
