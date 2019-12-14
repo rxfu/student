@@ -86,27 +86,7 @@
 @if (session('forbidden'))
 	alert('{{ session('forbidden') }}');
 @endif
-/*
-@if (session('kcxh'))
-	@if (Auth::user()->profile->nj < 2019 && in_array(substr(session('kcxh'), 0, 2), ['TI', 'TW', 'TY']))
-	$(window).load(function() {
-		if (confirm('你刚才所选的课程序号是“{{ session('kcxh') }}”，请问是否需要转为TQ类型的课程？是请点击“确定”，否请点击“取消”。')) {
-			$.ajax({
-				'async': false,
-				'url': '{!! url('selcourse/TQTransform') !!}/{{ session('kcxh') }}',
-				'success': function(data) {
-					if (true == data.result) {
-						alert('课程转换成功');
-					} else {
-						alert('课程转换失败');
-					}
-				}
-			})
-		}		
-	})
-	@endif
-@endif
-*/
+
 $(function() {
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 	    $('#selcourses-table-' + $(e.target).attr('id')).dataTable({

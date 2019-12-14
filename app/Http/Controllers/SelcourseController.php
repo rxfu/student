@@ -19,6 +19,7 @@ use App\Models\Profile;
 use App\Models\Pubsport;
 use App\Models\Selcourse;
 use App\Models\Setting;
+use App\Models\Slog;
 use App\Models\Term;
 use App\Models\Timetable;
 use App\Models\Unpaid;
@@ -1200,6 +1201,14 @@ class SelcourseController extends Controller {
 			$zhsq->zt   = 4;
 			$zhsq->save();
 			$zhsq->courses()->save($xfzhkc);
+
+			$log       = new Slog;
+			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
+			$log->ip   = request()->ip();
+			$log->czlx = 'trsfrm';
+			$log->bz   = $xfzhkc->qpt . $xfzhkc->qxz . '转换为' . $xfzhkc->pt . $xfzhkc->xz;
+			$log->save();
 
 			return back()->withStatus('TQ课程转换成功');
 		}
