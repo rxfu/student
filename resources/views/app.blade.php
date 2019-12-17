@@ -243,7 +243,7 @@
                                     </li>
                                 </ul>
                             </li-->
-                            <li>
+                            <!--li>
                                 <a href="#"><i class="fa fa-apple fa-fw"></i> 学分转换<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
@@ -253,7 +253,7 @@
                                         <a href="{{ url('xfzh/list') }}">申请进度</a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li-->
                             @if ($allowed_dcxm)
                                 <li>
                                     <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>

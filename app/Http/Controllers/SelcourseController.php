@@ -28,6 +28,7 @@ use App\Models\Xfzhsq;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -605,7 +606,7 @@ class SelcourseController extends Controller {
 						if ($count->rs < $course->rs) {
 							$count->increment('rs');
 						} else {
-							throw new Excepiton('选课人数已满，请选其他课程');
+							throw new Exception('选课人数已满，请选其他课程');
 						}
 					}
 
@@ -645,10 +646,74 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			request()->session()->flash('kcxh', $course->kcxh);
+			$request->session()->flash('kcxh', $course->kcxh);
 			return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
 
 		}
+	}
+
+	/**
+	 * 退选课程
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function destroy($kcxh) {
+
+		$course = Mjcourse::whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereZsjj(session('season'))
+			->whereKcxh($kcxh)
+			->firstOrFail();
+
+		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
+		try {
+			DB::transaction(function () use ($course) {
+
+				// 增加选课统计表数据自增1
+				$count = Count::whereKcxh($course->kcxh);
+
+				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+					$count = $count->whereZy($course->zy);
+				}
+
+				$count = $count->lockForUpdate()->first();
+
+				if (is_null($count)) {
+					$count       = new Count;
+					$count->kcxh = $course->kcxh;
+					$count->zy   = $isPubSport ? '' : $course->zy;
+					$count->rs   = 1;
+				} else {
+					if ($count->rs > 0) {
+						$count->decrement('rs');
+					} else {
+						throw new Exception('选课人数为零，无法退选课程');
+					}
+				}
+
+				$count->save();
+
+				// 删除选课数据
+				$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKcxh($course->kcxh)
+					->firstOrFail();
+				$deletingCourse->delete();
+
+				return back()->withStatus('退选课程成功');
+			});
+		} catch (QueryException $e) {
+			return back()->wihtInput()->withStatus('退选课程失败');
+		} catch (Exception $e) {
+			request()->session()->flash('forbidden', $e->getMessage());
+			return back()->withInput();
+		}
+
+		return back()->withStatus('退选课程成功');
 	}
 
 	/**
@@ -1041,70 +1106,6 @@ class SelcourseController extends Controller {
 		}
 
 		return $datatable->escapeColumns(['*'])->make(true);
-	}
-
-	/**
-	 * 退选课程
-	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
-	 * @param   string $kcxh 12位课程序号
-	 * @return  \Illuminate\Http\Response 课程表
-	 */
-	public function destroy($kcxh) {
-
-		$course = Mjcourse::whereNd(session('year'))
-			->whereXq(session('term'))
-			->whereZsjj(session('season'))
-			->whereKcxh($kcxh)
-			->firstOrFail();
-
-		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
-		try {
-			DB::transaction(function () use ($course) {
-
-				// 增加选课统计表数据自增1
-				$count = Count::whereKcxh($course->kcxh);
-
-				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
-					$count = $count->whereZy($course->zy);
-				}
-
-				$count = $count->lockForUpdate()->first();
-
-				if (is_null($count)) {
-					$count       = new Count;
-					$count->kcxh = $course->kcxh;
-					$count->zy   = $isPubSport ? '' : $course->zy;
-					$count->rs   = 1;
-				} else {
-					if ($count->rs > 0) {
-						$count->decrement('rs');
-					} else {
-						throw new Excepiton('选课人数为零，无法退选课程');
-					}
-				}
-
-				$count->save();
-
-				// 删除选课数据
-				$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
-					->whereNd(session('year'))
-					->whereXq(session('term'))
-					->whereKcxh($course->kcxh)
-					->firstOrFail();
-				$deletingCourse->delete();
-
-				return back()->withStatus('退选课程成功');
-			});
-		} catch (QueryException $e) {
-			return back()->wihtInput()->withStatus('退选课程失败');
-		} catch (Exception $e) {
-			$request->session()->flash('forbidden', $e->getMessage());
-			return back()->withInput();
-		}
-
-		return back()->withStatus('退选课程成功');
 	}
 
 	/**
