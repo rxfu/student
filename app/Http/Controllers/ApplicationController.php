@@ -161,10 +161,12 @@ class ApplicationController extends Controller {
 			}
 
 			// 2019-11-14：应教务处要求添加申请其他课程修读时不允许申请重修课
-			$exists = Selcourse::selected(Auth::user(), Helper::getCno($inputs['kcxh']))->exists();
+			if ('other' == $inputs['type']) {
+				$exists = Selcourse::selected(Auth::user(), Helper::getCno($inputs['kcxh']))->exists();
 
-			if ($exists) {
-				return back()->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+				if ($exists) {
+					return back()->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+				}
 			}
 
 			$application       = new Application;
