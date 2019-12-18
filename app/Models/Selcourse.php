@@ -54,12 +54,14 @@ class Selcourse extends Model {
 
 			$count->save();
 */
+			/*
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
 			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'insert';
 			$log->save();
+			*/
 		});
 
 		static::deleted(function ($course) {
@@ -86,12 +88,14 @@ class Selcourse extends Model {
 
 			$count->save();
 */
+/*
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
 			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'delete';
 			$log->save();
+			*/
 		});
 	}
 

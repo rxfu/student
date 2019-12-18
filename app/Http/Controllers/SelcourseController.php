@@ -8,6 +8,7 @@ use App\Models\Campus;
 use App\Models\Charge;
 use App\Models\Cntgeneral;
 use App\Models\Count;
+use App\Models\Course;
 use App\Models\Department;
 use App\Models\Lmtgeneral;
 use App\Models\Lmtsport;
@@ -588,7 +589,7 @@ class SelcourseController extends Controller {
 			try {
 				DB::transaction(function () use ($course) {
 
-					// 增加选课统计表数据自增1
+					// 增加选课，统计表数据自增1
 					$count = Count::whereKcxh($course->kcxh);
 
 					if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
@@ -611,6 +612,14 @@ class SelcourseController extends Controller {
 					}
 
 					$count->saveOrFail();
+
+					// 保存选课日志
+					$log       = new Slog;
+					$log->kcxh = $course->kcxh;
+					$log->kcmc = Course::find(Helper::getCno($course->kcxh))->kcmc;
+					$log->ip   = request()->ip();
+					$log->czlx = 'insert';
+					$log->save();
 
 					// 保存选课数据
 					$selcourse = new Selcourse;
@@ -672,7 +681,7 @@ class SelcourseController extends Controller {
 		try {
 			DB::transaction(function () use ($course) {
 
-				// 增加选课统计表数据自增1
+				// 删除选课，统计表数据自减1
 				$count = Count::whereKcxh($course->kcxh);
 
 				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
@@ -695,6 +704,14 @@ class SelcourseController extends Controller {
 				}
 
 				$count->save();
+
+				// 保存删课日志
+				$log       = new Slog;
+				$log->kcxh = $course->kcxh;
+				$log->kcmc = Course::find(Helper::getCno($course->kcxh))->kcmc;
+				$log->ip   = request()->ip();
+				$log->czlx = 'delete';
+				$log->save();
 
 				// 删除选课数据
 				$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
