@@ -564,6 +564,7 @@ class SelcourseController extends Controller {
 				->whereXq(session('term'))
 				->whereZsjj(session('season'))
 				->whereKcxh($inputs['kcxh'])
+				->whereZy(session('major'))
 				->firstOrFail();
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
@@ -675,6 +676,7 @@ class SelcourseController extends Controller {
 			->whereXq(session('term'))
 			->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
+			->whereZy(session('major'))
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
@@ -694,7 +696,7 @@ class SelcourseController extends Controller {
 					$count       = new Count;
 					$count->kcxh = $course->kcxh;
 					$count->zy   = $isPubSport ? '' : $course->zy;
-					$count->rs   = 1;
+					$count->rs   = 0;
 				} else {
 					if ($count->rs > 0) {
 						$count->decrement('rs');
