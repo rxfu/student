@@ -58,7 +58,8 @@ Route::middleware('auth')->group(function () {
 	Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|public|require|elect|human|nature|art|other');
 	Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other');
 	Route::get('selcourse/history', 'SelcourseController@history');
-	Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store', 'destroy']]);
+	Route::delete('selcourse/{type}/{kcxh}', 'SelcourseController@destroy')->name('selcourse.destroy');
+	Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store']]);
 
 	Route::get('application/is_selected/{course}', 'ApplicationController@isSelected');
 	Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);

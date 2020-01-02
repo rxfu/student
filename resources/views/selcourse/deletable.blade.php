@@ -43,7 +43,7 @@
                             @foreach ($courses as $course)
                                 <tr>
                                     <td>
-                                        <form id="deleteForm" name="deleteForm" action="{{ route('selcourse.destroy', $course['kcxh'])}}" method="post" role="form">
+                                        <form id="deleteForm" name="deleteForm" action="{{ route('selcourse.destroy', [App\Http\Helper::getCourseType($course['kcxh']), $course['kcxh']])}}" method="post" role="form">
                                             {!! method_field('delete') !!}
                                             {!! csrf_field() !!}
                                             <button type="submit" class="btn btn-danger">退课</button>

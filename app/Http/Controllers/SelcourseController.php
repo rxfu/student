@@ -564,7 +564,6 @@ class SelcourseController extends Controller {
 				->whereXq(session('term'))
 				->whereZsjj(session('season'))
 				->whereKcxh($inputs['kcxh'])
-				->whereZy(session('major'))
 				->firstOrFail();
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
@@ -670,13 +669,13 @@ class SelcourseController extends Controller {
 	 * @param   string $kcxh 12位课程序号
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function destroy($kcxh) {
+	public function destroy($type, $kcxh) {
 
-		$course = Mjcourse::whereNd(session('year'))
+		$course = Mjcourse::ofType($type)
+			->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
-			->whereZy(session('major'))
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
@@ -1056,7 +1055,7 @@ class SelcourseController extends Controller {
 					->exists();
 
 				if ($exists) {
-					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					return '<form name="deleteForm" action="' . route('selcourse.destroy', [$type, $course->kcxh]) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif ($same) {
 					return '<div class="text-danger">已选同号课程</div>';
 				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
