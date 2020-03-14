@@ -39,4 +39,10 @@ class HomeController extends Controller {
 
 		return view('home.index', compact('title', 'broadcasts', 'message', 'cfxxs', 'bymds', 'byxwpds'));
 	}
+	
+	public function error(Request $request) {
+		$message = $request->input('message');
+
+		return view('errors.message', compact('message'));
+	}
 }

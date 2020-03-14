@@ -150,6 +150,7 @@ return [
 		/**
 		 * Package Service Providers...
 		 */
+		Subfission\Cas\CasServiceProvider::class,
 
 		/**
 		 * Application Service Providers...
