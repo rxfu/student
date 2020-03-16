@@ -23,7 +23,7 @@ Route::get('/cas_logout', function() {
 
 Route::get('/error', 'HomeController@error')->name('error');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('cas.auth')->group(function () {
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 	Route::resource('home', 'HomeController', ['only' => ['index']]);

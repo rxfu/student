@@ -122,7 +122,7 @@ class LoginController extends Controller {
 
         $request->session()->invalidate();
 
-       	Auth::logout();
+       	// Auth::logout();
 
         cas()->logout();
     }
