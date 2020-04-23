@@ -211,7 +211,6 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         array (
             'Cron\\' => 5,
             'Complex\\' => 8,
-            'Carbon\\' => 7,
         ),
         'B' => 
         array (
@@ -487,10 +486,6 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
-        'Carbon\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
-        ),
         'Barryvdh\\Snappy\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src',
@@ -503,6 +498,10 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/nesbot/carbon/src',
     );
 
     public static $prefixesPsr0 = array (
@@ -562,6 +561,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'App\\Http\\Controllers\\XfzhController' => __DIR__ . '/../..' . '/app/Http/Controllers/XfzhController.php',
         'App\\Http\\Helper' => __DIR__ . '/../..' . '/app/Http/Helper.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
+        'App\\Http\\Middleware\\CASAuth' => __DIR__ . '/../..' . '/app/Http/Middleware/CASAuth.php',
         'App\\Http\\Middleware\\CheckFmxx' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckFmxx.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -2382,6 +2382,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+        'JsonSerializable' => __DIR__ . '/..' . '/nesbot/carbon/src/JsonSerializable.php',
         'Knp\\Snappy\\AbstractGenerator' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/AbstractGenerator.php',
         'Knp\\Snappy\\Exception\\FileAlreadyExistsException' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/Exception/FileAlreadyExistsException.php',
         'Knp\\Snappy\\GeneratorInterface' => __DIR__ . '/..' . '/knplabs/knp-snappy/src/Knp/Snappy/GeneratorInterface.php',
@@ -2548,6 +2549,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'Maatwebsite\\Excel\\Jobs\\QueueExport' => __DIR__ . '/..' . '/maatwebsite/excel/src/Jobs/QueueExport.php',
         'Maatwebsite\\Excel\\Jobs\\QueueImport' => __DIR__ . '/..' . '/maatwebsite/excel/src/Jobs/QueueImport.php',
         'Maatwebsite\\Excel\\Jobs\\ReadChunk' => __DIR__ . '/..' . '/maatwebsite/excel/src/Jobs/ReadChunk.php',
+        'Maatwebsite\\Excel\\Jobs\\SerializedQuery' => __DIR__ . '/..' . '/maatwebsite/excel/src/Jobs/SerializedQuery.php',
         'Maatwebsite\\Excel\\Jobs\\StoreQueuedExport' => __DIR__ . '/..' . '/maatwebsite/excel/src/Jobs/StoreQueuedExport.php',
         'Maatwebsite\\Excel\\MappedReader' => __DIR__ . '/..' . '/maatwebsite/excel/src/MappedReader.php',
         'Maatwebsite\\Excel\\Mixins\\DownloadCollection' => __DIR__ . '/..' . '/maatwebsite/excel/src/Mixins/DownloadCollection.php',
@@ -2953,7 +2955,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'PHPUnit\\Util\\Configuration' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Configuration.php',
         'PHPUnit\\Util\\ConfigurationGenerator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/ConfigurationGenerator.php',
         'PHPUnit\\Util\\ErrorHandler' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/ErrorHandler.php',
-        'PHPUnit\\Util\\FileLoader' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/FileLoader.php',
+        'PHPUnit\\Util\\FileLoader' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Fileloader.php',
         'PHPUnit\\Util\\Filesystem' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Filesystem.php',
         'PHPUnit\\Util\\Filter' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Filter.php',
         'PHPUnit\\Util\\Getopt' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Getopt.php',
@@ -2978,7 +2980,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'PHPUnit\\Util\\TextTestListRenderer' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/TextTestListRenderer.php',
         'PHPUnit\\Util\\Type' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Type.php',
         'PHPUnit\\Util\\XdebugFilterScriptGenerator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/XdebugFilterScriptGenerator.php',
-        'PHPUnit\\Util\\Xml' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/Xml.php',
+        'PHPUnit\\Util\\Xml' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/XML.php',
         'PHPUnit\\Util\\XmlTestListRenderer' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/XmlTestListRenderer.php',
         'PHPUnit_Framework_MockObject_MockObject' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MockObject/MockObject.php',
         'PHP_Token' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -4040,7 +4042,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerInterface.php',
         'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerTrait.php',
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/NullLogger.php',
-        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
+        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/DummyTest.php',
         'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'Psr\\Log\\Test\\TestLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/TestLogger.php',
         'Psr\\SimpleCache\\CacheException' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheException.php',
@@ -4361,6 +4363,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         'Symfony\\Component\\Console\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/console/Exception/InvalidArgumentException.php',
         'Symfony\\Component\\Console\\Exception\\InvalidOptionException' => __DIR__ . '/..' . '/symfony/console/Exception/InvalidOptionException.php',
         'Symfony\\Component\\Console\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/console/Exception/LogicException.php',
+        'Symfony\\Component\\Console\\Exception\\MissingInputException' => __DIR__ . '/..' . '/symfony/console/Exception/MissingInputException.php',
         'Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException' => __DIR__ . '/..' . '/symfony/console/Exception/NamespaceNotFoundException.php',
         'Symfony\\Component\\Console\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/console/Exception/RuntimeException.php',
         'Symfony\\Component\\Console\\Formatter\\OutputFormatter' => __DIR__ . '/..' . '/symfony/console/Formatter/OutputFormatter.php',
@@ -5195,6 +5198,7 @@ class ComposerStaticInitd12d1e6f1d9a19f145107be819f04588
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitd12d1e6f1d9a19f145107be819f04588::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd12d1e6f1d9a19f145107be819f04588::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitd12d1e6f1d9a19f145107be819f04588::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInitd12d1e6f1d9a19f145107be819f04588::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitd12d1e6f1d9a19f145107be819f04588::$classMap;
 

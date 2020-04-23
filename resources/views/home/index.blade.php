@@ -58,6 +58,10 @@
                 </ul>
             @endif
             @if (!$bymds->isEmpty())
+                <blockquote>
+                    <p>特别提示：毕业预审主要用于预先审核学生毕业情况，审核标准为默认学生已获得第八学期所选课程的学分，此前学期则以实际获得的学分数进行统计（待确认成绩的课程学分未计入）。</p>
+                    <p>毕业正式审核开启后，毕业预审结论自动作废，审核标准以学生实际已获得的学分为准。 </p>
+                </blockquote>
                 <table class="table table-striped table-bordered">
                     <caption>
                         <h3>毕业情况</h3>
@@ -102,8 +106,6 @@
                             <th>审核时间</th>
                             <th>审核阶段</th>
                             <th>学院评定意见</th>
-                            <th>教务处评定意见</th>
-                            <th>学校评定意见</th>
                             <th>审核不通过原因</th>
                         </tr>
                     </thead>
@@ -123,20 +125,6 @@
                                 @if ('Y' == trim($byxwpds[0]->xjg))
                                     同意
                                 @elseif ('N' == trim($byxwpds[0]->xjg))
-                                    不同意
-                                @endif
-                            </td>
-                            <td>
-                                @if ('Y' == trim($byxwpds[0]->cjg))
-                                    同意
-                                @elseif ('N' == trim($byxwpds[0]->cjg))
-                                    不同意
-                                @endif
-                            </td>
-                            <td>
-                                @if ('Y' == trim($byxwpds[0]->jg))
-                                    同意
-                                @elseif ('N' == trim($byxwpds[0]->jg))
                                     不同意
                                 @endif
                             </td>
