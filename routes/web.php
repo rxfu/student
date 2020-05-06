@@ -15,16 +15,17 @@ Route::get('/', function () {
 	return redirect()->route('home');
 });
 
-// Route::auth();
-Route::get('/login', 'Auth\LoginController@login')->name('login');
-Route::get('/cas_logout', function() {
-	cas()->logout();
-});
+Route::auth();
+// Route::get('/login', 'Auth\LoginController@login')->name('login');
+// Route::get('/cas_logout', function() {
+// 	cas()->logout();
+// });
 
 Route::get('/error', 'HomeController@error')->name('error');
 
-Route::middleware('cas.auth')->group(function () {
-	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+// Route::middleware('cas.auth')->group(function () {
+Route::middleware('auth')->group(function () {
+	// Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 	Route::resource('home', 'HomeController', ['only' => ['index']]);
 	Route::resource('requirement', 'RequirementController', ['only' => ['index']]);

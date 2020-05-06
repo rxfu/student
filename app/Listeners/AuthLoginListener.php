@@ -41,6 +41,10 @@ class AuthLoginListener {
 		// 		return back()->withInput()->withStatus('不是在校生，请不要登录系统');
 		// 	}
 		// }
+		if (!Profile::whereXh(Auth::user()->xh)->exists()) {
+			Auth::logout();
+			return back()->withInput()->withStatus('不是在校生，请不要登录系统');
+		}
 
 		session([
 			'year'   => Setting::find('XK_ND')->value,
