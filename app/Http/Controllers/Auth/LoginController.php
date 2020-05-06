@@ -34,7 +34,7 @@ class LoginController extends Controller {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->middleware('guest')->except('logout');
+		$this->middleware('cas.guest')->except('logout');
 	}
 
 	public function username() {
@@ -96,4 +96,34 @@ class LoginController extends Controller {
 			'captcha.captcha'  => '验证码错误',
 		]);
 	}
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function login(Request $request)
+    {
+    	cas()->authenticate();
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+       	// Auth::logout();
+
+        cas()->logout();
+    }
 }

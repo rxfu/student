@@ -73,11 +73,7 @@
                             @endif
                             <li><a href="{{ url('password/change') }}"><i class="fa fa-unlock fa-fw"></i> 修改密码</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="post" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
+                            <li><a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -297,7 +293,7 @@
                                 <!-- /.nav-second-level -->
                             </li>
                             <li>
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                                <a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                             </li>
                         </ul>
                         <!-- /#side-menu -->
