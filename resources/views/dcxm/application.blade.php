@@ -14,7 +14,7 @@
                         <h3>一、项目简介（200字左右）</h3>
                     </label>
                     <div>
-                        <textarea id="xmjj" name="xmjj" class="form-control note" rows="20">{{ is_null($project->application) ? '' : $project->application->xmjj }}</textarea>
+                        <textarea id="xmjj" name="xmjj" class="form-control" rows="20"  maxlength="200" onchange="this.value=this.value.substring(0, 200)" onkeydown="this.value=this.value.substring(0, 200)" onkeyup="this.value=this.value.substring(0, 200)">{{ is_null($project->application) ? '' : $project->application->xmjj }}</textarea>
                     </div>
 
                     <label for="sqly" class="control-label">

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fresh;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -35,7 +34,7 @@ class LoginController extends Controller {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->middleware('guest')->except('logout');
+		$this->middleware('cas.guest')->except('logout');
 	}
 
 	public function username() {
@@ -77,6 +76,54 @@ class LoginController extends Controller {
 	 * @return mixed
 	 */
 	protected function authenticated(Request $request, $user) {
-		return Fresh::whereXh($user->xh)->exists();
+		// return Fresh::whereXh($user->xh)->exists();
+		return false;
 	}
+
+	/**
+	 * Validate the user login request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return void
+	 */
+	protected function validateLogin(Request $request) {
+		$this->validate($request, [
+			$this->username() => 'required|string',
+			'password'        => 'required|string',
+			'captcha'         => 'required|captcha',
+		], [
+			'captcha.required' => '请填写验证码',
+			'captcha.captcha'  => '验证码错误',
+		]);
+	}
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function login(Request $request)
+    {
+    	cas()->authenticate();
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+       	// Auth::logout();
+
+        cas()->logout();
+    }
 }

@@ -9,10 +9,11 @@
                     <table class="table table-bordered">
                         <tr>
                             <th colspan="2" class="active text-center">课程平台与性质</th>
-                            <th colspan="2" class="warning text-center">应修读学分数</th>
-                            <th colspan="2" class="success text-center">已获得学分数</th>
-                            <th colspan="2" class="danger text-center">未获得学分数</th>
-                            <th colspan="2" class="info text-center">本次选修学分数</th>
+                            <th colspan="2" class="warning text-center">应修学分</th>
+                            <th colspan="2" class="success text-center">已获得学分</th>
+                            <th colspan="2" class="danger text-center">未获得学分</th>
+                            <th colspan="2" class="info text-center">本学期在修学分</th>
+                            <th colspan="2" class="primary text-center">已选课总学分<br>（不包含重修课学分）</th>
                         </tr>
                         @foreach ($credits as $property => $items)
                             @foreach ($items as $key => $credit)
@@ -45,6 +46,10 @@
                                     @if ($credit == reset($items))
                                         <td rowspan="{{ count($items) }}" class="info text-center">{{ array_sum(array_pluck($items, 'selected')) }}</td>
                                     @endif
+                                    <td class="primary text-center">{{ isset($credit['unretake']) ? $credit['unretake'] : 0 }}</td>
+                                    @if ($credit == reset($items))
+                                        <td rowspan="{{ count($items) }}" class="primary text-center">{{ array_sum(array_pluck($items, 'unretake')) }}</td>
+                                    @endif
                                 </tr>
                             @endforeach
                         @endforeach
@@ -54,9 +59,17 @@
                             <td colspan="2" class="success text-center">{{ array_sum(array_column($credits['B'], 'studied')) + array_sum(array_column($credits['X'], 'studied'))  }}</td>
                             <td colspan="2" class="danger text-center">{{ array_sum(array_column($credits['B'], 'graduation')) + array_sum(array_column($credits['X'], 'graduation')) - array_sum(array_column($credits['B'], 'studied')) - array_sum(array_column($credits['X'], 'studied')) }}</td>
                             <td colspan="2" class="info text-center">{{ array_sum(array_column($credits['B'], 'selected')) + array_sum(array_column($credits['X'], 'selected')) }}</td>
+                            <td colspan="2" class="primary text-center">{{ array_sum(array_column($credits['B'], 'unretake')) + array_sum(array_column($credits['X'], 'unretake')) }}</td>
                         </tr>
                     </table>
                 </div>
+            </div>
+
+            <div class="panel-foot">
+                <ul>
+                    <li>毕业审核：<span class="text-danger"><strong>根据各类别课程应修学分</strong></span>要求，按已获得学分进行审核。</li>
+                    <li>毕业学费结算：<span class="text-danger"><strong>根据已选课总学分</strong></span>进行学费结算。</li>
+                </ul>
             </div>
         </div>
     </div>

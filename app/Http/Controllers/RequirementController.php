@@ -37,6 +37,9 @@ class RequirementController extends Controller {
 		// 获取已修读学分
 		$studied = Score::studiedCredits(Auth::user())->get();
 
+		// 获取已选且未重修课程学分
+		$unretake = Selcourse::selectedUnretakeCredits(Auth::user())->get();
+
 		$credits = [];
 		foreach ($graduation as $item) {
 			if ('B' == $item->xz) {
@@ -45,6 +48,7 @@ class RequirementController extends Controller {
 					'graduation' => $item->xf,
 					'selected'   => 0,
 					'studied'    => 0,
+					'unretake'   => 0,
 				];
 			} else {
 				$credits['X'][$item->pt . $item->xz] = [
@@ -52,6 +56,7 @@ class RequirementController extends Controller {
 					'graduation' => $item->xf,
 					'selected'   => 0,
 					'studied'    => 0,
+					'unretake'   => 0,
 				];
 			}
 		}
@@ -69,36 +74,18 @@ class RequirementController extends Controller {
 					'graduation' => 0,
 					'selected'   => $item->xf,
 					'studied'    => 0,
+					'unretake'   => 0,
 				];
 			}
-			/*
-				if ('B' == $item->xz) {
-					if ('J' == $item->pt && !isset($credits['B'][$item->pt . $item->xz])) {
-						$item->pt = 'Z';
-					} elseif ('Z' == $item->pt && !isset($credits['B'][$item->pt . $item->xz])) {
-						$item->pt = 'J';
-					}
-
-					$credits['B'][$item->pt . $item->xz]['selected'] += $item->xf;
-				} else {
-					if ('J' == $item->pt && !isset($credits['X'][$item->pt . $item->xz])) {
-						$item->pt = 'Z';
-					} elseif ('Z' == $item->pt && !isset($credits['X'][$item->pt . $item->xz])) {
-						$item->pt = 'J';
-					}
-
-					$credits['X'][$item->pt . $item->xz]['selected'] += $item->xf;
-				}
-			*/
 		}
 
 		foreach ($studied as $item) {
 			if (isset($credits['B'][$item->pt . $item->kcxz]) || isset($credits['X'][$item->pt . $item->kcxz]) || isset($credits['O'][$item->pt . $item->kcxz])) {
-				if ('B' == $item->kcxz) {
-					$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
+				if (isset($credits['O'][$item->pt . $item->kcxz])) {
+					$credits['O'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 				} else {
-					if (isset($credits['O'][$item->pt . $item->kcxz])) {
-						$credits['O'][$item->pt . $item->kcxz]['studied'] += $item->xf;
+					if ('B' == $item->kcxz) {
+						$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 					} else {
 						$credits['X'][$item->pt . $item->kcxz]['studied'] += $item->xf;
 					}
@@ -109,29 +96,27 @@ class RequirementController extends Controller {
 					'graduation' => 0,
 					'selected'   => 0,
 					'studied'    => $item->xf,
+					'unretake'   => 0,
 				];
 			}
-			/*
-				if ('R' != $item->kcxz) {
-					if ('B' == $item->kcxz) {
-						if ('J' == $item->pt && !isset($credits['B'][$item->pt . $item->kcxz])) {
-							$item->pt = 'Z';
-						} elseif ('Z' == $item->pt && !isset($credits['B'][$item->pt . $item->kcxz])) {
-							$item->pt = 'J';
-						}
+		}
 
-						$credits['B'][$item->pt . $item->kcxz]['studied'] += $item->xf;
-					} else {
-						if ('J' == $item->pt && !isset($credits['X'][$item->pt . $item->kcxz])) {
-							$item->pt = 'Z';
-						} elseif ('Z' == $item->pt && !isset($credits['X'][$item->pt . $item->kcxz])) {
-							$item->pt = 'J';
-						}
-
-						$credits['X'][$item->pt . $item->kcxz]['studied'] += $item->xf;
-					}
+		foreach ($unretake as $item) {
+			if (isset($credits['B'][$item->pt . $item->xz]) || isset($credits['X'][$item->pt . $item->xz])) {
+				if ('B' == $item->xz) {
+					$credits['B'][$item->pt . $item->xz]['unretake'] += $item->xf;
+				} else {
+					$credits['X'][$item->pt . $item->xz]['unretake'] += $item->xf;
 				}
-			*/
+			} else {
+				$credits['O'][$item->pt . $item->xz] = [
+					'title'      => $item->platform->mc . $item->property->mc,
+					'graduation' => 0,
+					'selected'   => 0,
+					'studied'    => 0,
+					'unretake'   => $item->xf,0,
+				];
+			}
 		}
 
 		$title = '毕业要求';

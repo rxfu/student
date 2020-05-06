@@ -33,6 +33,8 @@ class Selcourse extends Model {
 		static::created(function ($course) {
 
 			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
+			// 2019-12-11：应教务处要求更改统计方式，把选课统计放入事务处理
+			/*
 			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
 				$count = Count::whereKcxh($course->kcxh)->first();
 			} else {
@@ -51,18 +53,22 @@ class Selcourse extends Model {
 			}
 
 			$count->save();
-
+*/
+			/*
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
 			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'insert';
 			$log->save();
+			*/
 		});
 
 		static::deleted(function ($course) {
 
 			// 2016-09-01：应教务处要求添加公体选课统计，修改选课统计方式
+			// 2019-12-11：应教务处要求更改统计方式，把选课统计放入事务处理
+			/*
 			if ($isPubSport = Helper::isCourseType($course->kcxh, 'TB14')) {
 				$count = Count::whereKcxh($course->kcxh)->first();
 			} else {
@@ -81,13 +87,15 @@ class Selcourse extends Model {
 			}
 
 			$count->save();
-
+*/
+/*
 			$log       = new Slog;
 			$log->kcxh = $course->kcxh;
 			$log->kcmc = $course->course->kcmc;
 			$log->ip   = request()->ip();
 			$log->czlx = 'delete';
 			$log->save();
+			*/
 		});
 	}
 
@@ -149,6 +157,19 @@ class Selcourse extends Model {
 	}
 
 	/**
+	 * 历史排课表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @return  object 所属对象
+	 */
+	public function historyTimetables() {
+		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
+			->whereNd($this->nd)
+			->whereXq($this->xq);
+	}
+
+	/**
 	 * 扩展查询，用于获取已选课程学分
 	 * @author FuRongxin
 	 * @date    2016-01-23
@@ -161,6 +182,22 @@ class Selcourse extends Model {
 		return $query->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereXh($user->xh)
+			->groupBy('pt', 'xz')
+			->selectRaw('pt, xz, SUM(xf) AS xf');
+	}
+
+	/**
+	 * 扩展查询，用于获取所有已选且未重修课程学分
+	 * @author FuRongxin
+	 * @date    2019-10-8
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectedUnretakeCredits($query, $user) {
+		return $query->whereXh($user->xh)
+			->whereCx(0)
 			->groupBy('pt', 'xz')
 			->selectRaw('pt, xz, SUM(xf) AS xf');
 	}
@@ -276,5 +313,43 @@ class Selcourse extends Model {
 	public function scopeSelected($query, $user, $kch) {
 		return $query->whereXh($user->xh)
 			->whereKch($kch);
+	}
+
+	/**
+	 * 扩展查询，用于获取历史已选课程列表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @param   object $user 用户对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeSelectedHistoryCourses($query, $user) {
+		return $query->with([
+			'timetables'                  => function ($query) {
+				$query->select('kcxh', 'ksz', 'jsz', 'zc', 'ksj', 'jsj', 'cdbh', 'xqh', 'jsgh')
+					->orderBy('ksj', 'asc')
+					->orderBy('zc', 'asc')
+					->orderBy('ksz', 'asc');
+			},
+			'timetables.classroom'        => function ($query) {
+				$query->select('jsh', 'mc');
+			},
+			'timetables.campus'           => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'timetables.teacher'          => function ($query) {
+				$query->select('jsgh', 'xm', 'zc');
+			},
+			'timetables.teacher.position' => function ($query) {
+				$query->select('dm', 'mc');
+			},
+			'course'                      => function ($query) {
+				$query->select('kch', 'kcmc');
+			},
+		])
+			->whereXh($user->xh)
+			->where('nd', '<>', session('year'))
+			->where('xq', '<>', session('term'));
 	}
 }

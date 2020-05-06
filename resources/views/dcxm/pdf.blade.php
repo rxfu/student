@@ -70,6 +70,9 @@
             <article class="page">
                 <div class="space-line">&nbsp;</div>
                 <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
 
                 <header class="row">
                     <div class="col-sm-12">
@@ -84,7 +87,7 @@
                 <div class="space-line">&nbsp;</div>
 
                 <div class="row">
-                    <div class="col-xs-8 col-xs-offset-2 text-center">
+                    <div class="col-xs-8 col-xs-offset-3 text-center">
                         <h3 class="text-left">项目名称：{{ $project->xmmc }}</h3>
                         <h3 class="text-left">项目类别：{{ $project->category->mc }}</h3>
                         <h3 class="text-left">项目负责人：{{ $project->student->xm }}</h3>
@@ -107,6 +110,9 @@
             </article>
 
             <article class="page">
+                <div class="space-line">&nbsp;</div>
+                <div class="space-line">&nbsp;</div>
+                
                 <header class="row">
                     <div class="col-sm-12">
                         <h2 class="text-center">填写须知</h2>
@@ -147,28 +153,19 @@
                         <td class="text-center">联系电话</td>
                         <td class="text-center">项目中的分工</td>
                     </tr>
-                    @for ($i = 0; $i < 5; $i++)
+                    @for ($i = 0; $i < 10; $i++)
                         <tr>
                             @if (1 == $i)
-                                <td rowspan="4">项目组成员</td>
+                                <td rowspan="9">项目组成员</td>
                             @endif
                             @if (isset($project->members[$i]))
                                 <?php $member = $project->members[$i];?>
-                                @if ($member->sfbx)
-                                    <td class="text-center">{{ $member->profile->xm }}</td>
-                                    <td class="text-center">{{ $member->profile->nj }}</td>
-                                    <td class="text-center">{{ $member->profile->college->mc }}</td>
-                                    <td class="text-center">{{ $member->profile->xh }}</td>
-                                    <td class="text-center">{{ $member->profile->lxdh }}</td>
-                                    <td class="text-center">{{ $member->fg }}</td>
-                                @else
-                                    <td class="text-center">{{ $member->xm }}</td>
-                                    <td class="text-center">{{ $member->nj }}</td>
-                                    <td class="text-center">{{ $member->szyx }}</td>
-                                    <td class="text-center">{{ $member->xh }}</td>
-                                    <td class="text-center">{{ $member->lxdh }}</td>
-                                    <td class="text-center">{{ $member->fg }}</td>
-                                @endif
+                                <td class="text-center">{{ $member->xm }}</td>
+                                <td class="text-center">{{ $member->nj }}</td>
+                                <td class="text-center">{{ $member->szyx }}</td>
+                                <td class="text-center">{{ $member->xh }}</td>
+                                <td class="text-center">{{ $member->lxdh }}</td>
+                                <td class="text-center">{{ $member->fg }}</td>
                             @else
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
@@ -188,19 +185,19 @@
                                     <td rowspan="6">校内指导教师</td>
                                 @endif
                                 <td>姓名</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->xm }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->xm }}</td>
                                 <td>职务/职称</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->position->mc }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->zc }}</td>
                             </tr>
                             <tr>
                                 <td colspan="2">所在单位</td>
-                                <td colspan="4" class="text-center">{{ $tutor->teacher->department->mc }}</td>
+                                <td colspan="4" class="text-center">{{ $tutor->szdw }}</td>
                             </tr>
                             <tr>
                                 <td colspan="2">联系电话</td>
-                                <td class="text-center">{{ $tutor->teacher->lxdh }}</td>
+                                <td class="text-center">{{ $tutor->lxdh }}</td>
                                 <td>Email</td>
-                                <td colspan="2" class="text-center">{{ $tutor->teacher->email }}</td>
+                                <td colspan="2" class="text-center">{{ $tutor->email }}</td>
                             </tr>
                         @else
                             <tr>

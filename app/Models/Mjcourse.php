@@ -203,11 +203,11 @@ class Mjcourse extends Model {
 		case 'art':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Y');
-
+/*
 		case 'other':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Q');
-
+*/
 		case 'pubsport':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'B')
@@ -264,6 +264,18 @@ class Mjcourse extends Model {
 	 */
 	public function scopeExceptCurrentMajor($query) {
 		return $query->where('pk_kczy.zy', '<>', session('major'));
+	}
+
+	/**
+	 * 扩展查询，获取排除留学生专业的课程数据，留学生专业代码以“L”开头
+	 * @author FuRongxin
+	 * @date    2019-07-27
+	 * @version 2.3
+	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
+	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
+	 */
+	public function scopeExceptForeignMajor($query) {
+		return $query->where('pk_kczy.zy', 'not like', 'L%');
 	}
 
 	/**

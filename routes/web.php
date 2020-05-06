@@ -15,9 +15,17 @@ Route::get('/', function () {
 	return redirect()->route('home');
 });
 
-Route::auth();
+// Route::auth();
+Route::get('/login', 'Auth\LoginController@login')->name('login');
+Route::get('/cas_logout', function() {
+	cas()->logout();
+});
 
-Route::middleware('auth')->group(function () {
+Route::get('/error', 'HomeController@error')->name('error');
+
+Route::middleware('cas.auth')->group(function () {
+	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+
 	Route::resource('home', 'HomeController', ['only' => ['index']]);
 	Route::resource('requirement', 'RequirementController', ['only' => ['index']]);
 	Route::resource('fresh', 'FreshController', ['only' => ['edit', 'update']]);
@@ -47,6 +55,8 @@ Route::middleware('auth')->group(function () {
 	Route::get('score/exam', 'ScoreController@exam');
 	Route::resource('score', 'ScoreController', ['only' => ['index', 'show']]);
 
+	Route::get('selcourse/TQTransform', 'SelcourseController@listTQTransform')->name('selcourse.listtq');
+	Route::post('selcourse/TQTransform/{course}', 'SelcourseController@TQTransform')->name('selcourse.tqtransform');
 	Route::get('selcourse/checktime/{course}', 'SelcourseController@checktime');
 	Route::get('selcourse/checkretake/{course}', 'SelcourseController@checkretake');
 	Route::get('selcourse/deletable', 'SelcourseController@deletable');
@@ -55,7 +65,9 @@ Route::middleware('auth')->group(function () {
 	Route::get('selcourse/search/{campus}', 'SelcourseController@search');
 	Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|public|require|elect|human|nature|art|other');
 	Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other');
-	Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store', 'destroy']]);
+	Route::get('selcourse/history', 'SelcourseController@history');
+	Route::delete('selcourse/{type}/{kcxh}', 'SelcourseController@destroy')->name('selcourse.destroy');
+	Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store']]);
 
 	Route::get('application/is_selected/{course}', 'ApplicationController@isSelected');
 	Route::resource('application', 'ApplicationController', ['only' => ['index', 'create', 'store', 'destroy']]);
@@ -87,7 +99,18 @@ Route::middleware('auth')->group(function () {
 	Route::get('dcxm/xmcy', 'DcxmController@getStudent');
 	Route::get('dcxm/zdjs', 'DcxmController@getTeacher');
 
+	Route::get('xfzh/list', 'XfzhController@list');
+	Route::get('xfzh/create', 'XfzhController@create');
+	Route::post('xfzh/store', 'XfzhController@store');
+	Route::delete('xfzh/delete/{id}', 'XfzhController@delete');
+
 	Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 	Route::get('password/change', 'Auth\PasswordController@showChangeForm');
 	Route::put('password/change', 'Auth\PasswordController@change');
 });
+/*
+Route::middleware('auth')->group(function () {
+	Route::get('/parent', 'FmxxController@index')->name('fmxx');
+	Route::post('/parent', 'FmxxController@parent');
+});
+*/

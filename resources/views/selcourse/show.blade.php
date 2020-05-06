@@ -67,12 +67,12 @@
   	<div class="modal-dialog">
     	<div class="modal-content">
 			<div class="modal-header">
-	        	<h1 class="modal-title">保存中……</h1>
+	        	<h1 class="modal-title">正在排队中，请稍候，切勿刷新界面</h1>
 	    	</div>
 	      	<div class="modal-body">
 	        	<div class="progress">
 	        		<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-	        			<span class="sr-only">保存中……</span>
+	        			<span class="sr-only">正在排队中，请稍候，切勿刷新界面</span>
 	        		</div>
 	        	</div>
 	      	</div>

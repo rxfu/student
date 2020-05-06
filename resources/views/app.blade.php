@@ -73,11 +73,7 @@
                             @endif
                             <li><a href="{{ url('password/change') }}"><i class="fa fa-unlock fa-fw"></i> 修改密码</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="post" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
+                            <li><a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -93,6 +89,9 @@
                                 </li>
                             @endif
                             @if ($is_student)
+                            <!--li>
+                                <a href="{{ url('/parent') }}"><i class="fa fa-ticket fa-fw"></i> 父母或监护人信息填报</a>
+                            </li-->
                             <li>
                                 <a href="{{ url('home') }}"><i class="fa fa-dashboard fa-fw"></i> 综合管理系统</a>
                             </li>
@@ -148,9 +147,11 @@
                                                     <li>
                                                         <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
                                                     </li>
-                                                    <li>
-                                                        <a href="{{ route('selcourse.show','other') }}">其他专项通识素质课程</a>
-                                                    </li>
+                                                    @if (Auth::user()->profile->nj < 2019)
+                                                        <li>
+                                                            <a href="{{ route('selcourse.listtq') }}">其他专项通识素质课程转换</a>
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                                 <!-- /.nav-third-level -->
                                             </li>
@@ -183,7 +184,10 @@
                                         <a href="{{ url('selcourse/timetable') }}">课程表</a>
                                     </li>
                                     <li>
-                                        <a href="{{ url('selcourse') }}">已选课程列表</a>
+                                        <a href="{{ url('selcourse') }}">已选选课列表</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('selcourse/history') }}">历史选课列表</a>
                                     </li>
                                 </ul>
                                 <!-- /.nav-second-level -->
@@ -224,6 +228,28 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
+                            <!--li>
+                                <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="#">未评课程</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">已评课程</a>
+                                    </li>
+                                </ul>
+                            </li-->
+                            <!--li>
+                                <a href="#"><i class="fa fa-apple fa-fw"></i> 学分转换<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{{ url('xfzh/create') }}">学分转换申请</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('xfzh/list') }}">申请进度</a>
+                                    </li>
+                                </ul>
+                            </li-->
                             @if ($allowed_dcxm)
                                 <li>
                                     <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>
@@ -238,43 +264,6 @@
                                     <!-- /.nav-second-level -->
                                 </li>
                             @endif
-                            <!--li>
-                                <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="#">未评课程</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">已评课程</a>
-                                    </li>
-                                </ul>
-                            </li-->
-                            <!--li>
-                                <a href="#"><i class="fa fa-apple fa-fw"></i> 学分申请<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="#">课程转换申请<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                <a href="#">课程转换</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">申请进度</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">创新学分申请<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                <a href="#">学科竞赛获奖</a>
-                                                <a href="#">发表科研论文</a>
-                                                <a href="#">专利授权</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li-->
                             <!--li>
                                 <a href="#"><i class="fa fa-university fa-fw"></i> 教室管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
@@ -304,7 +293,7 @@
                                 <!-- /.nav-second-level -->
                             </li>
                             <li>
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                                <a href="{{ route('logout') }}"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                             </li>
                         </ul>
                         <!-- /#side-menu -->

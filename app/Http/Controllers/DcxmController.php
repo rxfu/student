@@ -6,6 +6,7 @@ use App\Models\Dcxmcy;
 use App\Models\Dcxmjf;
 use App\Models\Dcxmlb;
 use App\Models\Dcxmsq;
+use App\Models\Dcxmxt;
 use App\Models\Dcxmxx;
 use App\Models\Dcyjxk;
 use App\Models\Dczdjs;
@@ -38,9 +39,10 @@ class DcxmController extends Controller {
 		$projects = Dcxmxx::whereXh(Auth::user()->xh)
 			->orderBy('cjsj', 'desc')
 			->get();
-		$title = '项目申请列表';
+		$editFund = (Dcxmxt::find('JF_KG')->value == 1);
+		$title    = '项目申请列表';
 
-		return view('dcxm.list', compact('title', 'projects'));
+		return view('dcxm.list', compact('title', 'projects', 'editFund'));
 	}
 
 	/**
@@ -52,6 +54,12 @@ class DcxmController extends Controller {
 	 * @return  \Illuminate\Http\Response 大创项目基本信息
 	 */
 	public function getInfo() {
+		if (Dcxmxx::whereXh(Auth::user()->xh)->whereNd(Carbon::now()->year)->exists()) {
+			return redirect('dcxm/list')->withStatus('当前年度你已经申请主持一个项目了，不允许再主持项目。');
+		} elseif (Dcxmcy::whereXh(Auth::user()->xh)->whereNd(Carbon::now()->year)->count() >= 2) {
+			return redirect('dcxm/list')->withStatus('当前年度你已经达到可申请项目上限，不可以再申请项目了哦！');
+		}
+
 		$categories = Dcxmlb::orderBy('dm')->get();
 		$subjects   = Dcyjxk::orderBy('dm')->get();
 		$title      = '项目申请';
@@ -80,13 +88,11 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->sfsh    = config('constants.status.disable');
-			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->cjsj    = Carbon::now();
 			$xmxx->xy      = Auth::user()->profile->xy;
 			$xmxx->nd      = Carbon::now()->year;
 
-			$begdate    = Carbon::create(null, 4, 20);
+			$begdate    = config('constants.dcxm.begdate');
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
@@ -100,12 +106,14 @@ class DcxmController extends Controller {
 					$member       = new Dcxmcy;
 					$member->xh   = $inputs['xh'][$key];
 					$member->xm   = $inputs['cyxm'][$key];
+					$member->xb   = $inputs['xb'][$key];
 					$member->nj   = $inputs['nj'][$key];
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
 					$member->fg   = $inputs['fg'][$key];
 					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
+					$member->nd   = Carbon::now()->year;
 
 					$members[] = $member;
 				}
@@ -125,6 +133,7 @@ class DcxmController extends Controller {
 					$tutor->email = $inputs['email'][$key];
 					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
+					$tutor->nd    = Carbon::now()->year;
 
 					$tutors[] = $tutor;
 				}
@@ -181,11 +190,9 @@ class DcxmController extends Controller {
 			$xmxx->xmlb_dm = $inputs['xmlb_dm'];
 			$xmxx->yjxk_dm = $inputs['yjxk_dm'];
 			$xmxx->xh      = Auth::user()->xh;
-			$xmxx->sfsh    = config('constants.status.disable');
-			$xmxx->sftg    = config('constants.status.disable');
 			$xmxx->gxsj    = Carbon::now();
 
-			$begdate    = Carbon::create(null, 4, 20);
+			$begdate    = config('constants.dcxm.begdate');
 			$xmxx->kssj = $begdate->toDateString();
 			$xmxx->jssj = $begdate->copy()->addYear($inputs['xmqx']);
 
@@ -208,12 +215,14 @@ class DcxmController extends Controller {
 
 					$member->xh   = $inputs['xh'][$key];
 					$member->xm   = $inputs['cyxm'][$key];
+					$member->xb   = $inputs['xb'][$key];
 					$member->nj   = $inputs['nj'][$key];
 					$member->szyx = $inputs['szyx'][$key];
 					$member->lxdh = $inputs['cylxdh'][$key];
 					$member->fg   = $inputs['fg'][$key];
 					$member->sfbx = ('true' === $inputs['cysfbx'][$key]) ? true : false;
 					$member->pm   = ++$i;
+					$member->nd   = Carbon::now()->year;
 
 					$members[] = $member;
 				}
@@ -242,6 +251,7 @@ class DcxmController extends Controller {
 					$tutor->email = $inputs['email'][$key];
 					$tutor->sfbx  = ('true' === $inputs['jssfbx'][$key]) ? true : false;
 					$tutor->pm    = ++$i;
+					$tutor->nd    = Carbon::now()->year;
 
 					$tutors[] = $tutor;
 				}
@@ -304,6 +314,10 @@ class DcxmController extends Controller {
 	 */
 	public function postApplication(Request $request, $id) {
 		if ($request->isMethod('post')) {
+			$this->validate($request, [
+				'xmjj' => 'max:200']
+			);
+
 			$project = Dcxmxx::whereId($id)
 				->whereXh(Auth::user()->xh);
 
@@ -370,11 +384,17 @@ class DcxmController extends Controller {
 				'yt.*'   => 'required|string',
 			]);
 
-			$inputs = $request->all();
-
+			$inputs  = $request->all();
 			$project = Dcxmxx::findOrFail($id);
 			$funds   = Dcxmjf::whereXmId($project->id)->get();
-			$delIds  = array_diff($funds->pluck('id')->all(), $inputs['jfid']);
+
+			if ((Dcxmxt::find('JF_KG')->value == 1) && ($project->xxsfty == 1)) {
+				if (array_sum($inputs['je']) > $project->jf) {
+					return back()->withStatus('填写经费超出预算，请重新填写');
+				}
+			}
+
+			$delIds = array_diff($funds->pluck('id')->all(), $inputs['jfid']);
 			Dcxmjf::destroy($delIds);
 
 			foreach ($inputs['je'] as $key => $value) {
@@ -414,6 +434,7 @@ class DcxmController extends Controller {
 			$student = [
 				'xh'   => '',
 				'xm'   => '',
+				'xb'   => '',
 				'nj'   => '',
 				'szyx' => '',
 				'lxdh' => '',
@@ -423,6 +444,7 @@ class DcxmController extends Controller {
 
 				$student['xh']   = $profile->xh;
 				$student['xm']   = $profile->xm;
+				$student['xb']   = $profile->gender->mc;
 				$student['nj']   = $profile->nj;
 				$student['szyx'] = $profile->college->mc;
 				$student['lxdh'] = $profile->lxdh;
@@ -503,10 +525,10 @@ class DcxmController extends Controller {
 
 		return PDF::loadView('dcxm.pdf', compact('title', 'project'))
 			->setPaper('a4')
-			->setOption('margin-top', '3.7cm')
-			->setOption('margin-bottom', '3.5cm')
-			->setOption('margin-left', '2.8cm')
-			->setOption('margin-right', '2.6cm')
+			->setOption('margin-top', '1.5cm')
+			->setOption('margin-bottom', '1.5cm')
+			->setOption('margin-left', '2.3cm')
+			->setOption('margin-right', '2.3cm')
 			->inline($project->student->xh . '.pdf');
 	}
 

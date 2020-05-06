@@ -8,6 +8,7 @@ use App\Models\Campus;
 use App\Models\Charge;
 use App\Models\Cntgeneral;
 use App\Models\Count;
+use App\Models\Course;
 use App\Models\Department;
 use App\Models\Lmtgeneral;
 use App\Models\Lmtsport;
@@ -19,12 +20,17 @@ use App\Models\Profile;
 use App\Models\Pubsport;
 use App\Models\Selcourse;
 use App\Models\Setting;
+use App\Models\Slog;
 use App\Models\Term;
 use App\Models\Timetable;
 use App\Models\Unpaid;
+use App\Models\Xfzhkc;
+use App\Models\Xfzhsq;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
@@ -51,12 +57,14 @@ class SelcourseController extends Controller {
 	/**
 	 * 显示学生选课信息列表
 	 * @author FuRongxin
-	 * @date    2016-02-15
-	 * @version 2.0
+	 * @date    2019-06-13
+	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
 	public function index() {
-		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
+		$selcourses = Selcourse::with('term')
+						->selectedCourses(Auth::user())
+						->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
@@ -85,7 +93,54 @@ class SelcourseController extends Controller {
 			}
 		}
 
-		return view('selcourse.index')->withTitle(Helper::getAcademicYear(session('year')) . '年度' . Term::find(session('term'))->mc . '学期选课课程列表')->withCourses($courses);
+		return view('selcourse.index')->withTitle(Helper::getAcademicYear($selcourse->nd) . '学年度' . $selcourse->term->mc . '学期' . '已选课程列表')->withCourses($courses);
+	}
+
+	/**
+	 * 显示学生历史选课信息列表
+	 * @author FuRongxin
+	 * @date    2019-06-18
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 选课信息列表
+	 */
+	public function history() {
+		$selcourses = Selcourse::with('term')
+						->selectedHistoryCourses(Auth::user())
+						->orderBy('nd', 'desc')
+						->orderBy('xq', 'desc')
+						->get();
+		$courses    = [];
+
+		foreach ($selcourses as $selcourse) {
+			foreach ($selcourse->historyTimetables as $timetable) {
+
+				// 生成课程序号为索引的课程信息数组
+				if (!isset($courses[$selcourse->kcxh])) {
+					$courses[$selcourse->kcxh] = [
+						'nd'   => Helper::getAcademicYear($selcourse->nd) . '学年度',
+						'xq'   => $selcourse->term->mc . '学期',
+						'kcxh' => $selcourse->kcxh,
+						'kcmc' => $selcourse->course->kcmc,
+						'xf'   => $selcourse->xf,
+						'xqh'  => $timetable->campus->mc,
+					];
+				}
+
+				// 在课程信息数组下生成周次为索引的课程时间数组
+				$courses[$selcourse->kcxh]['sj'][] = [
+					'week' => $timetable->zc,
+					'ksz'  => $timetable->ksz,
+					'jsz'  => $timetable->jsz,
+					'ksj'  => $timetable->ksj,
+					'jsj'  => $timetable->jsj,
+					'js'   => $timetable->classroom->mc,
+					'jsxm' => $timetable->teacher->xm,
+					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
+				];
+			}
+		}
+
+		return view('selcourse.history')->withTitle('历史课程列表')->withCourses($courses);
 	}
 
 	/**
@@ -111,12 +166,12 @@ class SelcourseController extends Controller {
 		foreach ($selcourses as $selcourse) {
 
 			// 获取课程时间
-			foreach ($selcourse->timetables as $timetable) {
+			foreach ($selcourse->timetables()->orderBy('ksj')->get() as $timetable) {
 
 				// 课程时间没有冲突
 				$courses[$timetable->ksj][$timetable->zc]['conflict'] = false;
 				$courses[$timetable->ksj][$timetable->zc]['rbeg']     = $timetable->ksj;
-				$courses[$timetable->ksj][$timetable->zc]['rend']     = $timetable->jsj;
+				$courses[$timetable->ksj][$timetable->zc]['rend']     = max($courses[$timetable->ksj][$timetable->zc]['rend'], $timetable->jsj);
 
 				for ($i = $timetable->ksj + 1; $i <= $timetable->jsj; ++$i) {
 					$courses[$i][$timetable->zc]['rend'] = $courses[$i][$timetable->zc]['rbeg'] - 1;
@@ -149,11 +204,16 @@ class SelcourseController extends Controller {
 									$courses[$timetable->ksj][$timetable->zc]['rend']     = min($timetable->jsj, $course['jsj']);
 
 									// 修改冲突课程结束行数
-									$courses[$i][$timetable->zc]['rend'] = $timetable->ksj;
+									if ($timetable->ksj != $i) {
+										$courses[$i][$timetable->zc]['rend'] = $timetable->ksj - 1;
+									}
 
 									// 设置新行
-									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'];
-									$courses[$courses[$timetable->ksj][$timetable->zc]['rend']][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
+									if ($timetable->jsj != $course['jsj']) {
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['conflict'] = false;
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rbeg'] = $courses[$timetable->ksj][$timetable->zc]['rend'] + 1;
+										$courses[$courses[$timetable->ksj][$timetable->zc]['rend'] + 1][$timetable->zc]['rend'] = max($timetable->jsj, $course['jsj']);
+									}
 								}
 							}
 						}
@@ -225,9 +285,10 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 显示课程检索表单
+	 * 2019-07-27：增加过滤留学生课程，留学生专业代码以“L”开头
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
@@ -263,6 +324,7 @@ class SelcourseController extends Controller {
 
 		$majors = Major::whereZt(config('constants.status.enable'))
 			->where('mc', '<>', '')
+			->where('zy', 'not like', 'L%')
 			->select('zy', 'mc', 'xy')
 			->orderBy('zy')
 			->get();
@@ -285,9 +347,10 @@ class SelcourseController extends Controller {
 	/**
 	 * 检索课程
 	 * 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
+	 * 2019-07-27：增加过滤留学生课程
 	 * @author FuRongxin
-	 * @date    2017-05-16
-	 * @version 2.1.5
+	 * @date    2019-07-27
+	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
@@ -302,11 +365,13 @@ class SelcourseController extends Controller {
 		$inputs = $request->all();
 
 		// 2017-06-15：应教务处要求，在检索结果中排除本年级本专业本学期课程
+		// 2019-07-27：增加过滤留学生课程
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
 			->exceptGeneral()
+			->exceptForeignMajor()
 			->where(function ($query) {
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));
@@ -386,15 +451,17 @@ class SelcourseController extends Controller {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
-		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+		// 2019-12-11：应教务处要求直接访问财务处欠费名单
+		// if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
-			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			}
+		// 2018-06-06：应教务处要求增加财务处欠费名单检测
+		DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+		DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
+			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
+		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+		// }
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
@@ -518,37 +585,153 @@ class SelcourseController extends Controller {
 				return back()->withInput();
 			}
 
-			$selcourse = new Selcourse;
+			// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
+			try {
+				DB::transaction(function () use ($course) {
 
-			// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
-			$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
-			$selcourse->xh    = Auth::user()->xh;
-			$selcourse->xm    = Auth::user()->profile->xm;
-			$selcourse->nd    = $course->nd;
-			$selcourse->xq    = $course->xq;
-			$selcourse->kcxh  = $inputs['kcxh'];
-			$selcourse->kch   = Helper::getCno($inputs['kcxh']);
-			$selcourse->pt    = $course->pt;
-			$selcourse->xz    = $course->xz;
-			$selcourse->xl    = $course->xl;
-			$selcourse->jsgh  = $course->task->jsgh;
-			$selcourse->xf    = $course->plan->zxf;
-			$selcourse->sf    = config('constants.status.enable');
-			$selcourse->zg    = $course->bz;
-			$selcourse->bz    = config('constants.status.disable');
-			$selcourse->sj    = Carbon::now();
-			$selcourse->kkxy  = $course->kkxy;
-			$selcourse->qz    = 0;
-			$selcourse->tdkch = '';
-			$selcourse->tdyy  = '';
-			$selcourse->zy    = $course->zy;
+					// 增加选课，统计表数据自增1
+					$count = Count::whereKcxh($course->kcxh);
 
-			if ($selcourse->save()) {
-				return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
-			} else {
+					if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+						$count = $count->whereZy($course->zy);
+					}
+
+					$count = $count->lockForUpdate()->first();
+
+					if (is_null($count)) {
+						$count       = new Count;
+						$count->kcxh = $course->kcxh;
+						$count->zy   = $isPubSport ? '' : $course->zy;
+						$count->rs   = 1;
+					} else {
+						if ($count->rs < $course->rs) {
+							$count->increment('rs');
+						} else {
+							throw new Exception('选课人数已满，请选其他课程');
+						}
+					}
+
+					$count->saveOrFail();
+
+					// 保存选课日志
+					$log       = new Slog;
+					$log->kcxh = $course->kcxh;
+					$log->kcmc = Course::find(Helper::getCno($course->kcxh))->kcmc;
+					$log->ip   = request()->ip();
+					$log->czlx = 'insert';
+					$log->save();
+
+					// 保存选课数据
+					$selcourse = new Selcourse;
+
+					// 2018-11-21：应教务处要求添加检测所选课程是否为重修课程
+					$selcourse->cx    = $this->checkretake($course->kcxh) ? config('constants.status.enable') : config('constants.status.disable');
+					$selcourse->xh    = Auth::user()->xh;
+					$selcourse->xm    = Auth::user()->profile->xm;
+					$selcourse->nd    = $course->nd;
+					$selcourse->xq    = $course->xq;
+					$selcourse->kcxh  = $course->kcxh;
+					$selcourse->kch   = Helper::getCno($course->kcxh);
+					$selcourse->pt    = $course->pt;
+					$selcourse->xz    = $course->xz;
+					$selcourse->xl    = $course->xl;
+					$selcourse->jsgh  = $course->task->jsgh;
+					$selcourse->xf    = $course->plan->zxf;
+					$selcourse->sf    = config('constants.status.enable');
+					$selcourse->zg    = $course->bz;
+					$selcourse->bz    = config('constants.status.disable');
+					$selcourse->sj    = Carbon::now();
+					$selcourse->kkxy  = $course->kkxy;
+					$selcourse->qz    = 0;
+					$selcourse->tdkch = '';
+					$selcourse->tdyy  = '';
+					$selcourse->zy    = $course->zy;
+					$selcourse->saveOrFail();
+				});
+			} catch (QueryException $e) {
 				return back()->withInput()->withStatus('选课失败');
+			} catch (Exception $e) {
+				$request->session()->flash('forbidden', $e->getMessage());
+				return back()->withInput();
 			}
+
+			$request->session()->flash('kcxh', $course->kcxh);
+			return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
+
 		}
+	}
+
+	/**
+	 * 退选课程
+	 * @author FuRongxin
+	 * @date    2016-02-23
+	 * @version 2.0
+	 * @param   string $kcxh 12位课程序号
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function destroy($type, $kcxh) {
+
+		$course = Mjcourse::ofType($type)
+			->whereNd(session('year'))
+			->whereXq(session('term'))
+			->whereZsjj(session('season'))
+			->whereKcxh($kcxh)
+			->firstOrFail();
+
+		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
+		try {
+			DB::transaction(function () use ($course) {
+
+				// 删除选课，统计表数据自减1
+				$count = Count::whereKcxh($course->kcxh);
+
+				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+					$count = $count->whereZy($course->zy);
+				}
+
+				$count = $count->lockForUpdate()->first();
+
+				if (is_null($count)) {
+					$count       = new Count;
+					$count->kcxh = $course->kcxh;
+					$count->zy   = $isPubSport ? '' : $course->zy;
+					$count->rs   = 0;
+				} else {
+					if ($count->rs > 0) {
+						$count->decrement('rs');
+					} else {
+						throw new Exception('选课人数为零，无法退选课程');
+					}
+				}
+
+				$count->save();
+
+				// 保存删课日志
+				$log       = new Slog;
+				$log->kcxh = $course->kcxh;
+				$log->kcmc = Course::find(Helper::getCno($course->kcxh))->kcmc;
+				$log->ip   = request()->ip();
+				$log->czlx = 'delete';
+				$log->save();
+
+				// 删除选课数据
+				$deletingCourse = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKcxh($course->kcxh)
+					->firstOrFail();
+				$deletingCourse->delete();
+
+				return back()->withStatus('退选课程成功');
+			});
+		} catch (QueryException $e) {
+			return back()->wihtInput()->withStatus('退选课程失败');
+		} catch (Exception $e) {
+			request()->session()->flash('forbidden', $e->getMessage());
+			return back()->withInput();
+		}
+
+		return back()->withStatus('退选课程成功');
 	}
 
 	/**
@@ -678,9 +861,8 @@ class SelcourseController extends Controller {
 	 */
 	public function checkretake($kcxh) {
 		$exists = Selcourse::whereKch(Helper::getCno($kcxh))
-			->where('nd', '<>', session('year'))
-			->where('xq', '<>', session('term'))
 			->whereXh(Auth::user()->xh)
+			->whereRaw('NOT(nd = ? AND xq = ?)', [session('year'), session('term')])
 			->exists();
 
 		return request()->ajax() ? response()->json(['retake' => $exists]) : $exists;
@@ -706,15 +888,17 @@ class SelcourseController extends Controller {
 			abort(403, '现在未开放选课，不允许选课');
 		}
 
-		if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
+		// 2019-12-11：应教务处要求直接访问财务处欠费名单
+		// if (Unpaid::whereXh(Auth::user()->xh)->exists()) {
 
-			// 2018-06-06：应教务处要求增加财务处欠费名单检测
-			DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
-			DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-			if (Charge::where('StudentCode', '=', Auth::user()->xh)->exists()) {
-				abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-			}
+		// 2018-06-06：应教务处要求增加财务处欠费名单检测
+		DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
+		DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
+		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
+			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
+		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
+		// }
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
@@ -871,7 +1055,7 @@ class SelcourseController extends Controller {
 					->exists();
 
 				if ($exists) {
-					return '<form name="deleteForm" action="' . route('selcourse.destroy', $course->kcxh) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					return '<form name="deleteForm" action="' . route('selcourse.destroy', [$type, $course->kcxh]) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 				} elseif ($same) {
 					return '<div class="text-danger">已选同号课程</div>';
 				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
@@ -943,42 +1127,112 @@ class SelcourseController extends Controller {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id) {
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id) {
-		//
-	}
-
-	/**
-	 * 退选课程
+	 * TQ课程转换列表
 	 * @author FuRongxin
-	 * @date    2016-02-23
-	 * @version 2.0
+	 * @date    2019-12-12
+	 * @version 2.3
+	 * @return  \Illuminate\Http\Response 课程表
+	 */
+	public function listTQTransform() {
+		$title = 'TQ课程转换课程表';
+
+		$courses   = [];
+		if (Auth::user()->profile->nj < 2019) {
+			$selcourses = Selcourse::selectedCourses(Auth::user())
+				->wherePt('T')
+				->whereIn('xz', ['W', 'I', 'Y', 'Q'])
+				->get();
+	
+			foreach ($selcourses as $selcourse) {
+				foreach ($selcourse->timetables as $timetable) {
+	
+					// 生成课程序号为索引的课程信息数组
+					if (!isset($courses[$selcourse->kcxh])) {
+						$courses[$selcourse->kcxh] = [
+							'kcxh' => $selcourse->kcxh,
+							'kcmc' => $selcourse->course->kcmc,
+							'pt'   => $selcourse->pt,
+							'xz'   => $selcourse->xz,
+							'xf'   => $selcourse->xf,
+							'xqh'  => $timetable->campus->mc,
+							'cx'   => $this->checkretake($selcourse->kcxh),
+						];
+					}
+	
+					// 在课程信息数组下生成周次为索引的课程时间数组
+					$courses[$selcourse->kcxh][$timetable->zc][] = [
+						'ksz'  => $timetable->ksz,
+						'jsz'  => $timetable->jsz,
+						'ksj'  => $timetable->ksj,
+						'jsj'  => $timetable->jsj,
+						'js'   => $timetable->classroom->mc,
+						'jsxm' => $timetable->teacher->xm,
+						'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
+					];
+				}
+			}
+		}
+
+		return view('selcourse.tqtransform', compact('title', 'courses'));
+	}
+
+	/**
+	 * TQ课程转换
+	 * @author FuRongxin
+	 * @date    2019-12-08
+	 * @version 2.3
 	 * @param   string $kcxh 12位课程序号
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function destroy($kcxh) {
-		$course = Selcourse::whereXh(Auth::user()->xh)
-			->whereNd(session('year'))
-			->whereXq(session('term'))
-			->whereKcxh($kcxh)
-			->firstOrFail();
-		$course->delete();
+	public function TQTransform($kcxh) {
+		if (Auth::user()->profile->nj < 2019 && in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
+			$course = Selcourse::whereXh(Auth::user()->xh)
+				->whereNd(session('year'))
+				->whereXq(session('term'))
+				->whereKcxh($kcxh)
+				->firstOrFail();
 
-		return back()->withStatus('退选课程成功');
+			$xfzhkc        = new Xfzhkc;
+			$xfzhkc->qkch  = $course->kch;
+			$xfzhkc->qkcmc = $course->course->kcmc;
+			$xfzhkc->qpt   = $course->pt;
+			$xfzhkc->qxz   = $course->xz;
+
+			if (in_array($course->xz, ['I', 'W', 'Y'])) {
+				$course->xz = 'Q';
+			} else {
+				$course->xz = substr($kcxh, 1, 1);
+			}
+
+			$course->save();
+
+			$xfzhkc->qxf   = $course->xf;
+			$xfzhkc->qcj   = 0;
+			$xfzhkc->kch   = $course->kch;
+			$xfzhkc->kcmc  = $course->course->kcmc;
+			$xfzhkc->pt    = $course->pt;
+			$xfzhkc->xz    = $course->xz;
+			$xfzhkc->sfxw  = 0;
+
+			$zhsq       = new Xfzhsq;
+			$zhsq->xh   = Auth::user()->xh;
+			$zhsq->xm   = Auth::user()->profile->xm;
+			$zhsq->sqsj = Carbon::now();
+			$zhsq->zt   = 4;
+			$zhsq->save();
+			$zhsq->courses()->save($xfzhkc);
+
+			$log       = new Slog;
+			$log->kcxh = $course->kcxh;
+			$log->kcmc = $course->course->kcmc;
+			$log->ip   = request()->ip();
+			$log->czlx = 'trsfrm';
+			$log->bz   = $xfzhkc->qpt . $xfzhkc->qxz . '转换为' . $xfzhkc->pt . $xfzhkc->xz;
+			$log->save();
+
+			return back()->withStatus('TQ课程转换成功');
+		}
+
+		return back()->withStatus('TQ课程转换失败');
 	}
 }

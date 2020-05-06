@@ -72,4 +72,30 @@ class Helper {
 	public static function getAcademicYear($year) {
 		return $year . '~' . ($year + 1);
 	}
+
+	/**
+	 * 获取12位课程序号的课程类型
+	 * @author FuRongxin
+	 * @date    2020-1-2
+	 * @version 2.3
+	 * @param   string $kcxh 12位课程序号
+	 * @return  string 课程类型
+	 */
+	public static function getCourseType($kcxh) {
+		if (self::isCourseType($kcxh, 'TB14')) {
+			return 'pubsport';
+		} elseif (self::isCourseType($kcxh, 'TW')) {
+			return 'human';
+		} elseif (self::isCourseType($kcxh, 'TI')) {
+			return 'nature';
+		} elseif (self::isCourseType($kcxh, 'TY')) {
+			return 'art';
+		} elseif (self::isCourseType($kcxh, 'TB')) {
+			return 'public';
+		} elseif (str_contains($kcxh, 'X')) {
+			return 'elect';
+		} else {
+			return 'require';
+		}
+	}
 }

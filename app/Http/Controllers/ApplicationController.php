@@ -88,6 +88,15 @@ class ApplicationController extends Controller {
 			} else {
 				$courses = $courses->take(1);
 			}
+		} else {
+			// 2019-11-14：应教务处要求添加申请其他课程修读时不允许申请重修课
+			$kch = Helper::getCno($inputs['kcxh']);
+
+			$exists = Selcourse::selected(Auth::user(), $kch)->exists();
+
+			if ($exists) {
+				return back()->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+			}
 		}
 
 		$view = view('application.create')
@@ -149,6 +158,15 @@ class ApplicationController extends Controller {
 
 			if ($same) {
 				return back()->withInput()->withStatus('已选同号课程，请重新申请');
+			}
+
+			// 2019-11-14：应教务处要求添加申请其他课程修读时不允许申请重修课
+			if ('other' == $inputs['type']) {
+				$exists = Selcourse::selected(Auth::user(), Helper::getCno($inputs['kcxh']))->exists();
+
+				if ($exists) {
+					return back()->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+				}
 			}
 
 			$application       = new Application;
