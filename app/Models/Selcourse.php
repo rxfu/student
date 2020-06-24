@@ -347,9 +347,10 @@ class Selcourse extends Model {
 			'course'                      => function ($query) {
 				$query->select('kch', 'kcmc');
 			},
-		])
-			->whereXh($user->xh)
-			->where('nd', '<>', session('year'))
-			->where('xq', '<>', session('term'));
+		])->whereXh($user->xh)
+			->where(function($query) {
+				$query->where('nd', '<>', session('year'))
+					->orWhere('xq', '<>', session('term'));
+			});
 	}
 }
