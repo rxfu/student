@@ -102,11 +102,15 @@ class RequirementController extends Controller {
 		}
 
 		foreach ($unretake as $item) {
-			if (isset($credits['B'][$item->pt . $item->xz]) || isset($credits['X'][$item->pt . $item->xz])) {
-				if ('B' == $item->xz) {
-					$credits['B'][$item->pt . $item->xz]['unretake'] += $item->xf;
+			if (isset($credits['B'][$item->pt . $item->xz]) || isset($credits['X'][$item->pt . $item->xz]) || isset($credits['O'][$item->pt . $item->xz])) {
+				if (isset($credits['O'][$item->pt . $item->xz])) {
+					$credits['O'][$item->pt . $item->xz]['unretake'] += $item->xf;
 				} else {
-					$credits['X'][$item->pt . $item->xz]['unretake'] += $item->xf;
+					if ('B' == $item->xz) {
+						$credits['B'][$item->pt . $item->xz]['unretake'] += $item->xf;
+					} else {
+						$credits['X'][$item->pt . $item->xz]['unretake'] += $item->xf;
+					}
 				}
 			} else {
 				$credits['O'][$item->pt . $item->xz] = [
@@ -114,7 +118,7 @@ class RequirementController extends Controller {
 					'graduation' => 0,
 					'selected'   => 0,
 					'studied'    => 0,
-					'unretake'   => $item->xf,0,
+					'unretake'   => $item->xf,
 				];
 			}
 		}

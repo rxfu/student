@@ -55,11 +55,11 @@
                         @endforeach
                         <tr>
                             <th colspan="2" class="active text-center">总学分</th>
-                            <td colspan="2" class="warning text-center">{{ array_sum(array_column($credits['B'], 'graduation')) + array_sum(array_column($credits['X'], 'graduation'))  }}</td>
-                            <td colspan="2" class="success text-center">{{ array_sum(array_column($credits['B'], 'studied')) + array_sum(array_column($credits['X'], 'studied'))  }}</td>
-                            <td colspan="2" class="danger text-center">{{ array_sum(array_column($credits['B'], 'graduation')) + array_sum(array_column($credits['X'], 'graduation')) - array_sum(array_column($credits['B'], 'studied')) - array_sum(array_column($credits['X'], 'studied')) }}</td>
-                            <td colspan="2" class="info text-center">{{ array_sum(array_column($credits['B'], 'selected')) + array_sum(array_column($credits['X'], 'selected')) }}</td>
-                            <td colspan="2" class="primary text-center">{{ array_sum(array_column($credits['B'], 'unretake')) + array_sum(array_column($credits['X'], 'unretake')) }}</td>
+                            <td colspan="2" class="warning text-center">{{ array_sum(array_column($credits['B'] ?? [], 'graduation')) + array_sum(array_column($credits['X'] ?? [], 'graduation'))  }}</td>
+                            <td colspan="2" class="success text-center">{{ array_sum(array_column($credits['B'] ?? [], 'studied')) + array_sum(array_column($credits['X'] ?? [], 'studied')) + array_sum(array_column($credits['O'] ?? [], 'studied')) }}</td>
+                            <td colspan="2" class="danger text-center">{{ array_sum(array_column($credits['B'] ?? [], 'graduation')) + array_sum(array_column($credits['X'] ?? [], 'graduation')) - array_sum(array_column($credits['B'] ?? [], 'studied')) - array_sum(array_column($credits['X'] ?? [], 'studied')) }}</td>
+                            <td colspan="2" class="info text-center">{{ array_sum(array_column($credits['B'] ?? [], 'selected')) + array_sum(array_column($credits['X'] ?? [], 'selected')) + array_sum(array_column($credits['O'] ?? [], 'selected')) }}</td>
+                            <td colspan="2" class="primary text-center">{{ array_sum(array_column($credits['B'] ?? [], 'unretake')) + array_sum(array_column($credits['X'] ?? [], 'unretake')) + array_sum(array_column($credits['O'] ?? [], 'unretake')) }}</td>
                         </tr>
                     </table>
                 </div>
