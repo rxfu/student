@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Models\Register;
 use App\Models\Setting;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
 use Storage;
@@ -141,4 +143,28 @@ class ProfileController extends Controller {
 		return config('constants.status.enable') == Setting::find('KS_PHOTO_UP')->value;
 	}
 
+	public function showRegisterForm() {
+		$profile = Profile::find(Auth::user()->xh);
+		$title = '学生报到注册';
+
+        $begin = new Carbon(Setting::find('XS_ZC_KS')->value);
+        $end = new Carbon(Setting::find('XS_ZC_JS')->value);
+        $exists = now()->between($begin, $end) && !Register::whereXh(Auth::user()->xh)->whereNd(session('year'))->whereXq(session('term'))->exists();
+
+		return view('profile.register', compact('title', 'profile', 'exists'));
+	}
+
+	public function register(Request $request) {
+		if ($request->isMethod('post')) {
+			$register = new Register;
+			$register->nd = session('year');
+			$register->xq = session('term');
+			$register->xh = Auth::user()->xh;
+			$register->zcsj = now();
+
+			$register->save();
+		}
+
+		return redirect('/');
+	}
 }

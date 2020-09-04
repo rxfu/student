@@ -409,6 +409,7 @@
         <script src="{{ asset('js/plugins/dataTables/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('js/plugins/dataTables/buttons.flash.min.js') }}"></script>
         <script src="{{ asset('js/sb-admin-2.js') }}"></script>
+        <script src="{{ asset('js/bootbox.all.min.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
         @stack('scripts')
     </body>
