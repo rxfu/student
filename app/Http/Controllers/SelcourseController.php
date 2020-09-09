@@ -189,8 +189,8 @@ class SelcourseController extends Controller {
 				for ($i = $timetable->ksj; $i >= $periods[$id]['begin']; --$i) {
 
 					// 只获取课程数组
-					if (!empty($classes = array_filter($courses[$i][$timetable->zc], function ($v) {return is_array($v);}))) {
-						foreach ($classes as $course) {
+					if (!empty($classes = array_filter($courses[$i][$timetable->zc], function ($v) { return is_array($v); }))) {
+						foreach ($classes as $k => $course) {
 
 							// 判断开始周或结束周是否在其他课程开始周和结束周之间
 							if ($timetable->ksz >= $course['ksz'] && $timetable->ksz <= $course['jsz'] || $timetable->jsz >= $course['ksz'] && $timetable->jsz <= $course['jsz']) {
@@ -221,7 +221,7 @@ class SelcourseController extends Controller {
 				}
 
 				// 生成开始节、周次为索引的课程数组
-				$courses[$timetable->ksj][$timetable->zc][] = [
+				$currentCourse = [
 					'kcxh' => $selcourse->kcxh,
 					'kcmc' => $selcourse->course->kcmc,
 					'xqh'  => $timetable->campus->mc,
@@ -233,6 +233,20 @@ class SelcourseController extends Controller {
 					'jsxm' => $timetable->teacher->xm,
 					'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 				];
+
+				// 检测课程是否可以纳入同时间段其他课程当中
+				$begin = $timetable->ksj;
+				for ($i = $timetable->ksj - 1; $i >= $periods[$id]['begin']; --$i) {
+					if (count($courses[$i][$timetable->zc]) != count($courses[$i][$timetable->zc], 1)) {
+						$begin = $i;
+					}
+				}
+
+				if ($begin != $timetable->ksj) {
+					unset($courses[$timetable->ksj][$timetable->zc]['conflict']);
+				}
+
+				$courses[$begin][$timetable->zc][] = $currentCourse;
 			}
 		}
 
