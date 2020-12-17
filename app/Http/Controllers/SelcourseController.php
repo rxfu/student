@@ -1056,29 +1056,34 @@ class SelcourseController extends Controller {
 
 		$datatable = Datatables::of($courses)
 			->addColumn('action', function ($course) use ($type, $limit_ratio) {
-				$same = Selcourse::whereXh(Auth::user()->xh)
-					->whereNd(session('year'))
-					->whereXq(session('term'))
-					->whereKch($course->kch)
-					->where('kcxh', '<>', $course->kcxh)
-					->exists();
-
-				$exists = Selcourse::whereXh(Auth::user()->xh)
-					->whereNd(session('year'))
-					->whereXq(session('term'))
-					->whereKcxh($course->kcxh)
-					->exists();
-
-				if ($exists) {
-					return '<form name="deleteForm" action="' . route('selcourse.destroy', [$type, $course->kcxh]) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
-				} elseif ($same) {
-					return '<div class="text-danger">已选同号课程</div>';
-				} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
-					return '<div class="text-danger">前修课未修读</div>';
-				} elseif (0 <= $limit_ratio && ($course->rs >= $course->zrs * $limit_ratio)) {
-					return '<div class="text-danger">人数已满</div>';
+				// 2020-12-17：应教务处要求不允许2019级本科生退选公体课
+				if ('pubsport' == $type && '2019' == Auth::user()->profile->nj) {
+					return '<div class="text-danger">2019级本科生不允许退选公体课</div>';
 				} else {
-					return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
+					$same = Selcourse::whereXh(Auth::user()->xh)
+						->whereNd(session('year'))
+						->whereXq(session('term'))
+						->whereKch($course->kch)
+						->where('kcxh', '<>', $course->kcxh)
+						->exists();
+	
+					$exists = Selcourse::whereXh(Auth::user()->xh)
+						->whereNd(session('year'))
+						->whereXq(session('term'))
+						->whereKcxh($course->kcxh)
+						->exists();
+	
+					if ($exists) {
+						return '<form name="deleteForm" action="' . route('selcourse.destroy', [$type, $course->kcxh]) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
+					} elseif ($same) {
+						return '<div class="text-danger">已选同号课程</div>';
+					} elseif (Prior::whereKch($course->kch)->exists() && (!Prior::studied($course->kch, Auth::user())->exists())) {
+						return '<div class="text-danger">前修课未修读</div>';
+					} elseif (0 <= $limit_ratio && ($course->rs >= $course->zrs * $limit_ratio)) {
+						return '<div class="text-danger">人数已满</div>';
+					} else {
+						return '<form name="createForm" action="' . route('selcourse.store') . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . csrf_field() . '<button type="submit" class="btn btn-primary">选课</button><input type="hidden" name="kcxh" value="' . $course->kcxh . '"><input type="hidden" name="type" value="' . $type . '"></form>';
+					}
 				}
 			})
 			->editColumn('kcmc', function ($course) use ($type) {

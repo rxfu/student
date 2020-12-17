@@ -43,11 +43,16 @@
                             @foreach ($courses as $course)
                                 <tr>
                                     <td>
-                                        <form id="deleteForm" name="deleteForm" action="{{ route('selcourse.destroy', [App\Http\Helper::getCourseType($course['kcxh']), $course['kcxh']])}}" method="post" role="form">
-                                            {!! method_field('delete') !!}
-                                            {!! csrf_field() !!}
-                                            <button type="submit" class="btn btn-danger">退课</button>
-                                        </form>
+                                        <!-- 2020-12-17：应教务处要求不允许2019级本科生退选公体课 -->
+                                        @if ('pubsport' == App\Http\Helper::getCourseType($course['kcxh']) && '2019' == Auth::user()->profile->nj) 
+                                            <div class="text-danger">2019级本科生不允许退选公体课</div>;
+                                        @else
+                                            <form id="deleteForm" name="deleteForm" action="{{ route('selcourse.destroy', [App\Http\Helper::getCourseType($course['kcxh']), $course['kcxh']])}}" method="post" role="form">
+                                                {!! method_field('delete') !!}
+                                                {!! csrf_field() !!}
+                                                <button type="submit" class="btn btn-danger">退课</button>
+                                            </form>
+                                        @endif
                                     </td>
                                 	<td>{{ $course['kcxh'] }}</td>
                                 	<td>{{ $course['kcmc'] }}</td>
