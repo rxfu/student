@@ -58,7 +58,9 @@ class AppServiceProvider extends ServiceProvider {
 
 			// 是否允许申请大创项目
 			// 2018-03-28：应教务处要求添加
-			$allowed_dcxm = Dcxmxt::find('XT_KG')->value;
+			// 2020-12-17：应教务处要求关闭大创项目
+			// $allowed_dcxm = Dcxmxt::find('XT_KG')->value;
+			$allowed_dcxm = false;
 
 			$view->with('is_student', $is_student)
 				->with('user', $user)

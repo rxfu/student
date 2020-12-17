@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 	Route::post('profile/register', 'ProfileController@register');
 
 	Route::middleware('register')->group(function () {
-		// Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+		// Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
 		Route::resource('home', 'HomeController', ['only' => ['index']]);
 		Route::resource('requirement', 'RequirementController', ['only' => ['index']]);

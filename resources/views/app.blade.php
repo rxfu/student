@@ -251,7 +251,7 @@
                                 </ul>
                             </li-->
                             @if ($allowed_dcxm)
-                                <li>
+                                <!--li>
                                     <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 大创项目<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
@@ -261,8 +261,7 @@
                                             <a href="{{ url('dcxm/xmxx') }}">项目申请</a>
                                         </li>
                                     </ul>
-                                    <!-- /.nav-second-level -->
-                                </li>
+                                </li-->
                             @endif
                             <!--li>
                                 <a href="#"><i class="fa fa-university fa-fw"></i> 教室管理<span class="fa arrow"></span></a>
