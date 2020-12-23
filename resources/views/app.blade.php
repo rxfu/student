@@ -337,6 +337,20 @@
                 <!-- /.row -->
                 @endif
 
+                @if (session('fail'))
+                <!-- Fail -->
+                <section class="row">
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ session('fail') }}
+                        </div>
+                    </div>
+                    <!-- /.col-sm-12 -->
+                </section>
+                <!-- /.row -->
+                @endif
+
                 @if ($errors->any())
                 <!-- Errors -->
                 <section class="row">

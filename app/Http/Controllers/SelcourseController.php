@@ -600,6 +600,7 @@ class SelcourseController extends Controller {
 			}
 
 			// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
+			// 2020-12-23：应教务处要求修正统计算法
 			try {
 				DB::transaction(function () use ($course) {
 
@@ -610,22 +611,25 @@ class SelcourseController extends Controller {
 						$count = $count->whereZy($course->zy);
 					}
 
-					$count = $count->lockForUpdate()->first();
+					if ($count->exists()) {
+						$count = $count->lockForUpdate()->first();
 
-					if (is_null($count)) {
+						if ($count) {
+							if ($count->rs < $course->rs) {
+								$count->rs += 1;
+								$count->save();
+							} else {
+								throw new Exception('选课人数已满，请选其他课程');
+							}
+						}
+					} else {
 						$count       = new Count;
 						$count->kcxh = $course->kcxh;
 						$count->zy   = $isPubSport ? '' : $course->zy;
 						$count->rs   = 1;
-					} else {
-						if ($count->rs < $course->rs) {
-							$count->increment('rs');
-						} else {
-							throw new Exception('选课人数已满，请选其他课程');
-						}
-					}
 
-					$count->saveOrFail();
+						$count->save();
+					}
 
 					// 保存选课日志
 					$log       = new Slog;
@@ -663,13 +667,14 @@ class SelcourseController extends Controller {
 					$selcourse->saveOrFail();
 				});
 			} catch (QueryException $e) {
-				return back()->withInput()->withStatus('选课失败');
+				return back()->withInput()->withFail('选课失败，请重试');
 			} catch (Exception $e) {
 				$request->session()->flash('forbidden', $e->getMessage());
 				return back()->withInput();
 			}
 
 			$request->session()->flash('kcxh', $course->kcxh);
+
 			return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
 
 		}
@@ -694,32 +699,36 @@ class SelcourseController extends Controller {
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
+		// 2020-12-23：应教务处要求修正统计算法
 		try {
 			DB::transaction(function () use ($course) {
 
 				// 删除选课，统计表数据自减1
-				$count = Count::whereKcxh($course->kcxh);
+					$count = Count::whereKcxh($course->kcxh);
 
-				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
-					$count = $count->whereZy($course->zy);
-				}
-
-				$count = $count->lockForUpdate()->first();
-
-				if (is_null($count)) {
-					$count       = new Count;
-					$count->kcxh = $course->kcxh;
-					$count->zy   = $isPubSport ? '' : $course->zy;
-					$count->rs   = 0;
-				} else {
-					if ($count->rs > 0) {
-						$count->decrement('rs');
-					} else {
-						throw new Exception('选课人数为零，无法退选课程');
+					if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+						$count = $count->whereZy($course->zy);
 					}
-				}
 
-				$count->save();
+					if ($count->exists()) {
+						$count = $count->lockForUpdate()->first();
+
+						if ($count) {
+							if ($count->rs > 0) {
+								$count->rs -= 1;
+								$count->save();
+							} else {
+								throw new Exception('选课人数为零，无法退选课程');
+							}
+						}
+					} else {
+						$count       = new Count;
+						$count->kcxh = $course->kcxh;
+						$count->zy   = $isPubSport ? '' : $course->zy;
+						$count->rs   = 0;
+
+						$count->save();
+					}
 
 				// 保存删课日志
 				$log       = new Slog;
@@ -740,7 +749,7 @@ class SelcourseController extends Controller {
 				return back()->withStatus('退选课程成功');
 			});
 		} catch (QueryException $e) {
-			return back()->wihtInput()->withStatus('退选课程失败');
+			return back()->withInput()->withFail('退选课程失败，请重试');
 		} catch (Exception $e) {
 			request()->session()->flash('forbidden', $e->getMessage());
 			return back()->withInput();
