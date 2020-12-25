@@ -1183,7 +1183,7 @@ class SelcourseController extends Controller {
 							'pt'   => $selcourse->pt,
 							'xz'   => $selcourse->xz,
 							'xf'   => $selcourse->xf,
-							'xqh'  => $timetable->campus->mc,
+							'xqh'  => is_null($timetable->campus) ? '' : $timetable->campus->mc,
 							'cx'   => $this->checkretake($selcourse->kcxh),
 						];
 					}
@@ -1194,8 +1194,8 @@ class SelcourseController extends Controller {
 						'jsz'  => $timetable->jsz,
 						'ksj'  => $timetable->ksj,
 						'jsj'  => $timetable->jsj,
-						'js'   => $timetable->classroom->mc,
-						'jsxm' => $timetable->teacher->xm,
+						'js'   => is_null($timetable->classroom) ? '' : $timetable->classroom->mc,
+						'jsxm' => is_null($timetable->teacher) ? '' : $timetable->teacher->xm,
 						'zc'   => is_null($timetable->teacher->position) ? '' : $timetable->teacher->position->mc,
 					];
 				}
