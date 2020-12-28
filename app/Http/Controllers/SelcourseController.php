@@ -691,8 +691,10 @@ class SelcourseController extends Controller {
 	public function destroy($type, $kcxh) {
 
 		// 2020-05-06：应教务处要求不再限制退课专业，解决选课申请后不能退课的问题
-		// $course = Mjcourse::ofType($type)
-		$course = Mjcourse::whereNd(session('year'))
+		// 2020-12-28：应教务处要求恢复限制退课专业，解决学生不能正常退课的问题
+		$course = Mjcourse::ofType($type)
+		// $course = Mjcourse::
+			->whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
