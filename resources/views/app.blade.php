@@ -219,15 +219,16 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 毕业论文<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="{{ url('thesis/search') }}">毕业论文查询</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
+                            <!-- 2021-01-05：应教务处要求关闭毕业论文系统
+                                <li>
+                                    <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 毕业论文<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{ url('thesis/search') }}">毕业论文查询</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            -->
                             <!--li>
                                 <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> 教学评价<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
