@@ -411,11 +411,11 @@ class SelcourseController extends Controller {
 
 		$datatable = Datatables::of($courses)
 			->addColumn('retake', function ($course) {
-				return '<a href="' . route('application.create', ['type' => 'retake', 'kcxh' => $course->kcxh]) . '" title="申请重修" class="btn btn-warning" id="retake" data-course="' . $course->kch . '">申请重修</a>';
+				return '<a href="' . route('application.create', ['type' => 'retake', 'kcxh' => $course->kcxh, 'zy' => $course->zy, 'nj' => $course->nj]) . '" title="申请重修" class="btn btn-warning" id="retake" data-course="' . $course->kch . '">申请重修</a>';
 			});
 
 		$datatable = $datatable->addColumn('other', function ($course) {
-			return '<a href="' . route('application.create', ['type' => 'other', 'kcxh' => $course->kcxh]) . '" title="申请修读" class="btn btn-primary" id="other" data-course="' . $course->kch . '">申请修读</a>';
+			return '<a href="' . route('application.create', ['type' => 'other', 'kcxh' => $course->kcxh, 'zy' => $course->zy, 'nj' => $course->nj]) . '" title="申请修读" class="btn btn-primary" id="other" data-course="' . $course->kch . '">申请修读</a>';
 		});
 
 		for ($i = 1; $i <= 7; ++$i) {
@@ -692,11 +692,12 @@ class SelcourseController extends Controller {
 
 		// 2020-05-06：应教务处要求不再限制退课专业，解决选课申请后不能退课的问题
 		// 2020-12-28：应教务处要求恢复限制退课专业，解决学生不能正常退课的问题
-		$course = Mjcourse::ofType($type)
-		// $course = Mjcourse::
+		// 2021-03-05：应教务处要求不再限制退课专业，解决转专业学生不能自行退课的问题
+		// $course = Mjcourse::ofType($type)
+		$course = Selcourse::whereXh(Auth::user()->xh)
 			->whereNd(session('year'))
 			->whereXq(session('term'))
-			->whereZsjj(session('season'))
+			// ->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
 			->firstOrFail();
 

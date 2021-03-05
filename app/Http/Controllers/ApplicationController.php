@@ -49,7 +49,7 @@ class ApplicationController extends Controller {
 		$inputs = $request->all();
 
 		// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
-		$courses = Mjcourse::whereNd(session('year'))
+		$course = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereZsjj(session('season'))
 			->exceptGeneral()
@@ -57,21 +57,40 @@ class ApplicationController extends Controller {
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));
 			})
-			->whereKcxh($inputs['kcxh']);
+			->whereKcxh($inputs['kcxh'])
+			->whereNj($inputs['nj'])
+			->whereZy($inputs['zy']);
 
-		if (!$courses->exists()) {
+		if ($course->doesntExist()) {
 			return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
 		}
 
 		// 2017-01-02：应教务处要求添加同课程号课程申请检测
-		$exists = Application::whereNd(session('year'))
+		// 2020-01-07：应教务处要求添加检测审核状态
+		$sameCourse = Application::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereXh(Auth::user()->xh)
-			->where('kcxh', 'like', '%' . Helper::getCno($inputs['kcxh']) . '%')
-			->exists();
+			->where('kcxh', 'like', '%' . Helper::getCno($inputs['kcxh']) . '%');
+		$appSelectUnaudit = clone $sameCourse;
 
-		if ($exists) {
-			return back()->withInput()->withStatus('已选同号课程，请重新申请');
+		$appSelectUnaudit = $appSelectUnaudit->whereNull('tkid');
+		$appSelectAudit = clone $appSelectUnaudit;
+		if ($appSelectUnaudit->whereSh(0)->exists()) {
+			return back()->withInput()->withStatus('同号课程申请未审核，请联系开课学院教学秘书');
+		}
+
+		$selectedApp = $appSelectAudit->whereSh(1)->orderBy('xksj', 'desc')->first();
+		if ($selectedApp) {
+			$appDelete = clone $sameCourse;
+			$appDelete = $appDelete->whereNotNull('tkid')->where('xksj', '>=', $selectedApp->xksj);
+
+			if ($appDelete->doesntExist()) {
+				return back()->withInput()->withStatus('同号课程申请审核已通过，请不要重复申请');
+			}
+
+			if ($appDelete->whereSh(1)->doesntExist()) {
+				return back()->withInput()->withStatus('同号课程申请退课未审核或审核未通过，请联系开课学院教学秘书');
+			}
 		}
 
 		if ('retake' == $inputs['type']) {
@@ -102,7 +121,10 @@ class ApplicationController extends Controller {
 		$view = view('application.create')
 			->withTitle('其他课程选课申请表')
 			->withType($inputs['type'])
-			->withKcxh($inputs['kcxh']);
+			->withKcxh($inputs['kcxh'])
+			->withNj($inputs['nj'])
+			->withZy($inputs['zy'])
+			->withKkxy($course->first()->kkxy);
 
 		if ('retake' == $inputs['type']) {
 			$view = $view->withTitle('重修课程选课申请表')
@@ -122,90 +144,136 @@ class ApplicationController extends Controller {
 	 */
 	public function store(Request $request) {
 		if ($request->isMethod('post')) {
-			$this->validate($request, [
-				'type' => 'required',
-				'kcxh' => 'required|size:12',
-			]);
+			if ($request->has('tkid')) {
+				$tkid = $request->input('tkid');
+				$application = Application::findOrFail($tkid)->replicate();
+				$application->tkid = $tkid;
+				$application->sh   = '0';
+				$application->xksj = Carbon::now();
+				$application->id   = date('YmdHis') . random_int(1000, 9999);
+			} else {
+				$this->validate($request, [
+					'type' => 'required',
+					'kcxh' => 'required|size:12',
+				]);
 
-			$inputs = $request->all();
+				$inputs = $request->all();
 
-			// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
-			$courses = Mjcourse::whereNd(session('year'))
-				->whereXq(session('term'))
-				->whereZsjj(session('season'))
-				->exceptGeneral()
-				->where(function ($query) {
-					$query->where('pk_kczy.nj', '<>', session('grade'))
-						->orWhere('pk_kczy.zy', '<>', session('major'));
-				})
-				->whereKcxh($inputs['kcxh']);
+				// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
+				$courses = Mjcourse::whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereZsjj(session('season'))
+					->exceptGeneral()
+					->where(function ($query) {
+						$query->where('pk_kczy.nj', '<>', session('grade'))
+							->orWhere('pk_kczy.zy', '<>', session('major'));
+					})
+					->whereKcxh($inputs['kcxh']);
 
-			if (!$courses->exists()) {
-				return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
-			}
-
-			$course = Mjcourse::whereNd(session('year'))
-				->whereXq(session('term'))
-				->whereKcxh($inputs['kcxh'])
-				->whereZsjj(session('season'))
-				->firstOrFail();
-
-			$same = Selcourse::whereXh(Auth::user()->xh)
-				->whereNd(session('year'))
-				->whereXq(session('term'))
-				->whereKch(Helper::getCno($course->kcxh))
-				->exists();
-
-			if ($same) {
-				return back()->withInput()->withStatus('已选同号课程，请重新申请');
-			}
-
-			// 2019-11-14：应教务处要求添加申请其他课程修读时不允许申请重修课
-			if ('other' == $inputs['type']) {
-				$exists = Selcourse::selected(Auth::user(), Helper::getCno($inputs['kcxh']))->exists();
-
-				if ($exists) {
-					return back()->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+				if (!$courses->exists()) {
+					return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
 				}
-			}
 
-			$application       = new Application;
-			$application->xh   = Auth::user()->xh;
-			$application->xm   = Auth::user()->profile->xm;
-			$application->nd   = $course->nd;
-			$application->xq   = $course->xq;
-			$application->kcxh = $course->kcxh;
-			$application->kch  = Helper::getCno($course->kcxh);
-			$application->pt   = $course->pt;
-			$application->xz   = $course->xz;
-			$application->kkxy = $course->kkxy;
-			$application->xf   = $course->plan->zxf;
-			$application->sf   = '0';
-			$application->sh   = '0';
-			$application->xksj = Carbon::now();
+				$course = Mjcourse::whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKcxh($inputs['kcxh'])
+					->whereZsjj(session('season'))
+					->whereZy($inputs['zy'])
+					->whereNj($inputs['nj'])
+					->firstOrFail();
+				/*
+				$same = Selcourse::whereXh(Auth::user()->xh)
+					->whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereKch(Helper::getCno($course->kcxh))
+					->exists();
 
-			switch ($inputs['type']) {
-			case 'other':
-				$application->xklx = '0';
-				break;
+				if ($same) {
+					return back()->withInput()->withStatus('已申请同号课程，请重新申请');
+				}
+				*/
+					
+				// 2017-01-02：应教务处要求添加同课程号课程申请检测
+				// 2020-01-07：应教务处要求添加检测审核状态
+				$sameCourse = Application::whereNd(session('year'))
+					->whereXq(session('term'))
+					->whereXh(Auth::user()->xh)
+					->where('kcxh', 'like', '%' . Helper::getCno($inputs['kcxh']) . '%');
+				$appSelectUnaudit = clone $sameCourse;
 
-			case 'retake':
-				$application->xklx  = '1';
-				$application->ynd   = $inputs['ynd'];
-				$application->yxq   = $inputs['yxq'];
-				$application->ykcxh = $inputs['ykcxh'];
-				$application->yxf   = $inputs['yxf'];
-				break;
+				$appSelectUnaudit = $appSelectUnaudit->whereNull('tkid');
+				$appSelectAudit = clone $appSelectUnaudit;
+				if ($appSelectUnaudit->whereSh(0)->exists()) {
+					return redirect('application')->withInput()->withStatus('同号课程申请未审核，请联系开课学院教学秘书');
+				}
 
-			default:
-				$application->xklx = '0';
-				break;
+				$selectedApp = $appSelectAudit->whereSh(1)->orderBy('xksj', 'desc')->first();
+				if ($selectedApp) {
+					$appDelete = clone $sameCourse;
+					$appDelete = $appDelete->whereNotNull('tkid')->where('xksj', '>=', $selectedApp->xksj);
+
+					if ($appDelete->doesntExist()) {
+						return redirect('application')->withInput()->withStatus('同号课程申请审核已通过，请不要重复申请');
+					}
+
+					if ($appDelete->whereSh(1)->doesntExist()) {
+						return redirect('application')->withInput()->withStatus('同号课程申请退课未审核或审核未通过，请联系开课学院教学秘书');
+					}
+				}
+
+				// 2019-11-14：应教务处要求添加申请其他课程修读时不允许申请重修课
+				if ('other' == $inputs['type']) {
+					$exists = Selcourse::selected(Auth::user(), Helper::getCno($inputs['kcxh']))->exists();
+
+					if ($exists) {
+						return redirect('application')->withInput()->withStatus('该课程属重修课，请在重修课申请中重新申请');
+					}
+				}
+
+				$application       = new Application;
+				$application->xh   = Auth::user()->xh;
+				$application->xm   = Auth::user()->profile->xm;
+				$application->nd   = $course->nd;
+				$application->xq   = $course->xq;
+				$application->kcxh = $course->kcxh;
+				$application->kch  = Helper::getCno($course->kcxh);
+				$application->pt   = $course->pt;
+				$application->xz   = $course->xz;
+				$application->kkxy = $course->kkxy;
+				$application->xf   = $course->plan->zxf;
+				$application->sf   = '0';
+				$application->sh   = '0';
+				$application->xksj = Carbon::now();
+				// 2021-01-05：应教务处要求添加申请退课功能，需要增加申请单号
+				$application->id   = date('YmdHis') . random_int(1000, 9999);
+				$application->kcmc = Helper::getCourseName($course->kcxh);
+				$application->zy = $course->zy;
+				$application->nj = $course->nj;
+
+				switch ($inputs['type']) {
+				case 'other':
+					$application->xklx = '0';
+					break;
+
+				case 'retake':
+					$application->xklx  = '1';
+					$application->ynd   = $inputs['ynd'];
+					$application->yxq   = $inputs['yxq'];
+					$application->ykcxh = $inputs['ykcxh'];
+					$application->yxf   = $inputs['yxf'];
+					$application->ykcmc = Helper::getCourseName($inputs['ykcxh']);
+					break;
+
+				default:
+					$application->xklx = '0';
+					break;
+				}
 			}
 
 			if ($application->save()) {
 				return redirect('application')->withStatus('课程申请成功');
 			} else {
-				return back()->withInput()->withStatus('选课申请提交失败');
+				return back()->withInput()->withStatus('课程申请提交失败');
 			}
 		}
 	}
@@ -216,10 +284,11 @@ class ApplicationController extends Controller {
 	 * @date    2017-01-02
 	 * @version 2.1.3
 	 * @param  \Illuminate\Http\Request  $request 撤销请求
-	 * @param   string $kcxh 12位课程序号
+	 * @param   string $id 18位申请单号
 	 * @return  \Illuminate\Http\Response 选课申请列表
 	 */
-	public function destroy($kcxh) {
+	public function destroy($id) {
+		/*
 		$app = Application::whereXh(Auth::user()->xh)
 			->whereNd(session('year'))
 			->whereXq(session('term'))
@@ -227,7 +296,8 @@ class ApplicationController extends Controller {
 			->whereXklx(request('xklx'))
 			->whereSh(request('sh'))
 			->firstOrFail();
-
+		*/
+		$app = Application::findOrFail($id);
 		$app->delete();
 
 		return back()->withStatus('撤销课程申请成功');

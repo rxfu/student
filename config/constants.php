@@ -227,6 +227,17 @@ return [
 			'type' => 'TB14',
 			'name' => '公共体育课程',
 		],
+
+		/**
+		 * 应教务处要求增加大学外语课单独管理
+		 * @author FuRongxin
+		 * @date 2021-03-04
+		 * @version 2.3
+		 */
+		'foreign' => [
+			'type' => 'TB13',
+			'name' => '大学外语课程',
+		],
 	],
 
 	/**

@@ -7,7 +7,7 @@
         <meta name="description" content="用于广西师范大学学生信息管理，学生选课，查询成绩">
         <meta name="keywords" content="广西师范大学,教务处,学生信息管理,学生选课,成绩查询">
         <meta name="author" content="Fu Rongxin,符荣鑫">
-        <title>{{ $title or '默认页面'}} - 广西师范大学学生信息管理系统</title>
+        <title>{{ $title or '默认页面'}} - 广西师范大学教务管理系统-学生WEB端</title>
         <!--link rel="shortcut icon" href="favicon.ico"-->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/formValidation.min.css') }}">

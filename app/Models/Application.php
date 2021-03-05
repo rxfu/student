@@ -15,14 +15,14 @@ class Application extends Model {
 
 	protected $table = 'xk_xksq';
 
-	protected $primaryKey = 'xh';
+	protected $primaryKey = 'id';
 
 	public $incrementing = false;
 
 	public $timestamps = false;
 
 	// 修复删除操作
-	protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh', 'xklx', 'sh'];
+	// protected $secondaryKey = ['xh', 'nd', 'xq', 'kcxh', 'xklx', 'sh'];
 
 	public static function boot() {
 		parent::boot();
@@ -81,6 +81,28 @@ class Application extends Model {
 	 */
 	public function course() {
 		return $this->belongsTo('App\Models\Course', 'kch', 'kch');
+	}
+
+	/**
+	 * 开课学院
+	 * @author FuRongxin
+	 * @date    2021-01-10
+	 * @version 2.3
+	 * @return  object     所属对象
+	 */
+	public function college() {
+		return $this->belongsTo('App\Models\Department', 'kkxy', 'dw');
+	}
+
+	/**
+	 * 开课专业
+	 * @author FuRongxin
+	 * @date    2021-01-10
+	 * @version 2.3
+	 * @return  object     所属对象
+	 */
+	public function major() {
+		return $this->belongsTo('App\Models\Major', 'zy', 'zy');
 	}
 
 }

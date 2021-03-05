@@ -14,6 +14,26 @@
                             <input type="text" class="form-control" id="kcxh" name="kcxh" value="{{ $kcxh }}" readonly>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="nj" class="col-sm-2 control-label">开课年级</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="nj" name="nj" value="{{ $nj }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="kkxy" class="col-sm-2 control-label">开课学院</label>
+                        <div class="col-sm-4">
+                            <p class="form-control-static">{{ App\Models\Department::findOrFail($kkxy)->mc }}</p>
+                            <input type="hidden" id="kkxy" name="kkxy" value="{{ $kkxy }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zy" class="col-sm-2 control-label">开课专业</label>
+                        <div class="col-sm-4">
+                            <p class="form-control-static">{{ App\Models\Major::findOrFail($zy)->mc }}</p>
+                            <input type="hidden" id="zy" name="zy" value="{{ $zy }}">
+                        </div>
+                    </div>
                     @if ('retake' == $type)
                         <div class="form-group">
                             <label for="ykcxh" class="col-sm-2 control-label">原课程</label>

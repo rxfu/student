@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Models\Course;
 use Illuminate\Support\Str;
 
 /**
@@ -84,6 +85,8 @@ class Helper {
 	public static function getCourseType($kcxh) {
 		if (self::isCourseType($kcxh, 'TB14')) {
 			return 'pubsport';
+		} elseif(self::isCourseType($kcxh, 'TB13')) {
+			return 'foreign';
 		} elseif (self::isCourseType($kcxh, 'TW')) {
 			return 'human';
 		} elseif (self::isCourseType($kcxh, 'TI')) {
@@ -97,5 +100,19 @@ class Helper {
 		} else {
 			return 'require';
 		}
+	}
+
+	/**
+	 * 获取12位课程序号的课程名称
+	 * @author FuRongxin
+	 * @date    2021-1-6
+	 * @version 2.3
+	 * @param   string $kcxh 12位课程序号
+	 * @return  string 课程类型
+	 */
+	public static function getCourseName($kcxh) {
+		$kch = self::getCno($kcxh);
+
+		return Course::findOrFail($kch)->kcmc;
 	}
 }

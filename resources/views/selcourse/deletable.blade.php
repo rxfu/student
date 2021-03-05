@@ -45,7 +45,11 @@
                                     <td>
                                         <!-- 2020-12-17：应教务处要求不允许2019级本科生退选公体课 -->
                                         @if ('pubsport' == App\Http\Helper::getCourseType($course['kcxh']) && '2019' == Auth::user()->profile->nj) 
-                                            <div class="text-danger">2019级本科生不允许退选公体课</div>;
+                                            <div class="text-danger">2019级本科生不允许退选公体课</div>
+                                        @elseif('foreign' == App\Http\Helper::getCourseType($course['kcxh'])) 
+                                            <div class="text-danger">如需退课请联系大外部唐老师<a href="tel:5802223">5802223</a></div>
+                                        @elseif (App\Models\Application::whereNd(session('year'))->whereXq(session('term'))->whereXh(Auth::user()->xh)->whereKcxh($course['kcxh'])->exists())
+                                            <a href="{{ route('application.index') }}" class="btn btn-warning" title="申请退课">申请退课</a>
                                         @else
                                             <form id="deleteForm" name="deleteForm" action="{{ route('selcourse.destroy', [App\Http\Helper::getCourseType($course['kcxh']), $course['kcxh']])}}" method="post" role="form">
                                                 {!! method_field('delete') !!}
