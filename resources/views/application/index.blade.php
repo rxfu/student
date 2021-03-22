@@ -39,31 +39,35 @@
                                 class="danger"
                             @endif>
                                 <td>
-                                    @if (0 == $app->sh)
-                                		<form id="deleteForm" name="deleteForm" action="{{ route('application.destroy', $app->id) }}" method="post" role="form">
-                                			{!! method_field('delete') !!}
-                                			{!! csrf_field() !!}
-                                            <input type="hidden" name="xklx" value="{{ $app->xklx }}">
-                                            <input type="hidden" name="sh" value="{{ $app->sh }}">
-                                			<button type="submit" class="btn btn-danger">撤销申请</button>
-                                		</form>
-                                    @elseif (2 == $app->sh)
-                                        {{ config('constants.application.audit.' . $app->sh) }}
-                                    @elseif (1 == $app->sh)
-                                        @if (App\Models\Application::whereTkid($app->id)->whereSh('0')->exists())
-                                            已申请退课
-                                        @elseif (App\Models\Application::whereTkid($app->id)->whereSh('1')->exists())
-                                            已退课
-                                        @elseif (is_null($app->tkid))
-                                            <form id="createForm" name="createForm" action="{{ route('application.store') }}" method="post" role="form">
-                                                {!! csrf_field() !!}
-                                                <input type="hidden" name="tkid" value="{{ $app->id }}">
-                                                <button type="submit" class="btn btn-success">申请退课</button>
-                                            </form>
-                                        @else
+                                    @if ($allowed_apply)
+                                        @if (0 == $app->sh)
+                                    		<form id="deleteForm" name="deleteForm" action="{{ route('application.destroy', $app->id) }}" method="post" role="form">
+                                    			{!! method_field('delete') !!}
+                                    			{!! csrf_field() !!}
+                                                <input type="hidden" name="xklx" value="{{ $app->xklx }}">
+                                                <input type="hidden" name="sh" value="{{ $app->sh }}">
+                                    			<button type="submit" class="btn btn-danger">撤销申请</button>
+                                    		</form>
+                                        @elseif (2 == $app->sh)
                                             {{ config('constants.application.audit.' . $app->sh) }}
-                                        @endif
-                                	@endif
+                                        @elseif (1 == $app->sh)
+                                            @if (App\Models\Application::whereTkid($app->id)->whereSh('0')->exists())
+                                                已申请退课
+                                            @elseif (App\Models\Application::whereTkid($app->id)->whereSh('1')->exists())
+                                                已退课
+                                            @elseif (is_null($app->tkid))
+                                                <form id="createForm" name="createForm" action="{{ route('application.store') }}" method="post" role="form">
+                                                    {!! csrf_field() !!}
+                                                    <input type="hidden" name="tkid" value="{{ $app->id }}">
+                                                    <button type="submit" class="btn btn-success">申请退课</button>
+                                                </form>
+                                            @else
+                                                {{ config('constants.application.audit.' . $app->sh) }}
+                                            @endif
+                                    	@endif
+                                    @else
+                                        非选课申请时间，不允许申请选课或退课
+                                    @endif
                                 </td>
                                 <td>
                                     @if (is_null($app->tkid))
