@@ -275,6 +275,11 @@
                             </li-->
                             @endif
                             <li>
+                                <a href="http://zlbz.gxnu.edu.cn/login/login?type=mobile" title="本科教学质量评价系统" target="_blank">
+                                    <i class="fa fa-anchor fa-fw"></i> 本科教学质量评价系统
+                                </a>
+                            </li>
+                            <li>
                                 <a href="#"><i class="fa fa-gear fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
