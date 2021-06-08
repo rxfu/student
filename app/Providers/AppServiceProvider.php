@@ -9,14 +9,16 @@ use Auth;
 use Illuminate\Support\ServiceProvider;
 use View;
 
-class AppServiceProvider extends ServiceProvider {
+class AppServiceProvider extends ServiceProvider
+{
 
 	/**
 	 * Bootstrap any application services.
 	 *
 	 * @return void
 	 */
-	public function boot() {
+	public function boot()
+	{
 		View::composer('app', function ($view) {
 
 			/**
@@ -62,6 +64,10 @@ class AppServiceProvider extends ServiceProvider {
 			// $allowed_dcxm = Dcxmxt::find('XT_KG')->value;
 			$allowed_dcxm = false;
 
+			// 是否已经进入学分结算流程
+			// 2021-06-08：应教务处要求不允许进入学分结算流程的学生进行选课及申请选课
+			$is_settled = Profile::whereXh(Auth::user()->xh)->where('cwzt', '<>', '0')->exists();
+
 			$view->with('is_student', $is_student)
 				->with('user', $user)
 				->with('is_newer', $is_newer)
@@ -70,7 +76,8 @@ class AppServiceProvider extends ServiceProvider {
 				->withs('allowed_others', $allowed_others)
 				->with('allowed_pubsport', $allowed_pubsport)
 				->with('allowed_apply', $allowed_apply)
-				->with('allowed_dcxm', $allowed_dcxm);
+				->with('allowed_dcxm', $allowed_dcxm)
+				->with('is_settled', $is_settled);
 		});
 	}
 
@@ -79,7 +86,8 @@ class AppServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register()
+	{
 		//
 	}
 }

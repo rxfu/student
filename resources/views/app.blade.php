@@ -116,67 +116,69 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    @if ($allowed_pubsport)
-                                        <li>
-                                            <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
-                                        </li>
-                                    @endif
-                                    @if ($allowed_select)
-                                        <li>
-                                            <a href="{{ route('selcourse.show','public') }}">公共课程</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('selcourse.show','require') }}">必修课程</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
-                                        </li>
-                                        @if ($allowed_general)
+                            @if ($is_settled)
+                                <li>
+                                    <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        @if ($allowed_pubsport)
                                             <li>
-                                                <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
-                                                <ul class="nav nav-third-level">
-                                                    <li>
-                                                        <a href="{{ route('selcourse.show','human') }}">人文社科通识素质课程</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route('selcourse.show','nature') }}">自然科学通识素质课程</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
-                                                    </li>
-                                                    @if (Auth::user()->profile->nj < 2019)
+                                                <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
+                                            </li>
+                                        @endif
+                                        @if ($allowed_select)
+                                            <li>
+                                                <a href="{{ route('selcourse.show','public') }}">公共课程</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('selcourse.show','require') }}">必修课程</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
+                                            </li>
+                                            @if ($allowed_general)
+                                                <li>
+                                                    <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
+                                                    <ul class="nav nav-third-level">
                                                         <li>
-                                                            <a href="{{ route('selcourse.listtq') }}">其他专项通识素质课程转换</a>
+                                                            <a href="{{ route('selcourse.show','human') }}">人文社科通识素质课程</a>
                                                         </li>
-                                                    @endif
-                                                </ul>
-                                                <!-- /.nav-third-level -->
+                                                        <li>
+                                                            <a href="{{ route('selcourse.show','nature') }}">自然科学通识素质课程</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
+                                                        </li>
+                                                        @if (Auth::user()->profile->nj < 2019)
+                                                            <li>
+                                                                <a href="{{ route('selcourse.listtq') }}">其他专项通识素质课程转换</a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                    <!-- /.nav-third-level -->
+                                                </li>
+                                            @endif
+                                            <li>
+                                                <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-file-o fa-fw"></i> 课程申请<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        @if ($allowed_apply)
+                                            <li>
+                                                <a href="{{ url('selcourse/search') }}">课程申请</a>
                                             </li>
                                         @endif
                                         <li>
-                                            <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
+                                            <a href="{{ url('application') }}">课程申请进度</a>
                                         </li>
-                                    @endif
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-file-o fa-fw"></i> 课程申请<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    @if ($allowed_apply)
-                                        <li>
-                                            <a href="{{ url('selcourse/search') }}">课程申请</a>
-                                        </li>
-                                    @endif
-                                    <li>
-                                        <a href="{{ url('application') }}">课程申请进度</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                            @endif
                             <li>
                                 <a href="#"><i class="fa fa-calendar fa-fw"></i> 课表管理<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">

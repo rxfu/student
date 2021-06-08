@@ -41,10 +41,12 @@ class CASAuth
                 return redirect()->route('error', ['message' => '你已不是在校生，请不要登录系统']);
             } elseif (Profile::whereXh($user->xh)->where('xjzt', '<>', '01')->exists()) {
                 return redirect()->route('error', ['message' => '你的学籍状态是非在读学生，无法登录系统']);
-            } elseif (Profile::whereXh($user->xh)->where('cwzt', '<>', '0')->exists()) {
+            }
+            /* 
+            elseif (Profile::whereXh($user->xh)->where('cwzt', '<>', '0')->exists()) {
                 return redirect()->route('error', ['message' => '你已进入学分结算流程，无法登录系统']);
             }
-
+            */
             if (!Auth::check()) {
                 Auth::loginUsingId($user->xh);
             }
