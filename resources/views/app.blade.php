@@ -116,7 +116,7 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
-                            @if ($is_settled)
+                            @if (!$is_settled)
                                 <li>
                                     <a href="#"><i class="fa fa-table fa-fw"></i> 选课管理<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
