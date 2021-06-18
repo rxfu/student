@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-		View::composer('app', function ($view) {
+		View::composer(['app', 'application.index'], function ($view) {
 
 			/**
 			 * 2018-09-21：应教务处要求关闭新生检测
