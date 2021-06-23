@@ -14,7 +14,8 @@ use Illuminate\Support\Str;
  * @date 2016-01-29
  * @version 2.0
  */
-class Mjcourse extends Model {
+class Mjcourse extends Model
+{
 
 	protected $table = 'pk_kczy';
 
@@ -31,7 +32,8 @@ class Mjcourse extends Model {
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
-	public function platform() {
+	public function platform()
+	{
 		return $this->belongsTo('App\Models\Platform', 'pt', 'dm');
 	}
 
@@ -42,7 +44,8 @@ class Mjcourse extends Model {
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
-	public function property() {
+	public function property()
+	{
 		return $this->belongsTo('App\Models\Property', 'xz', 'dm');
 	}
 
@@ -53,7 +56,8 @@ class Mjcourse extends Model {
 	 * @version 2.1.1
 	 * @return  object 所属对象
 	 */
-	public function task() {
+	public function task()
+	{
 		return $this->belongsTo('App\Models\Task', 'kcxh', 'kcxh')
 			->whereNd($this->nd)
 			->whereXq($this->xq)
@@ -67,7 +71,8 @@ class Mjcourse extends Model {
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
-	public function plan() {
+	public function plan()
+	{
 		return $this->belongsTo('App\Models\Plan', 'zy', 'zy')
 			->whereNj($this->nj)
 			->whereZsjj($this->zsjj)
@@ -81,7 +86,8 @@ class Mjcourse extends Model {
 	 * @version 2.2.4
 	 * @return object 所属对象
 	 */
-	public function selcourse() {
+	public function selcourse()
+	{
 		return $this->belongsTo('App\Models\Selcourse', 'kcxh', 'kcxh')
 			->whereNd(session('year'))
 			->whereXq(session('term'))
@@ -95,7 +101,8 @@ class Mjcourse extends Model {
 	 * @version 2.1.1
 	 * @return  object 所属对象
 	 */
-	public function timetables() {
+	public function timetables()
+	{
 		return $this->hasMany('App\Models\Timetable', 'kcxh', 'kcxh')
 			->whereNd(session('year'))
 			->whereXq(session('term'))
@@ -109,7 +116,8 @@ class Mjcourse extends Model {
 	 * @version 2.0
 	 * @return  object 所属对象
 	 */
-	public function selcount() {
+	public function selcount()
+	{
 		return $this->hasOne('App\Models\Count', 'kcxh', 'kcxh');
 	}
 
@@ -122,7 +130,8 @@ class Mjcourse extends Model {
 	 * @param   string $grade 年级
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeOfGrade($query, $grade) {
+	public function scopeOfGrade($query, $grade)
+	{
 		if ('all' !== $grade) {
 			return $query->where('pk_kczy.nj', '=', $grade);
 		}
@@ -137,7 +146,8 @@ class Mjcourse extends Model {
 	 * @param   string $college 学院
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeOfCollege($query, $college) {
+	public function scopeOfCollege($query, $college)
+	{
 		if ('all' !== $college) {
 			return $query->where('pk_kczy.kkxy', '=', $college);
 		}
@@ -152,7 +162,8 @@ class Mjcourse extends Model {
 	 * @param   string $major 专业
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeOfMajor($query, $major) {
+	public function scopeOfMajor($query, $major)
+	{
 		if ('all' !== $major) {
 			return $query->where('pk_kczy.zy', '=', $major);
 		}
@@ -167,56 +178,57 @@ class Mjcourse extends Model {
 	 * @param   string $type 课程类型
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeOfType($query, $type) {
+	public function scopeOfType($query, $type)
+	{
 		switch ($type) {
-		case 'public':
-			// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
-			// 2016-12-26：应教务处要求修改为不显示大学英语类课程（TB13开头）和公体类课程（TB14开头）
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'))
-				->where('pk_kczy.kcxh', 'not like', 'TB13%')
-				->where('pk_kczy.kcxh', 'not like', 'TB14%');
+			case 'public':
+				// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
+				// 2016-12-26：应教务处要求修改为不显示大学英语类课程（TB13开头）和公体类课程（TB14开头）
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'B')
+					->where('pk_kczy.nj', '=', session('grade'))
+					->where('pk_kczy.zy', '=', session('major'))
+					->where('pk_kczy.kcxh', 'not like', 'TB13%')
+					->where('pk_kczy.kcxh', 'not like', 'TB14%');
 
-		case 'require':
-			$platforms = array_pluck(Platform::all()->toArray(), 'dm');
-			unset($platforms[array_search('T', $platforms)]);
-			return $query->whereIn('pk_kczy.pt', $platforms)
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			case 'require':
+				$platforms = array_pluck(Platform::all()->toArray(), 'dm');
+				unset($platforms[array_search('T', $platforms)]);
+				return $query->whereIn('pk_kczy.pt', $platforms)
+					->where('pk_kczy.xz', '=', 'B')
+					->where('pk_kczy.nj', '=', session('grade'))
+					->where('pk_kczy.zy', '=', session('major'));
 
-		case 'elect':
-			return $query->where('pk_kczy.xz', '=', 'X')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'));
+			case 'elect':
+				return $query->where('pk_kczy.xz', '=', 'X')
+					->where('pk_kczy.nj', '=', session('grade'))
+					->where('pk_kczy.zy', '=', session('major'));
 
-		case 'human':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'W');
+			case 'human':
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'W');
 
-		case 'nature':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'I');
+			case 'nature':
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'I');
 
-		case 'art':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'Y');
-/*
+			case 'art':
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'Y');
+				/*
 		case 'other':
 			return $query->where('pk_kczy.pt', '=', 'T')
 				->where('pk_kczy.xz', '=', 'Q');
 */
-		case 'pubsport':
-			return $query->where('pk_kczy.pt', '=', 'T')
-				->where('pk_kczy.xz', '=', 'B')
-				->where('pk_kczy.nj', '=', session('grade'))
-				->where('pk_kczy.zy', '=', session('major'))
-				->where('pk_kczy.kcxh', 'like', 'TB14%');
+			case 'pubsport':
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'B')
+					->where('pk_kczy.nj', '=', session('grade'))
+					->where('pk_kczy.zy', '=', session('major'))
+					->where('pk_kczy.kcxh', 'like', 'TB14%');
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 
@@ -228,7 +240,8 @@ class Mjcourse extends Model {
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeExceptGeneral($query) {
+	public function scopeExceptGeneral($query)
+	{
 		return $query->whereNotExists(function ($query) {
 			$query->from('pk_kczy AS a')
 				->whereRaw('t_a.nd = t_pk_kczy.nd AND t_a.xq = t_pk_kczy.xq AND t_a.zsjj = t_pk_kczy.zsjj AND t_a.kcxh = t_pk_kczy.kcxh')
@@ -250,7 +263,8 @@ class Mjcourse extends Model {
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeExceptCurrentGrade($query) {
+	public function scopeExceptCurrentGrade($query)
+	{
 		return $query->where('pk_kczy.nj', '<>', session('grade'));
 	}
 
@@ -262,24 +276,27 @@ class Mjcourse extends Model {
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeExceptCurrentMajor($query) {
+	public function scopeExceptCurrentMajor($query)
+	{
 		return $query->where('pk_kczy.zy', '<>', session('major'));
 	}
 
 	/**
-	 * 扩展查询，获取排除留学生专业的课程数据，留学生专业代码以“L”开头
+	 * 扩展查询，获取排除留学生专业的课程数据，留学生专业代码以“G”开头
 	 * @author FuRongxin
-	 * @date    2019-07-27
+	 * @date    2021-06-23
 	 * @version 2.3
 	 * @param   \Illuminate\Database\Eloquent\Builder $query 查询对象
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeExceptForeignMajor($query) {
-		return $query->where('pk_kczy.zy', 'not like', 'L%');
+	public function scopeExceptForeignMajor($query)
+	{
+		return $query->where('pk_kczy.zy', 'not like', 'G%');
 	}
 
 	/**
 	 * 扩展查询：用于获取可选课程列表
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2016-03-01
 	 * @version 2.0
@@ -287,7 +304,8 @@ class Mjcourse extends Model {
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeSelectable($query, $campus) {
+	public function scopeSelectable($query, $campus)
+	{
 		$campus = ('unknown' == $campus) ? '' : $campus;
 		return $query->join('jx_jxjh', function ($join) {
 			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
@@ -313,6 +331,7 @@ class Mjcourse extends Model {
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
+			->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw) // 限定学历生和留学生各自选各自的课程，互不相干
 			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'pk_kczy.zy', 'jx_zy.mc', 'pk_kczy.kkxy', 'xt_department.mc')
 			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'pk_kczy.zy', 'jx_zy.mc AS zymc', 'pk_kczy.kkxy', 'xt_department.mc AS xymc')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
@@ -326,6 +345,7 @@ class Mjcourse extends Model {
 
 	/**
 	 * 扩展查询：用于获取可选课程列表，统计数据没有专业
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2018-09-16
 	 * @version 2.3
@@ -333,7 +353,8 @@ class Mjcourse extends Model {
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Database\Eloquent\Builder 查询对象
 	 */
-	public function scopeSelectableNoSpecial($query, $campus) {
+	public function scopeSelectableNoSpecial($query, $campus)
+	{
 		$campus = ('unknown' == $campus) ? '' : $campus;
 		return $query->join('jx_jxjh', function ($join) {
 			$join->on('pk_kczy.zy', '=', 'jx_jxjh.zy')
@@ -358,6 +379,7 @@ class Mjcourse extends Model {
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
+			->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw) // 限定学历生和留学生各自选各自的课程，互不相干
 			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'jx_zy.mc', 'xt_department.mc')
 			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'jx_zy.mc AS zymc', 'xt_department.mc AS xymc')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
@@ -368,5 +390,4 @@ class Mjcourse extends Model {
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_js.xm), \',\') AS jsxms'))
 			->orderBy('pk_kczy.kcxh');
 	}
-
 }

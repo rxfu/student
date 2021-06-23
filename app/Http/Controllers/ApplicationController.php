@@ -18,7 +18,8 @@ use Illuminate\Http\Request;
  * @date 2016-02-23
  * @version 2.0
  */
-class ApplicationController extends Controller {
+class ApplicationController extends Controller
+{
 
 	/**
 	 * 选课申请进度查询
@@ -27,7 +28,8 @@ class ApplicationController extends Controller {
 	 * @version 2.0
 	 * @return  \Illuminate\Http\Response 选课申请进度列表
 	 */
-	public function index() {
+	public function index()
+	{
 		$apps = Application::with('term')
 			->whereXh(Auth::user()->xh)
 			->orderBy('xksj', 'desc')
@@ -39,16 +41,19 @@ class ApplicationController extends Controller {
 	/**
 	 * 显示学生选课申请表单
 	 * 2017-01-02：应教务处要求，添加同课程号课程申请检测
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2017-01-02
 	 * @version 2.1.3
 	 * @param  \Illuminate\Http\Request  $request 申请请求
 	 * @return  \Illuminate\Http\Response 选课申请表单
 	 */
-	public function create(Request $request) {
+	public function create(Request $request)
+	{
 		$inputs = $request->all();
 
 		// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
+		// 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 		$course = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereZsjj(session('season'))
@@ -59,7 +64,8 @@ class ApplicationController extends Controller {
 			})
 			->whereKcxh($inputs['kcxh'])
 			->whereNj($inputs['nj'])
-			->whereZy($inputs['zy']);
+			->whereZy($inputs['zy'])
+			->whereGldw(Auth::user()->profile->gldw);
 
 		if ($course->doesntExist()) {
 			return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
@@ -136,13 +142,15 @@ class ApplicationController extends Controller {
 
 	/**
 	 * 保存学生选课申请信息
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2017-01-02
 	 * @version 2.1.3
 	 * @param  \Illuminate\Http\Request  $request 申请请求
 	 * @return \Illuminate\Http\Response 选课申请列表
 	 */
-	public function store(Request $request) {
+	public function store(Request $request)
+	{
 		if ($request->isMethod('post')) {
 			if ($request->has('tkid')) {
 				$tkid = $request->input('tkid');
@@ -160,6 +168,7 @@ class ApplicationController extends Controller {
 				$inputs = $request->all();
 
 				// 2018-02-09：应教务处要求，在选课申请中排除本年级本专业本学期课程
+				// 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 				$courses = Mjcourse::whereNd(session('year'))
 					->whereXq(session('term'))
 					->whereZsjj(session('season'))
@@ -168,7 +177,8 @@ class ApplicationController extends Controller {
 						$query->where('pk_kczy.nj', '<>', session('grade'))
 							->orWhere('pk_kczy.zy', '<>', session('major'));
 					})
-					->whereKcxh($inputs['kcxh']);
+					->whereKcxh($inputs['kcxh'])
+					->whereGldw(Auth::user()->profile->gldw);
 
 				if (!$courses->exists()) {
 					return redirect('selcourse/search')->withStatus('未找到课程序号，请重新申请！本年级本专业课程请直接在选课管理菜单选课！');
@@ -180,6 +190,7 @@ class ApplicationController extends Controller {
 					->whereZsjj(session('season'))
 					->whereZy($inputs['zy'])
 					->whereNj($inputs['nj'])
+					->whereGldw(Auth::user()->profile->gldw)
 					->firstOrFail();
 				/*
 				$same = Selcourse::whereXh(Auth::user()->xh)
@@ -192,7 +203,7 @@ class ApplicationController extends Controller {
 					return back()->withInput()->withStatus('已申请同号课程，请重新申请');
 				}
 				*/
-					
+
 				// 2017-01-02：应教务处要求添加同课程号课程申请检测
 				// 2020-01-07：应教务处要求添加检测审核状态
 				$sameCourse = Application::whereNd(session('year'))
@@ -249,24 +260,26 @@ class ApplicationController extends Controller {
 				$application->kcmc = Helper::getCourseName($course->kcxh);
 				$application->zy = $course->zy;
 				$application->nj = $course->nj;
+				// 2021-06-24：应教务处要求，添加管理单位管理留学生
+				$application->gldw = $course->gldw;
 
 				switch ($inputs['type']) {
-				case 'other':
-					$application->xklx = '0';
-					break;
+					case 'other':
+						$application->xklx = '0';
+						break;
 
-				case 'retake':
-					$application->xklx  = '1';
-					$application->ynd   = $inputs['ynd'];
-					$application->yxq   = $inputs['yxq'];
-					$application->ykcxh = $inputs['ykcxh'];
-					$application->yxf   = $inputs['yxf'];
-					$application->ykcmc = Helper::getCourseName($inputs['ykcxh']);
-					break;
+					case 'retake':
+						$application->xklx  = '1';
+						$application->ynd   = $inputs['ynd'];
+						$application->yxq   = $inputs['yxq'];
+						$application->ykcxh = $inputs['ykcxh'];
+						$application->yxf   = $inputs['yxf'];
+						$application->ykcmc = Helper::getCourseName($inputs['ykcxh']);
+						break;
 
-				default:
-					$application->xklx = '0';
-					break;
+					default:
+						$application->xklx = '0';
+						break;
 				}
 			}
 
@@ -287,7 +300,8 @@ class ApplicationController extends Controller {
 	 * @param   string $id 18位申请单号
 	 * @return  \Illuminate\Http\Response 选课申请列表
 	 */
-	public function destroy($id) {
+	public function destroy($id)
+	{
 		/*
 		$app = Application::whereXh(Auth::user()->xh)
 			->whereNd(session('year'))
@@ -311,7 +325,8 @@ class ApplicationController extends Controller {
 	 * @param  STRING  $kch 8位课程号
 	 * @return boolean      true为已选课程，false为未选课程
 	 */
-	public function isSelected($kch) {
+	public function isSelected($kch)
+	{
 		$courses = Selcourse::selected(Auth::user(), $kch)
 			->orderBy('sj')
 			->get();

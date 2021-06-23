@@ -42,7 +42,8 @@ use Yajra\Datatables\Datatables;
  * @date 2016-02-15
  * @version 2.0
  */
-class SelcourseController extends Controller {
+class SelcourseController extends Controller
+{
 
 	private $_weeks = [
 		1 => 'Monday',
@@ -61,10 +62,11 @@ class SelcourseController extends Controller {
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
-	public function index() {
+	public function index()
+	{
 		$selcourses = Selcourse::with('term')
-						->selectedCourses(Auth::user())
-						->get();
+			->selectedCourses(Auth::user())
+			->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
@@ -103,12 +105,13 @@ class SelcourseController extends Controller {
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 选课信息列表
 	 */
-	public function history() {
+	public function history()
+	{
 		$selcourses = Selcourse::with('term')
-						->selectedHistoryCourses(Auth::user())
-						->orderBy('nd', 'desc')
-						->orderBy('xq', 'desc')
-						->get();
+			->selectedHistoryCourses(Auth::user())
+			->orderBy('nd', 'desc')
+			->orderBy('xq', 'desc')
+			->get();
 		$courses    = [];
 
 		foreach ($selcourses as $selcourse) {
@@ -150,7 +153,8 @@ class SelcourseController extends Controller {
 	 * @version 2.0
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function timetable() {
+	public function timetable()
+	{
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
 		$periods    = config('constants.timetable');
 
@@ -189,7 +193,9 @@ class SelcourseController extends Controller {
 				for ($i = $timetable->ksj; $i >= $periods[$id]['begin']; --$i) {
 
 					// 只获取课程数组
-					if (!empty($classes = array_filter($courses[$i][$timetable->zc], function ($v) { return is_array($v); }))) {
+					if (!empty($classes = array_filter($courses[$i][$timetable->zc], function ($v) {
+						return is_array($v);
+					}))) {
 						foreach ($classes as $k => $course) {
 
 							// 判断开始周或结束周是否在其他课程开始周和结束周之间
@@ -264,7 +270,8 @@ class SelcourseController extends Controller {
 	 * @version 2.0
 	 * @return  \Illuminate\Http\Response 可退选课程表
 	 */
-	public function deletable() {
+	public function deletable()
+	{
 		$selcourses = Selcourse::selectedCourses(Auth::user())->get();
 		$courses    = [];
 
@@ -299,14 +306,15 @@ class SelcourseController extends Controller {
 
 	/**
 	 * 显示课程检索表单
-	 * 2019-07-27：增加过滤留学生课程，留学生专业代码以“L”开头
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2019-07-27
 	 * @version 2.3
 	 * @param   \Illuminate\Http\Request $request 检索请求
 	 * @return  \Illuminate\Http\Response 课程检索框
 	 */
-	public function showSearchForm(Request $request) {
+	public function showSearchForm(Request $request)
+	{
 		$inputs  = $request->all();
 		$search  = isset($inputs['searched']) ? $inputs['searched'] : false;
 		$grade   = isset($inputs['nj']) ? $inputs['nj'] : 'all';
@@ -325,6 +333,7 @@ class SelcourseController extends Controller {
 		$grades = Mjcourse::whereNd(session('year'))
 			->whereXq(session('term'))
 			->where('nj', '<>', '')
+			->whereGldw(Auth::user()->profile->gldw)
 			->select('nj')
 			->distinct()
 			->orderBy('nj')
@@ -338,7 +347,7 @@ class SelcourseController extends Controller {
 
 		$majors = Major::whereZt(config('constants.status.enable'))
 			->where('mc', '<>', '')
-			->where('zy', 'not like', 'L%')
+			->whereGldw(Auth::user()->profile->gldw)
 			->select('zy', 'mc', 'xy')
 			->orderBy('zy')
 			->get();
@@ -361,7 +370,7 @@ class SelcourseController extends Controller {
 	/**
 	 * 检索课程
 	 * 2017-05-16：应教务处要求，在检索结果中排除本年级本专业本学期课程
-	 * 2019-07-27：增加过滤留学生课程
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2019-07-27
 	 * @version 2.3
@@ -369,7 +378,8 @@ class SelcourseController extends Controller {
 	 * @param   string $campus 校区号
 	 * @return  \Illuminate\Http\Response 检索结果
 	 */
-	public function search(Request $request, $campus) {
+	public function search(Request $request, $campus)
+	{
 		$this->validate($request, [
 			'nj' => 'required',
 			'xy' => 'required',
@@ -379,31 +389,31 @@ class SelcourseController extends Controller {
 		$inputs = $request->all();
 
 		// 2017-06-15：应教务处要求，在检索结果中排除本年级本专业本学期课程
-		// 2019-07-27：增加过滤留学生课程
+		// 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 		$courses = Mjcourse::ofGrade($inputs['nj'])
 			->ofCollege($inputs['xy'])
 			->ofMajor($inputs['zy'])
 			->selectable($campus)
 			->exceptGeneral()
-			->exceptForeignMajor()
 			->where(function ($query) {
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));
-			});
+			})
+			->whereGldw(Auth::user()->profile->gldw);
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {
-			case 'kcxh':
-				$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
-				break;
+				case 'kcxh':
+					$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
+					break;
 
-			case 'kcmc':
-				$courses = $courses->where('jx_kc.kcmc', 'like', '%' . $inputs['keyword'] . '%');
-				break;
+				case 'kcmc':
+					$courses = $courses->where('jx_kc.kcmc', 'like', '%' . $inputs['keyword'] . '%');
+					break;
 
-			default:
-				$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
-				break;
+				default:
+					$courses = $courses->where('pk_kczy.kcxh', 'like', '%' . $inputs['keyword'] . '%');
+					break;
 			}
 		}
 
@@ -449,14 +459,15 @@ class SelcourseController extends Controller {
 	 * 保存所选课程
 	 * 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 	 * 2018-09-12：应教务处要求，修改为公体课选课单独限制
-	 *
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date 2018-09-12
 	 * @version 2.3
 	 * @param  \Illuminate\Http\Request  $request 保存请求
 	 * @return \Illuminate\Http\Response 选课列表
 	 */
-	public function store(Request $request) {
+	public function store(Request $request)
+	{
 		if ('pubsport' == $request->input('type')) {
 			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
 				abort(403, '现在未开放公体选课，不允许公体选课');
@@ -573,11 +584,13 @@ class SelcourseController extends Controller {
 				$limit_ratio = 1;
 			}
 
+			// 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 			$course = Mjcourse::ofType($inputs['type'])
 				->whereNd(session('year'))
 				->whereXq(session('term'))
 				->whereZsjj(session('season'))
 				->whereKcxh($inputs['kcxh'])
+				->whereGldw(Auth::user()->profile->gldw)
 				->firstOrFail();
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
@@ -664,6 +677,7 @@ class SelcourseController extends Controller {
 					$selcourse->tdkch = '';
 					$selcourse->tdyy  = '';
 					$selcourse->zy    = $course->zy;
+					$selcourse->gldw = $course->gldw; // 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 					$selcourse->saveOrFail();
 				});
 			} catch (QueryException $e) {
@@ -676,19 +690,20 @@ class SelcourseController extends Controller {
 			$request->session()->flash('kcxh', $course->kcxh);
 
 			return redirect()->route('selcourse.show', $inputs['type'])->withStatus('选课成功');
-
 		}
 	}
 
 	/**
 	 * 退选课程
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2016-02-23
 	 * @version 2.0
 	 * @param   string $kcxh 12位课程序号
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function destroy($type, $kcxh) {
+	public function destroy($type, $kcxh)
+	{
 
 		// 2020-05-06：应教务处要求不再限制退课专业，解决选课申请后不能退课的问题
 		// 2020-12-28：应教务处要求恢复限制退课专业，解决学生不能正常退课的问题
@@ -699,6 +714,7 @@ class SelcourseController extends Controller {
 			->whereXq(session('term'))
 			// ->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
+			->whereGldw(Auth::user()->profile->gldw)
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
@@ -707,31 +723,31 @@ class SelcourseController extends Controller {
 			DB::transaction(function () use ($course) {
 
 				// 删除选课，统计表数据自减1
-					$count = Count::whereKcxh($course->kcxh);
+				$count = Count::whereKcxh($course->kcxh);
 
-					if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
-						$count = $count->whereZy($course->zy);
-					}
+				if (!($isPubSport = Helper::isCourseType($course->kcxh, 'TB14'))) {
+					$count = $count->whereZy($course->zy);
+				}
 
-					if ($count->exists()) {
-						$count = $count->lockForUpdate()->first();
+				if ($count->exists()) {
+					$count = $count->lockForUpdate()->first();
 
-						if ($count) {
-							if ($count->rs > 0) {
-								$count->rs -= 1;
-								$count->save();
-							} else {
-								throw new Exception('选课人数为零，无法退选课程');
-							}
+					if ($count) {
+						if ($count->rs > 0) {
+							$count->rs -= 1;
+							$count->save();
+						} else {
+							throw new Exception('选课人数为零，无法退选课程');
 						}
-					} else {
-						$count       = new Count;
-						$count->kcxh = $course->kcxh;
-						$count->zy   = $isPubSport ? '' : $course->zy;
-						$count->rs   = 0;
-
-						$count->save();
 					}
+				} else {
+					$count       = new Count;
+					$count->kcxh = $course->kcxh;
+					$count->zy   = $isPubSport ? '' : $course->zy;
+					$count->rs   = 0;
+
+					$count->save();
+				}
 
 				// 保存删课日志
 				$log       = new Slog;
@@ -746,6 +762,7 @@ class SelcourseController extends Controller {
 					->whereNd(session('year'))
 					->whereXq(session('term'))
 					->whereKcxh($course->kcxh)
+					->whereGldw(Auth::user()->profile->gldw)
 					->firstOrFail();
 				$deletingCourse->delete();
 
@@ -769,7 +786,8 @@ class SelcourseController extends Controller {
 	 * @param   string $kcxh 12位课程序号
 	 * @return  array 冲突返回冲突的课程序号，否则返回空数组
 	 */
-	public function checktime($kcxh) {
+	public function checktime($kcxh)
+	{
 		$currents = Timetable::whereNd(session('year'))
 			->whereXq(session('term'))
 			->whereKcxh($kcxh)
@@ -815,7 +833,8 @@ class SelcourseController extends Controller {
 	 * @param   integer $rs 选课人数限制，-1为无限制
 	 * @return  array 课程门数和人数限制标志数组，true为超限，false为未超限
 	 */
-	public function checkcourse($type, $kcxh, $zy, $ms = -1, $rs = -1) {
+	public function checkcourse($type, $kcxh, $zy, $ms = -1, $rs = -1)
+	{
 		$limits = [
 			'ms' => false,
 			'rs' => false,
@@ -886,7 +905,8 @@ class SelcourseController extends Controller {
 	 * @param   string $kcxh 12位课程序号
 	 * @return  array 重修课程返回true，否则返回false
 	 */
-	public function checkretake($kcxh) {
+	public function checkretake($kcxh)
+	{
 		$exists = Selcourse::whereKch(Helper::getCno($kcxh))
 			->whereXh(Auth::user()->xh)
 			->whereRaw('NOT(nd = ? AND xq = ?)', [session('year'), session('term')])
@@ -906,7 +926,8 @@ class SelcourseController extends Controller {
 	 * @param   string $type 课程类型
 	 * @return  \Illuminate\Http\Response 可选课程列表
 	 */
-	public function show($type) {
+	public function show($type)
+	{
 		if ('pubsport' == $type) {
 			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
 				abort(403, '现在未开放公体选课，不允许公体选课');
@@ -1015,7 +1036,8 @@ class SelcourseController extends Controller {
 	 * @param   string $campus 校区号
 	 * @return  JSON 可选课程列表
 	 */
-	public function listing($type, $campus) {
+	public function listing($type, $campus)
+	{
 		if ('pubsport' == $type) {
 			$courses = Mjcourse::ofType($type)
 				->selectableNoSpecial($campus)
@@ -1078,13 +1100,13 @@ class SelcourseController extends Controller {
 						->whereKch($course->kch)
 						->where('kcxh', '<>', $course->kcxh)
 						->exists();
-	
+
 					$exists = Selcourse::whereXh(Auth::user()->xh)
 						->whereNd(session('year'))
 						->whereXq(session('term'))
 						->whereKcxh($course->kcxh)
 						->exists();
-	
+
 					if ($exists) {
 						return '<form name="deleteForm" action="' . route('selcourse.destroy', [$type, $course->kcxh]) . '" method="post" role="form" data-id="' . $course->kcxh . '" data-name="' . $course->kcmc . '">' . method_field('delete') . csrf_field() . '<button type="submit" class="btn btn-danger">退课</button></form>';
 					} elseif ($same) {
@@ -1165,7 +1187,8 @@ class SelcourseController extends Controller {
 	 * @version 2.3
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function listTQTransform() {
+	public function listTQTransform()
+	{
 		$title = 'TQ课程转换课程表';
 
 		$courses   = [];
@@ -1174,10 +1197,10 @@ class SelcourseController extends Controller {
 				->wherePt('T')
 				->whereIn('xz', ['W', 'I', 'Y', 'Q'])
 				->get();
-	
+
 			foreach ($selcourses as $selcourse) {
 				foreach ($selcourse->timetables as $timetable) {
-	
+
 					// 生成课程序号为索引的课程信息数组
 					if (!isset($courses[$selcourse->kcxh])) {
 						$courses[$selcourse->kcxh] = [
@@ -1190,7 +1213,7 @@ class SelcourseController extends Controller {
 							'cx'   => $this->checkretake($selcourse->kcxh),
 						];
 					}
-	
+
 					// 在课程信息数组下生成周次为索引的课程时间数组
 					$courses[$selcourse->kcxh][$timetable->zc][] = [
 						'ksz'  => $timetable->ksz,
@@ -1216,7 +1239,8 @@ class SelcourseController extends Controller {
 	 * @param   string $kcxh 12位课程序号
 	 * @return  \Illuminate\Http\Response 课程表
 	 */
-	public function TQTransform($kcxh) {
+	public function TQTransform($kcxh)
+	{
 		if (Auth::user()->profile->nj < 2019 && in_array(substr($kcxh, 0, 2), ['TI', 'TW', 'TY'])) {
 			$course = Selcourse::whereXh(Auth::user()->xh)
 				->whereNd(session('year'))
