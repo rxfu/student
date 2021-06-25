@@ -10,4 +10,5 @@ return array(
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Laracasts\\Presenter' => array($vendorDir . '/laracasts/presenter/src'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

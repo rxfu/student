@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Tests\Data\Stubs\FromNestedArraysQueryExport;
 use Maatwebsite\Excel\Tests\Data\Stubs\FromNonEloquentQueryExport;
 use Maatwebsite\Excel\Tests\Data\Stubs\FromUsersQueryExport;
 use Maatwebsite\Excel\Tests\Data\Stubs\FromUsersQueryExportWithEagerLoad;
+use Maatwebsite\Excel\Tests\Data\Stubs\FromUsersQueryExportWithPrepareRows;
 use Maatwebsite\Excel\Tests\TestCase;
 
 class FromQueryTest extends TestCase
@@ -202,6 +203,52 @@ class FromQueryTest extends TestCase
         $contents = $this->readAsArray(__DIR__ . '/../Data/Disks/Local/from-query-with-nested-arrays.xlsx', 'Xlsx');
 
         $this->assertEquals($this->format_nested_arrays_expected_data($export->query()->get()), $contents);
+    }
+
+    /**
+     * @test
+     */
+    public function can_export_from_query_with_batch_caching()
+    {
+        config()->set('excel.cache.driver', 'batch');
+
+        $export = new FromUsersQueryExport;
+
+        $response = $export->store('from-query-store.xlsx');
+
+        $this->assertTrue($response);
+
+        $contents = $this->readAsArray(__DIR__ . '/../Data/Disks/Local/from-query-store.xlsx', 'Xlsx');
+
+        $allUsers = $export->query()->get()->map(function (User $user) {
+            return array_values($user->toArray());
+        })->toArray();
+
+        $this->assertEquals($allUsers, $contents);
+    }
+
+    /**
+     * @test
+     */
+    public function can_export_from_query_with_prepare_rows()
+    {
+        $export = new FromUsersQueryExportWithPrepareRows;
+
+        $this->assertTrue(method_exists($export, 'prepareRows'));
+
+        $response = $export->store('from-query-store.xlsx');
+
+        $this->assertTrue($response);
+
+        $contents = $this->readAsArray(__DIR__ . '/../Data/Disks/Local/from-query-store.xlsx', 'Xlsx');
+
+        $allUsers = $export->query()->get()->map(function (User $user) {
+            $user->name .= '_prepared_name';
+
+            return array_values($user->toArray());
+        })->toArray();
+
+        $this->assertEquals($allUsers, $contents);
     }
 
     protected function format_nested_arrays_expected_data($groups)
