@@ -590,7 +590,6 @@ class SelcourseController extends Controller
 				->whereXq(session('term'))
 				->whereZsjj(session('season'))
 				->whereKcxh($inputs['kcxh'])
-				->whereGldw(Auth::user()->profile->gldw)
 				->firstOrFail();
 
 			$ms     = isset($limit_course) ? $limit_course : -1;
@@ -714,7 +713,6 @@ class SelcourseController extends Controller
 			->whereXq(session('term'))
 			// ->whereZsjj(session('season'))
 			->whereKcxh($kcxh)
-			->whereGldw(Auth::user()->profile->gldw)
 			->firstOrFail();
 
 		// 2019-12-11：应教务处要求添加事务处理，解决统计数据与选课数据不一致问题
@@ -762,7 +760,6 @@ class SelcourseController extends Controller
 					->whereNd(session('year'))
 					->whereXq(session('term'))
 					->whereKcxh($course->kcxh)
-					->whereGldw(Auth::user()->profile->gldw)
 					->firstOrFail();
 				$deletingCourse->delete();
 

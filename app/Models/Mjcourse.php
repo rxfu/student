@@ -171,6 +171,7 @@ class Mjcourse extends Model
 
 	/**
 	 * 扩展查询，用于获取课程类型相应课程的课程列表
+	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2016-06-21
 	 * @version 2.1
@@ -189,7 +190,8 @@ class Mjcourse extends Model
 					->where('pk_kczy.nj', '=', session('grade'))
 					->where('pk_kczy.zy', '=', session('major'))
 					->where('pk_kczy.kcxh', 'not like', 'TB13%')
-					->where('pk_kczy.kcxh', 'not like', 'TB14%');
+					->where('pk_kczy.kcxh', 'not like', 'TB14%')
+					->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw); // 限定学历生和留学生各自选各自的课程，互不相干
 
 			case 'require':
 				$platforms = array_pluck(Platform::all()->toArray(), 'dm');
@@ -197,12 +199,14 @@ class Mjcourse extends Model
 				return $query->whereIn('pk_kczy.pt', $platforms)
 					->where('pk_kczy.xz', '=', 'B')
 					->where('pk_kczy.nj', '=', session('grade'))
-					->where('pk_kczy.zy', '=', session('major'));
+					->where('pk_kczy.zy', '=', session('major'))
+					->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw); // 限定学历生和留学生各自选各自的课程，互不相干
 
 			case 'elect':
 				return $query->where('pk_kczy.xz', '=', 'X')
 					->where('pk_kczy.nj', '=', session('grade'))
-					->where('pk_kczy.zy', '=', session('major'));
+					->where('pk_kczy.zy', '=', session('major'))
+					->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw); // 限定学历生和留学生各自选各自的课程，互不相干
 
 			case 'human':
 				return $query->where('pk_kczy.pt', '=', 'T')
@@ -225,7 +229,8 @@ class Mjcourse extends Model
 					->where('pk_kczy.xz', '=', 'B')
 					->where('pk_kczy.nj', '=', session('grade'))
 					->where('pk_kczy.zy', '=', session('major'))
-					->where('pk_kczy.kcxh', 'like', 'TB14%');
+					->where('pk_kczy.kcxh', 'like', 'TB14%')
+					->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw); // 限定学历生和留学生各自选各自的课程，互不相干
 
 			default:
 				break;
@@ -296,7 +301,6 @@ class Mjcourse extends Model
 
 	/**
 	 * 扩展查询：用于获取可选课程列表
-	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2016-03-01
 	 * @version 2.0
@@ -331,7 +335,6 @@ class Mjcourse extends Model
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
-			->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw) // 限定学历生和留学生各自选各自的课程，互不相干
 			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'pk_kczy.zy', 'jx_zy.mc', 'pk_kczy.kkxy', 'xt_department.mc')
 			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'pk_kczy.zy', 'jx_zy.mc AS zymc', 'pk_kczy.kkxy', 'xt_department.mc AS xymc')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))
@@ -345,7 +348,6 @@ class Mjcourse extends Model
 
 	/**
 	 * 扩展查询：用于获取可选课程列表，统计数据没有专业
-	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2018-09-16
 	 * @version 2.3
@@ -379,7 +381,6 @@ class Mjcourse extends Model
 			->where('pk_kczy.nd', '=', session('year'))
 			->where('pk_kczy.xq', '=', session('term'))
 			->where('pk_kczy.zsjj', '=', session('season'))
-			->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw) // 限定学历生和留学生各自选各自的课程，互不相干
 			->groupBy('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc', 'pk_kczy.nj', 'jx_zy.mc', 'xt_department.mc')
 			->select('pk_kczy.kcxh', 'jx_jxjh.kch', 'jx_jxjh.zxf', 'jx_jxjh.kh', 'jx_kc.kcmc', 'pk_kczy.rs AS zrs', 'pk_kb.xqh', 'xk_tj.rs', 'zd_khfs.mc AS kh', 'pk_kczy.nj', 'jx_zy.mc AS zymc', 'xt_department.mc AS xymc')
 			->addSelect(DB::raw('array_to_string(array_agg(t_pk_kb.zc), \',\') AS zcs'))

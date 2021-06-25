@@ -141,7 +141,7 @@ class ApplicationController extends Controller
 	}
 
 	/**
-	 * 保存学生选课申请信息
+	 * 保存学生课程申请信息
 	 * 2021-06-24：应教务处要求，添加限定学历本科生选课限制功能，即限定管理单位（gldw）
 	 * @author FuRongxin
 	 * @date    2017-01-02
