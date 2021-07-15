@@ -203,6 +203,10 @@ return [
 				'type' => 'TY',
 				'name' => '艺术体育通识素质课程',
 			],
+			'history' => [
+				'type' => 'TH',
+				'name' => '“四史”教育通识类',
+			]
 			/*'other'  => [
 				'type' => 'TQ',
 				'name' => '其他专项通识素质课程',

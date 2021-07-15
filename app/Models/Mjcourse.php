@@ -185,6 +185,7 @@ class Mjcourse extends Model
 			case 'public':
 				// 2016-06-21：应教务处要求修改为只显示社科类课程（TB15开头）
 				// 2016-12-26：应教务处要求修改为不显示大学英语类课程（TB13开头）和公体类课程（TB14开头）
+				// 2021-07-16：应教务处要求增加TH类课程选课
 				return $query->where('pk_kczy.pt', '=', 'T')
 					->where('pk_kczy.xz', '=', 'B')
 					->where('pk_kczy.nj', '=', session('grade'))
@@ -219,6 +220,10 @@ class Mjcourse extends Model
 			case 'art':
 				return $query->where('pk_kczy.pt', '=', 'T')
 					->where('pk_kczy.xz', '=', 'Y');
+
+			case 'history':
+				return $query->where('pk_kczy.pt', '=', 'T')
+					->where('pk_kczy.xz', '=', 'H');
 				/*
 		case 'other':
 			return $query->where('pk_kczy.pt', '=', 'T')
@@ -255,7 +260,8 @@ class Mjcourse extends Model
 					$query->whereXz('W')
 						->orWhere('xz', '=', 'I')
 						->orWhere('xz', '=', 'Y')
-						->orWhere('xz', '=', 'Q');
+						->orWhere('xz', '=', 'Q')
+						->orWhere('xz', '=', 'H');
 				});
 		});
 	}

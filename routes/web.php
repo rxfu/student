@@ -68,8 +68,8 @@ Route::middleware('auth')->group(function () {
 		Route::get('selcourse/timetable', 'SelcourseController@timetable');
 		Route::get('selcourse/search', 'SelcourseController@showSearchForm');
 		Route::get('selcourse/search/{campus}', 'SelcourseController@search');
-		Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|public|require|elect|human|nature|art|other');
-		Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other');
+		Route::get('selcourse/listing/{type}/{campus}', 'SelcourseController@listing')->where('type', 'pubsport|public|require|elect|human|nature|art|other|history');
+		Route::get('selcourse/{type}', ['as' => 'selcourse.show', 'uses' => 'SelcourseController@show'])->where('type', 'pubsport|public|require|elect|human|nature|art|other|history');
 		Route::get('selcourse/history', 'SelcourseController@history');
 		Route::delete('selcourse/{type}/{kcxh}', 'SelcourseController@destroy')->name('selcourse.destroy');
 		Route::resource('selcourse', 'SelcourseController', ['only' => ['index', 'store']]);

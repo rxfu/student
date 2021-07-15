@@ -135,24 +135,29 @@
                                             <li>
                                                 <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
                                             </li>
-                                            @if ($allowed_general)
+                                            @if ($allowed_general || $allowed_pubsport)
                                                 <li>
                                                     <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
                                                     <ul class="nav nav-third-level">
-                                                        <li>
-                                                            <a href="{{ route('selcourse.show','human') }}">人文社科通识素质课程</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route('selcourse.show','nature') }}">自然科学通识素质课程</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
-                                                        </li>
-                                                        @if (Auth::user()->profile->nj < 2019)
+                                                        @if ($allowed_general)
                                                             <li>
-                                                                <a href="{{ route('selcourse.listtq') }}">其他专项通识素质课程转换</a>
+                                                                <a href="{{ route('selcourse.show','human') }}">人文社科通识素质课程</a>
                                                             </li>
+                                                            <li>
+                                                                <a href="{{ route('selcourse.show','nature') }}">自然科学通识素质课程</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ route('selcourse.show','art') }}">艺术体育通识素质课程</a>
+                                                            </li>
+                                                            @if (Auth::user()->profile->nj < 2019)
+                                                                <li>
+                                                                    <a href="{{ route('selcourse.listtq') }}">其他专项通识素质课程转换</a>
+                                                                </li>
+                                                            @endif
                                                         @endif
+                                                        <li>
+                                                            <a href="{{ route('selcourse.show','history') }}">“四史”教育通识素质课程</a>
+                                                        </li>
                                                     </ul>
                                                     <!-- /.nav-third-level -->
                                                 </li>
