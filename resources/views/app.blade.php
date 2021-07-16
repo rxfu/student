@@ -125,16 +125,18 @@
                                                 <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
                                             </li>
                                         @endif
-                                        @if ($allowed_select)
-                                            <li>
-                                                <a href="{{ route('selcourse.show','public') }}">公共课程</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ route('selcourse.show','require') }}">必修课程</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
-                                            </li>
+                                        @if ($allowed_select || $allowed_pubsport)
+                                            @if ($allowed_select)
+                                                <li>
+                                                    <a href="{{ route('selcourse.show','public') }}">公共课程</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('selcourse.show','require') }}">必修课程</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
+                                                </li>
+                                            @endif
                                             @if ($allowed_general || $allowed_pubsport)
                                                 <li>
                                                     <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
@@ -162,9 +164,11 @@
                                                     <!-- /.nav-third-level -->
                                                 </li>
                                             @endif
-                                            <li>
-                                                <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
-                                            </li>
+                                            @if ($allowed_select)
+                                                <li>
+                                                    <a href="{{ url('selcourse/deletable') }}">可退选课程列表</a>
+                                                </li>
+                                            @endif
                                         @endif
                                     </ul>
                                     <!-- /.nav-second-level -->
