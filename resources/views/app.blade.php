@@ -125,7 +125,7 @@
                                                 <a href="{{ route('selcourse.show','pubsport') }}">公共体育</a>
                                             </li>
                                         @endif
-                                        @if ($allowed_select || $allowed_pubsport)
+                                        @if ($allowed_select || $allowed_history4)
                                             @if ($allowed_select)
                                                 <li>
                                                     <a href="{{ route('selcourse.show','public') }}">公共课程</a>
@@ -137,7 +137,7 @@
                                                     <a href="{{ route('selcourse.show','elect') }}">选修课程</a>
                                                 </li>
                                             @endif
-                                            @if ($allowed_general || $allowed_pubsport)
+                                            @if ($allowed_general || $allowed_history4)
                                                 <li>
                                                     <a href="#"> 通识素质课程<span class="fa arrow"></span></a>
                                                     <ul class="nav nav-third-level">
@@ -157,9 +157,11 @@
                                                                 </li>
                                                             @endif
                                                         @endif
-                                                        <li>
-                                                            <a href="{{ route('selcourse.show','history') }}">“四史”教育通识素质课程</a>
-                                                        </li>
+                                                        @if ($allowed_history4)
+                                                            <li>
+                                                                <a href="{{ route('selcourse.show','history4') }}">“四史”教育通识素质课程</a>
+                                                            </li>
+                                                        @endif
                                                     </ul>
                                                     <!-- /.nav-third-level -->
                                                 </li>

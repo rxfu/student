@@ -58,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
 			// 2016-11-30：应教务处要求添加
 			$allowed_apply = Setting::find('XK_SQ')->value;
 
+			// 是否允许选“四史”教育通识素质课程
+			// 2021-07-19：应教务处要求添加
+			$allowed_history4 = Setting::find('XK_TS_TH')->value;
+
 			// 是否允许申请大创项目
 			// 2018-03-28：应教务处要求添加
 			// 2020-12-17：应教务处要求关闭大创项目
@@ -77,7 +81,8 @@ class AppServiceProvider extends ServiceProvider
 				->with('allowed_pubsport', $allowed_pubsport)
 				->with('allowed_apply', $allowed_apply)
 				->with('allowed_dcxm', $allowed_dcxm)
-				->with('is_settled', $is_settled);
+				->with('is_settled', $is_settled)
+				->with('allowed_history4', $allowed_history4);
 		});
 	}
 

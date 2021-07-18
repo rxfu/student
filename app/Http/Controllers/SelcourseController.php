@@ -472,6 +472,10 @@ class SelcourseController extends Controller
 			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
 				abort(403, '现在未开放公体选课，不允许公体选课');
 			}
+		} elseif ('history' == $request->input('type')) {
+			if (config('constants.status.disable') == Setting::find('XK_TS_TH')->value) {
+				abort(403, '现在未开放“四史”教育通识素质课程选课，不允许“四史”教育通识素质课程选课');
+			}
 		} elseif (config('constants.status.disable') == Setting::find('XK_KG')->value) {
 			abort(403, '现在未开放选课，不允许选课');
 		}
@@ -485,8 +489,6 @@ class SelcourseController extends Controller
 		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
 			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		}
-		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-		// }
 
 		// 2017-06-15：应教务处要求，修改为公体课选课时间与总课程选课时间相同
 		if (config('constants.status.enable') == Setting::find('XK_SJXZ')->value) {
@@ -929,6 +931,10 @@ class SelcourseController extends Controller
 			if (config('constants.status.disable') == Setting::find('XK_GT')->value) {
 				abort(403, '现在未开放公体选课，不允许公体选课');
 			}
+		} elseif ('history' == $type) {
+			if (config('constants.status.disable') == Setting::find('XK_TS_TH')->value) {
+				abort(403, '现在未开放“四史”教育通识素质课程选课，不允许“四史”教育通识素质课程选课');
+			}
 		} elseif (config('constants.status.disable') == Setting::find('XK_KG')->value) {
 			abort(403, '现在未开放选课，不允许选课');
 		}
@@ -939,9 +945,7 @@ class SelcourseController extends Controller
 		// 2018-06-06：应教务处要求增加财务处欠费名单检测
 		DB::connection('sqlsrv')->statement('SET ANSI_NULLS ON');
 		DB::connection('sqlsrv')->statement('SET ANSI_WARNINGS ON');
-		if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
-			abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
-		}
+		// if (Charge::where('StudentNo', '=', Auth::user()->xh)->exists()) {
 		// 	abort(403, '请按学校规定缴纳学杂费用及办理注册手续后再进行选课。');
 		// }
 
