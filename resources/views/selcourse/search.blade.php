@@ -52,6 +52,19 @@
         </form>
     </div>
 </section>
+                
+@if (!$broadcasts->isEmpty())
+    <section class="row">
+        <div class="col-sm-12 col-sm-offset-2"">
+            @foreach ($broadcasts as $broadcast)
+                <div class="bs-callout bs-callout-danger">
+                    <h4>课程申请提示</h4>
+                    <p>{!! $broadcast->text !!}</p>
+                </div>
+            @endforeach
+        </div>
+    </section>
+@endif
 
 @if ($search)
     <section class="row">

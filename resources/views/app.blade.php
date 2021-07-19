@@ -10,6 +10,7 @@
         <title>{{ $title or '默认页面'}} - 广西师范大学教务管理系统-学生WEB端</title>
         <!--link rel="shortcut icon" href="favicon.ico"-->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/docs.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/formValidation.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">

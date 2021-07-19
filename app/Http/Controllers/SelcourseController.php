@@ -2,38 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use DB;
+use Auth;
+use Exception;
+use Carbon\Carbon;
 use App\Http\Helper;
-use App\Models\Campus;
-use App\Models\Charge;
-use App\Models\Cntgeneral;
-use App\Models\Count;
-use App\Models\Course;
-use App\Models\Department;
-use App\Models\Lmtgeneral;
-use App\Models\Lmtsport;
-use App\Models\Lmttime;
-use App\Models\Major;
-use App\Models\Mjcourse;
-use App\Models\Prior;
-use App\Models\Profile;
-use App\Models\Pubsport;
-use App\Models\Selcourse;
-use App\Models\Setting;
 use App\Models\Slog;
 use App\Models\Term;
-use App\Models\Timetable;
+use App\Models\Count;
+use App\Models\Major;
+use App\Models\Prior;
+use App\Models\Campus;
+use App\Models\Charge;
+use App\Models\Course;
 use App\Models\Unpaid;
 use App\Models\Xfzhkc;
 use App\Models\Xfzhsq;
-use Auth;
-use Carbon\Carbon;
-use DB;
-use Exception;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
+use App\Models\Lmttime;
+use App\Models\Profile;
+use App\Models\Setting;
+use App\Models\Lmtsport;
+use App\Models\Mjcourse;
+use App\Models\Pubsport;
+use App\Models\Broadcast;
+use App\Models\Selcourse;
+use App\Models\Timetable;
+use App\Models\Cntgeneral;
+use App\Models\Department;
+use App\Models\Lmtgeneral;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 
 /**
  * 显示并处理选课信息
@@ -315,6 +316,7 @@ class SelcourseController extends Controller
 	 */
 	public function showSearchForm(Request $request)
 	{
+		$broadcasts = Broadcast::whereId('xk_sq')->whereGldw(Auth::user()->profile->gldw)->get();
 		$inputs  = $request->all();
 		$search  = isset($inputs['searched']) ? $inputs['searched'] : false;
 		$grade   = isset($inputs['nj']) ? $inputs['nj'] : 'all';
@@ -364,7 +366,8 @@ class SelcourseController extends Controller
 			->withScollege($college)
 			->withSmajor($major)
 			->withKeyword($keyword)
-			->withType($type);
+			->withType($type)
+			->withBroadcasts($broadcasts);
 	}
 
 	/**
@@ -399,7 +402,7 @@ class SelcourseController extends Controller
 				$query->where('pk_kczy.nj', '<>', session('grade'))
 					->orWhere('pk_kczy.zy', '<>', session('major'));
 			})
-			->whereGldw(Auth::user()->profile->gldw);
+			->where('pk_kczy.gldw', '=', Auth::user()->profile->gldw);
 
 		if (!empty(trim($inputs['keyword']))) {
 			switch ($inputs['type']) {

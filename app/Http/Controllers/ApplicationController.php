@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Helper;
-use App\Models\Application;
-use App\Models\Mjcourse;
-use App\Models\Selcourse;
 use Auth;
 use Carbon\Carbon;
+use App\Http\Helper;
+use App\Models\Mjcourse;
+use App\Models\Selcourse;
+use App\Models\Application;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 /**
  * 显示并处理学生选课申请
